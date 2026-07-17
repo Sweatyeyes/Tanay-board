@@ -12,13 +12,13 @@
 <body>
 <img id="board" src="" alt="Табло">
 <script>
-  const RAW_URL = "https://raw.githubusercontent.com/Sweatyeyes/Tanay-board/main/board.png";
+  const RAW_URL = "https://cdn.jsdelivr.net/gh/Sweatyeyes/Tanay-board@main/board.png";
 
   function refreshBoard() {
     document.getElementById('board').src = RAW_URL + '?t=' + Date.now();
   }
   refreshBoard();
-  setInterval(refreshBoard, 30000); // обновление раз в 30 секунд
+  setInterval(refreshBoard, 20000); // обновление раз в 20 секунд
 </script>
 </body>
 </html>
