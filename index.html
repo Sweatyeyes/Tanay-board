@@ -10,15 +10,45 @@
 </style>
 </head>
 <body>
-<img id="board" src="" alt="Табло">
+<img id="board" src="" alt="Табло" style="display:none;">
+<div id="offline" style="display:none; color:#ccc; font-family:sans-serif; font-size:5vw; text-align:center; padding:20px;">
+  Табло временно недоступно
+</div>
 <script>
-  const RAW_URL = "https://raw.githubusercontent.com/Sweatyeyes/Tanay-board/main/board.png";
+  const IMAGE_URL  = "https://tanay-board.myshkevich.workers.dev/";
+  const STATUS_URL = "https://raw.githubusercontent.com/Sweatyeyes/Tanay-board/main/last_update.txt";
+  const MAX_AGE_MS = 10 * 60 * 1000;
 
-  function refreshBoard() {
-    document.getElementById('board').src = RAW_URL + '?t=' + Date.now();
+  const imgEl = document.getElementById('board');
+  const offlineEl = document.getElementById('offline');
+
+  function showBoard() {
+    imgEl.src = IMAGE_URL + '?t=' + Date.now();
+    imgEl.style.display = 'block';
+    offlineEl.style.display = 'none';
   }
-  refreshBoard();
-  setInterval(refreshBoard, 30000);
+  function showOffline() {
+    imgEl.style.display = 'none';
+    offlineEl.style.display = 'block';
+  }
+
+  function tick() {
+    fetch(STATUS_URL + '?t=' + Date.now(), { cache: 'no-store' })
+      .then(r => r.ok ? r.text() : Promise.reject())
+      .then(text => {
+        const lastUpdate = new Date(text.trim());
+        const ageMs = Date.now() - lastUpdate.getTime();
+        if (!isNaN(lastUpdate.getTime()) && ageMs > MAX_AGE_MS) {
+          showOffline();
+        } else {
+          showBoard();
+        }
+      })
+      .catch(() => { showBoard(); });
+  }
+
+  tick();
+  setInterval(tick, 20000);
 </script>
 </body>
 </html>
