@@ -1,8 +1,8 @@
 name: OCR board
 
 on:
-  push:
-    branches: [data]
+  schedule:
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 concurrency:
