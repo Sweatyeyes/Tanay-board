@@ -42,17 +42,28 @@ KNOWN_CATS = [
 TESS_RU = "--oem 1 --psm 7 -l rus"
 TESS_MIX = "--oem 1 --psm 7 -l rus+eng"
 
+SAMPLES = []   # образцы ячеек для отладочной картинки
+
+
+def prep(img, invert=True, scale=4, threshold=110):
+    """Готовит картинку к распознаванию: бинаризация, потом увеличение.
+    Для мелкого экранного шрифта это работает заметно лучше, чем сглаживание."""
+    g = img.convert("L")
+    a = np.array(g)
+    if invert:
+        b = np.where(a > threshold, 0, 255).astype("uint8")   # светлый текст -> тёмный
+    else:
+        b = np.where(a > threshold, 255, 0).astype("uint8")   # тёмный текст оставляем
+    out = Image.fromarray(b)
+    return out.resize((out.width * scale, out.height * scale), Image.NEAREST)
+
 
 def ocr(img, cfg=TESS_RU, invert=True, scale=4):
-    """Распознаёт одну строку текста. Мелкий шрифт увеличиваем."""
+    """Распознаёт одну строку текста."""
     if img.width < 3 or img.height < 3:
         return ""
-    g = img.convert("L")
-    g = g.resize((g.width * scale, g.height * scale), Image.LANCZOS)
-    if invert:
-        g = Image.eval(g, lambda p: 255 - p)   # белое на чёрном -> чёрное на белом
     try:
-        return pytesseract.image_to_string(g, config=cfg).strip()
+        return pytesseract.image_to_string(prep(img, invert, scale), config=cfg).strip()
     except Exception as e:
         sys.stderr.write("ocr error: %s\n" % e)
         return ""
@@ -171,9 +182,14 @@ def main():
             if kind != "filled":
                 continue
 
-            name = ocr(im.crop((x0 + COL_NAME[0], ry0, x0 + COL_NAME[1], ry1)))
+            name_cell = im.crop((x0 + COL_NAME[0], ry0, x0 + COL_NAME[1], ry1))
+            name = ocr(name_cell)
             cat_raw = ocr(im.crop((x0 + COL_CAT[0], ry0, x0 + COL_CAT[1], ry1)),
                           cfg=TESS_MIX)
+
+            # копим образцы того, что видит распознаватель
+            if len(SAMPLES) < 12:
+                SAMPLES.append((name_cell.copy(), prep(name_cell)))
             load["rows"].append({
                 "n": r + 1,
                 "name": name.replace("|", "").strip(),
@@ -190,6 +206,19 @@ def main():
 
     if dbg:
         im.save(dbg)
+        # отдельная картинка: слева исходная ячейка (увеличенная),
+        # справа то, что реально уходит в распознаватель
+        if SAMPLES:
+            pad = 6
+            wid = max(max(a.width * 4, b.width) for a, b in SAMPLES)
+            hei = sum(a.height * 4 + b.height + pad * 3 for a, b in SAMPLES)
+            sheet = Image.new("L", (wid, hei), 160)
+            y = 0
+            for raw, ready in SAMPLES:
+                big = raw.convert("L").resize((raw.width * 4, raw.height * 4), Image.NEAREST)
+                sheet.paste(big, (0, y)); y += big.height + pad
+                sheet.paste(ready, (0, y)); y += ready.height + pad * 2
+            sheet.save(os.path.join(os.path.dirname(dbg) or ".", "cells.png"))
 
     total = sum(len(l["rows"]) for l in result["loads"])
     print("панелей: %d, распознано строк: %d" % (len(panels), total))
