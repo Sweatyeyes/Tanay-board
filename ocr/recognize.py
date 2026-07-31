@@ -1,0 +1,200 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Распознаёт табло со скриншота и складывает результат в board.json.
+Запускается на GitHub Actions (Ubuntu), поэтому кириллица здесь безопасна.
+
+Использование:
+    python recognize.py board.png out/board.json out/debug.png
+"""
+
+import json
+import os
+import sys
+import difflib
+
+import numpy as np
+from PIL import Image, ImageDraw
+import pytesseract
+
+# ---------- геометрия (снята по реальному скриншоту 1366x768) ----------
+PANEL_TOP = 75          # верх таблицы
+PANEL_BOTTOM = 504      # низ таблицы
+ROWS = 24               # строк в панели
+ROW_H = (PANEL_BOTTOM - PANEL_TOP) / ROWS   # 17.875
+
+TITLE_Y = (46, 74)      # голубой заголовок взлёта над панелью
+HEADER_Y = (16, 48)     # шапка: дата/время слева, "Работа до" справа
+MSG_Y = (600, 680)      # зона сообщения внизу
+
+# отступы внутри строки, относительно левого края панели
+COL_NUM  = (2, 30)
+COL_NAME = (30, 246)
+COL_CAT  = (246, 322)
+
+# известные категории - результат распознавания подгоняется к ближайшей
+KNOWN_CATS = [
+    "Спортивный", "ФВ",
+    "AFF 1", "AFF 2", "AFF 3", "AFF 4", "AFF 5", "AFF 6", "AFF 7", "AFF 8",
+    "TM4000 90", "TM4000 100", "TM4000 120",
+]
+
+TESS_RU = "--oem 1 --psm 7 -l rus"
+TESS_MIX = "--oem 1 --psm 7 -l rus+eng"
+
+
+def ocr(img, cfg=TESS_RU, invert=True, scale=4):
+    """Распознаёт одну строку текста. Мелкий шрифт увеличиваем."""
+    if img.width < 3 or img.height < 3:
+        return ""
+    g = img.convert("L")
+    g = g.resize((g.width * scale, g.height * scale), Image.LANCZOS)
+    if invert:
+        g = Image.eval(g, lambda p: 255 - p)   # белое на чёрном -> чёрное на белом
+    try:
+        return pytesseract.image_to_string(g, config=cfg).strip()
+    except Exception as e:
+        sys.stderr.write("ocr error: %s\n" % e)
+        return ""
+
+
+def snap_category(text):
+    """Подгоняет распознанную категорию к ближайшей известной."""
+    t = (text or "").strip()
+    if not t:
+        return ""
+    m = difflib.get_close_matches(t, KNOWN_CATS, n=1, cutoff=0.6)
+    return m[0] if m else t
+
+
+def find_panels(arr):
+    """Находит чёрные панели по вертикальным полосам тёмных пикселей."""
+    dark = arr.sum(axis=2) < 180
+    band = dark[PANEL_TOP:PANEL_BOTTOM, :]
+    colsum = band.sum(axis=0)
+    thr = (PANEL_BOTTOM - PANEL_TOP) * 0.5
+    panels, inside, start = [], False, 0
+    for x in range(arr.shape[1]):
+        if colsum[x] > thr and not inside:
+            inside, start = True, x
+        elif colsum[x] <= thr and inside:
+            inside = False
+            if x - start > 100:
+                panels.append((start, x))
+    if inside and arr.shape[1] - start > 100:
+        panels.append((start, arr.shape[1]))
+    return panels
+
+
+def classify_row(cell):
+    """Определяет тип строки: занята / свободна (зелёная) / пустая."""
+    a = np.array(cell).astype(int)
+    if a.size == 0:
+        return "empty"
+    green = ((a[:, :, 1] > 190) & (a[:, :, 0] < 210) & (a[:, :, 2] < 210)).mean()
+    white = (a.sum(axis=2) > 600).mean()
+    if green > 0.30:
+        return "free"
+    if white > 0.005:
+        return "filled"
+    return "empty"
+
+
+def main():
+    src = sys.argv[1] if len(sys.argv) > 1 else "board.png"
+    dst = sys.argv[2] if len(sys.argv) > 2 else "board.json"
+    dbg = sys.argv[3] if len(sys.argv) > 3 else None
+
+    im = Image.open(src).convert("RGB")
+    arr = np.array(im).astype(int)
+    W, H = im.size
+
+    result = {
+        "updated": None,
+        "source_size": [W, H],
+        "clock": "",
+        "work_until": "",
+        "message": "",
+        "loads": [],
+        "status": "ok",
+    }
+
+    from datetime import datetime
+    result["updated"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    panels = find_panels(arr)
+
+    # Если панелей нет - скорее всего RMS показывает заглушку "Подключение..."
+    if not panels:
+        result["status"] = "no_board"
+        with open(dst, "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=1)
+        print("панели не найдены - похоже, табло сейчас не показывается")
+        return
+
+    # ---- шапка ----
+    result["clock"] = ocr(im.crop((0, HEADER_Y[0], 420, HEADER_Y[1])),
+                          cfg=TESS_MIX, invert=False)
+    right = ocr(im.crop((max(0, W - 420), HEADER_Y[0], W, HEADER_Y[1])),
+                cfg=TESS_MIX, invert=False)
+    result["work_until"] = right
+
+    # ---- сообщение внизу ----
+    msg_crop = im.crop((0, MSG_Y[0], W, min(H, MSG_Y[1])))
+    msg_arr = np.array(msg_crop).astype(int)
+    if (msg_arr.sum(axis=2) < 200).mean() > 0.002:
+        result["message"] = ocr(msg_crop, cfg=TESS_RU, invert=False, scale=2)
+
+    draw = ImageDraw.Draw(im) if dbg else None
+
+    # ---- панели ----
+    for pi, (x0, x1) in enumerate(panels):
+        title = ocr(im.crop((max(0, x0 - 10), TITLE_Y[0], x1 + 10, TITLE_Y[1])),
+                    cfg=TESS_MIX, invert=True)
+
+        load = {"index": pi + 1, "title": title, "capacity": ROWS,
+                "rows": [], "free_from": None}
+
+        for r in range(ROWS):
+            ry0 = int(round(PANEL_TOP + r * ROW_H))
+            ry1 = int(round(PANEL_TOP + (r + 1) * ROW_H))
+            cell = im.crop((x0, ry0, x1, ry1))
+            kind = classify_row(cell)
+
+            if draw:
+                color = {"filled": (255, 0, 0), "free": (0, 255, 0),
+                         "empty": (80, 80, 80)}[kind]
+                draw.rectangle([x0, ry0, x1 - 1, ry1 - 1], outline=color)
+
+            if kind == "free" and load["free_from"] is None:
+                load["free_from"] = r + 1
+            if kind != "filled":
+                continue
+
+            name = ocr(im.crop((x0 + COL_NAME[0], ry0, x0 + COL_NAME[1], ry1)))
+            cat_raw = ocr(im.crop((x0 + COL_CAT[0], ry0, x0 + COL_CAT[1], ry1)),
+                          cfg=TESS_MIX)
+            load["rows"].append({
+                "n": r + 1,
+                "name": name.replace("|", "").strip(),
+                "cat": snap_category(cat_raw),
+                "cat_raw": cat_raw,
+            })
+
+        if load["rows"] or load["free_from"]:
+            result["loads"].append(load)
+
+    os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
+    with open(dst, "w", encoding="utf-8") as f:
+        json.dump(result, f, ensure_ascii=False, indent=1)
+
+    if dbg:
+        im.save(dbg)
+
+    total = sum(len(l["rows"]) for l in result["loads"])
+    print("панелей: %d, распознано строк: %d" % (len(panels), total))
+    print("сообщение: %r" % result["message"])
+
+
+if __name__ == "__main__":
+    main()
