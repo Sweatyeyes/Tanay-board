@@ -5,48 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Табло</title>
 <style>
-  body { margin:0; background:#000; display:flex; justify-content:center; align-items:center; height:100vh; }
-  img { max-width:100%; max-height:100%; }
+  body { margin:0; background:#000; display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; }
+  img { max-width:100%; max-height:92vh; }
+  #offline { display:none; color:#ccc; font-family:sans-serif; font-size:5vw; text-align:center; padding:20px; }
+  a.switch { color:#666; font-family:sans-serif; font-size:13px; text-decoration:none; padding:10px; }
 </style>
 </head>
 <body>
-<img id="board" src="" alt="Табло" style="display:none;">
-<div id="offline" style="display:none; color:#ccc; font-family:sans-serif; font-size:5vw; text-align:center; padding:20px;">
-  Табло временно недоступно
-</div>
+<img id="board" src="" alt="Табло">
+<div id="offline">Табло временно недоступно</div>
+<a class="switch" href="text.html">текстовая версия →</a>
 <script>
-  const IMAGE_URL  = "https://tanay-board.myshkevich.workers.dev/";
-  const STATUS_URL = "https://raw.githubusercontent.com/Sweatyeyes/Tanay-board/main/last_update.txt";
-  const MAX_AGE_MS = 10 * 60 * 1000;
+  var IMAGE_URL  = "https://tanay-board.myshkevich.workers.dev/";
+  var STATUS_URL = "https://raw.githubusercontent.com/Sweatyeyes/Tanay-board/data/last_update.txt";
+  var MAX_AGE_MS = 10 * 60 * 1000;
 
-  const imgEl = document.getElementById('board');
-  const offlineEl = document.getElementById('offline');
+  var imgEl = document.getElementById('board');
+  var offEl = document.getElementById('offline');
 
   function showBoard() {
     imgEl.src = IMAGE_URL + '?t=' + Date.now();
     imgEl.style.display = 'block';
-    offlineEl.style.display = 'none';
+    offEl.style.display = 'none';
   }
   function showOffline() {
     imgEl.style.display = 'none';
-    offlineEl.style.display = 'block';
+    offEl.style.display = 'block';
   }
-
   function tick() {
     fetch(STATUS_URL + '?t=' + Date.now(), { cache: 'no-store' })
-      .then(r => r.ok ? r.text() : Promise.reject())
-      .then(text => {
-        const lastUpdate = new Date(text.trim());
-        const ageMs = Date.now() - lastUpdate.getTime();
-        if (!isNaN(lastUpdate.getTime()) && ageMs > MAX_AGE_MS) {
-          showOffline();
-        } else {
-          showBoard();
-        }
+      .then(function(r){ return r.ok ? r.text() : Promise.reject(); })
+      .then(function(text){
+        var t = new Date(text.trim());
+        if (!isNaN(t.getTime()) && (Date.now() - t.getTime()) > MAX_AGE_MS) showOffline();
+        else showBoard();
       })
-      .catch(() => { showBoard(); });
+      .catch(function(){ showBoard(); });
   }
-
   tick();
   setInterval(tick, 20000);
 </script>
