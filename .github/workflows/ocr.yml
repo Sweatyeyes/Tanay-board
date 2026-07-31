@@ -39,6 +39,7 @@ jobs:
       - name: Распознать
         run: |
           mkdir -p out
+          cp data/board.png out/source.png
           python code/ocr/recognize.py data/board.png out/board.json out/debug.png
           echo "--- board.json ---"
           cat out/board.json
