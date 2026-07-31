@@ -1,6 +1,7 @@
 # scripts/capture.ps1
-# Живёт в репозитории (ветка main). Ноутбук сам скачивает свежую версию
-# перед каждым запуском - править можно прямо на сайте GitHub.
+# Lives in the repo (branch main). The laptop pulls a fresh copy before each run,
+# so this file can be edited directly on GitHub.
+# ASCII only - no Cyrillic here, PowerShell 2.0 on Win7 misreads it.
 
 $DataPath  = "C:\Tanay-data"
 $ImageName = "board.png"
@@ -8,7 +9,6 @@ $ImageName = "board.png"
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-# ---- захват экрана ----
 $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
 $bmp = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
 $g = [System.Drawing.Graphics]::FromImage($bmp)
@@ -18,12 +18,9 @@ $bmp.Save((Join-Path $DataPath $ImageName), [System.Drawing.Imaging.ImageFormat]
 $g.Dispose()
 $bmp.Dispose()
 
-# ---- отметка времени (по ней страница понимает, жив ли ноутбук) ----
-(Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") |
-    Out-File -FilePath (Join-Path $DataPath "last_update.txt") -Encoding ascii -NoNewline
+(Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") | Out-File -FilePath (Join-Path $DataPath "last_update.txt") -Encoding ascii
 
-# ---- отправка: всегда переписываем один и тот же коммит ----
 Set-Location $DataPath
-git add -A
-git commit --amend -m "board" --allow-empty 2>&1 | Out-Null
-git push --force origin data 2>&1 | Out-Null
+cmd /c "git add -A" 2>&1 | Out-Null
+cmd /c "git commit --amend -m board --allow-empty" 2>&1 | Out-Null
+cmd /c "git push --force origin data" 2>&1 | Out-Null
