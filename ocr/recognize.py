@@ -23,14 +23,14 @@ PANEL_BOTTOM = 504      # низ таблицы
 ROWS = 24               # строк в панели
 ROW_H = (PANEL_BOTTOM - PANEL_TOP) / ROWS   # 17.875
 
-TITLE_Y = (46, 74)      # голубой заголовок взлёта над панелью
+TITLE_Y = (47, 70)      # заголовок взлёта над панелью (бывает красным или голубым)
 HEADER_Y = (16, 48)     # шапка: дата/время слева, "Работа до" справа
 MSG_Y = (600, 680)      # зона сообщения внизу
 
 # отступы внутри строки, относительно левого края панели
 COL_NUM  = (2, 30)
-COL_NAME = (30, 246)
-COL_CAT  = (246, 322)
+COL_NAME = (28, 246)
+COL_CAT  = (247, 321)
 
 # известные категории - результат распознавания подгоняется к ближайшей
 KNOWN_CATS = [
@@ -45,17 +45,76 @@ TESS_MIX = "--oem 1 --psm 7 -l rus+eng"
 SAMPLES = []   # образцы ячеек для отладочной картинки
 
 
-def prep(img, invert=True, scale=4, threshold=110):
-    """Готовит картинку к распознаванию: бинаризация, потом увеличение.
-    Для мелкого экранного шрифта это работает заметно лучше, чем сглаживание."""
-    g = img.convert("L")
-    a = np.array(g)
-    if invert:
-        b = np.where(a > threshold, 0, 255).astype("uint8")   # светлый текст -> тёмный
-    else:
-        b = np.where(a > threshold, 255, 0).astype("uint8")   # тёмный текст оставляем
+def prep(img, invert=True, scale=4, threshold=110, margin=16):
+    """Готовит картинку к распознаванию.
+
+    Фон определяется автоматически (самый частый цвет), текстом считается всё,
+    что от него заметно отличается. Так одинаково хорошо работают и белые буквы
+    на чёрном, и красные или голубые на оранжевом.
+
+    Дальше: обрезка по основной полосе текста (чтобы выбросить линии-разделители),
+    увеличение и белые поля - Tesseract заметно точнее, когда текст не у края.
+    """
+    rgb = np.array(img.convert("RGB")).astype(int)
+    flat = rgb.reshape(-1, 3)
+    colors, counts = np.unique(flat, axis=0, return_counts=True)
+    bg = colors[counts.argmax()]
+    dist = np.abs(rgb - bg).sum(axis=2)
+    b = np.where(dist > 90, 0, 255).astype("uint8")   # текст чёрный, фон белый
+
+    # Сначала стираем сплошные рамки: вертикальные линии по краям панели и
+    # горизонтальные разделители строк. Иначе они склеиваются с текстом.
+    h, w = b.shape
+    dark = b < 128
+    col_has = dark.sum(axis=0)
+    for x in range(w):
+        if col_has[x] > h * 0.85:
+            b[:, x] = 255
+    dark = b < 128
+    row_has = dark.sum(axis=1)
+    for y in range(h):
+        if row_has[y] > w * 0.85:
+            b[y, :] = 255
+
+    # Оставляем только основную полосу с текстом. Строки-разделители и обрывки
+    # линий сверху/снизу идут отдельными группами - их отбрасываем.
+    dark = b < 128
+    row_has = dark.sum(axis=1)
+    groups, start = [], None
+    for y in range(h):
+        if row_has[y] > 0 and start is None:
+            start = y
+        elif row_has[y] == 0 and start is not None:
+            groups.append((start, y)); start = None
+    if start is not None:
+        groups.append((start, h))
+
+    if groups:
+        # Выбираем группу с наибольшим количеством чернил, отбрасывая сплошные
+        # заливки: линии-разделители и края соседних панелей.
+        def ink(g):
+            seg = row_has[g[0]:g[1]]
+            solid = (seg > w * 0.85).mean()
+            if solid > 0.5:
+                return -1
+            return int(seg.sum())
+        best = max(groups, key=ink)
+        b = b[best[0]:best[1], :]
+
+    dark = b < 128
+    cols = [x for x in range(b.shape[1]) if dark[:, x].any()]
+    if cols:
+        b = b[:, max(0, min(cols) - 1):min(b.shape[1], max(cols) + 2)]
+
+    if b.size == 0 or b.shape[0] < 3:
+        return Image.new("L", (10, 10), 255)
+
     out = Image.fromarray(b)
-    return out.resize((out.width * scale, out.height * scale), Image.NEAREST)
+    out = out.resize((out.width * scale, out.height * scale), Image.NEAREST)
+
+    canvas = Image.new("L", (out.width + margin * 2, out.height + margin * 2), 255)
+    canvas.paste(out, (margin, margin))
+    return canvas
 
 
 def ocr(img, cfg=TESS_RU, invert=True, scale=4):
@@ -172,6 +231,10 @@ def main():
             cell = im.crop((x0, ry0, x1, ry1))
             kind = classify_row(cell)
 
+            # для распознавания отступаем от границ строки:
+            # там проходят линии-разделители, они мешают распознаванию
+            ty0, ty1 = ry0 + 1, ry1 - 1
+
             if draw:
                 color = {"filled": (255, 0, 0), "free": (0, 255, 0),
                          "empty": (80, 80, 80)}[kind]
@@ -182,9 +245,9 @@ def main():
             if kind != "filled":
                 continue
 
-            name_cell = im.crop((x0 + COL_NAME[0], ry0, x0 + COL_NAME[1], ry1))
+            name_cell = im.crop((x0 + COL_NAME[0], ty0, x0 + COL_NAME[1], ty1))
             name = ocr(name_cell)
-            cat_raw = ocr(im.crop((x0 + COL_CAT[0], ry0, x0 + COL_CAT[1], ry1)),
+            cat_raw = ocr(im.crop((x0 + COL_CAT[0], ty0, x0 + COL_CAT[1], ty1)),
                           cfg=TESS_MIX)
 
             # копим образцы того, что видит распознаватель
