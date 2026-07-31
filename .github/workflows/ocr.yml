@@ -1,0 +1,55 @@
+name: OCR board
+
+on:
+  push:
+    branches: [data]
+  workflow_dispatch:
+
+concurrency:
+  group: ocr
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  recognize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Забрать код (ветка main)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: code
+
+      - name: Забрать картинку (ветка data)
+        uses: actions/checkout@v4
+        with:
+          ref: data
+          path: data
+
+      - name: Поставить Tesseract с русским языком
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-rus
+
+      - name: Поставить библиотеки Python
+        run: pip install --quiet pillow numpy pytesseract
+
+      - name: Распознать
+        run: |
+          mkdir -p out
+          python code/ocr/recognize.py data/board.png out/board.json out/debug.png
+          echo "--- board.json ---"
+          cat out/board.json
+
+      - name: Опубликовать в ветку ocr
+        run: |
+          cd out
+          git init -q
+          git config user.name "ocr-bot"
+          git config user.email "ocr-bot@users.noreply.github.com"
+          git checkout -q -b ocr
+          git add -A
+          git commit -q -m "ocr result"
+          git push -q --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" ocr
