@@ -1,0 +1,177 @@
+﻿WIN class=tooltips_class32 | title=
+WIN class=SysShadow | title=
+WIN class=Button | title=Пуск
+WIN class=Shell_TrayWnd | title=
+WIN class=TfmRemoteScreen | title=ТАБЛО          (Ctrl+F12 - настройки) [Просмотр]
+WIN class=TfmMain | title=RMS Удаленный доступ - Клиент [7.1.7.0]
+WIN class=TdxRibbonFormShadowWindow | title=
+WIN class=ConsoleWindowClass | title=Администратор: C:\Windows\system32\cmd.exe
+WIN class=TApplication | title=
+WIN class=#32770 | title=
+WIN class=#32770 | title=GenieFloater
+WIN class=CabinetWClass | title=system (C:)
+WIN class=WorkerW | title=
+WIN class=WorkerW | title=
+WIN class=Progman | title=Program Manager
+
+=== CHILDREN ===
+
+--- tooltips_class32 | 
+   (custom drawn, no controls)
+
+--- SysShadow | 
+   (custom drawn, no controls)
+
+--- Button | Пуск
+   (custom drawn, no controls)
+
+--- Shell_TrayWnd | 
+   TrayNotifyWnd | 
+   TrayClockWClass | 17:23
+   TrayShowDesktopButtonWClass | 
+   SysPager | 
+   ToolbarWindow32 | Пользовательская область уведомлений
+   ToolbarWindow32 | Системная область уведомлений
+   Button | 
+   ReBarWindow32 | 
+   CiceroUIWndFrame | TF_FloatingLangBar_WndTitle
+   MSTaskSwWClass | Выполнение приложений
+   MSTaskListWClass | Выполнение приложений
+   ToolbarWindow32 | Рабочий стол
+
+--- TfmRemoteScreen | ТАБЛО          (Ctrl+F12 - настройки) [Просмотр]
+   TfmRender | ТАБЛО          (Ctrl+F12 - настройки) [Просмотр]
+   TPanel | pnToolbarLink
+   TToolBar | 
+   TPanel | Text chat
+   TStaticText | Подключение к ТАБЛО. Пожалуйста, подождите...
+   TPanel | 
+   TPageControl | 
+   TScrollBox | 
+   TPanel | pnRender
+   TChromeTabs | 
+
+--- TfmMain | RMS Удаленный доступ - Клиент [7.1.7.0]
+   TdxDockSite | 
+   TdxDockPanel | Навигация
+   TdxTreeViewControl | 
+   TdxLayoutDockSite | 
+   TdxLayoutDockSite | dxLayoutDockSite3
+   TdxDockPanel | Connections
+   TTreeView | 
+   TStackPanel | 
+   TPanel | 
+   TcxImage | 
+   TPanel | 
+   TcxMRUEdit | 
+   TcxCustomComboBoxInnerEdit | 
+   TdxBreadcrumbEdit | 
+   TcxButton | 
+   TcxButton | 
+   TcxButton | 
+   TcxButton | 
+   TListView | 
+   SysHeader32 | 
+   TPanel | 
+   TPanel | 
+   TcxImage | 
+   TPanel | 
+   TcxImage | 
+   TJvTrackBar | 
+   TdxLayoutDockSite | dxLayoutDockSite1
+   TdxRibbonStatusBar | 
+   TdxStatusBarContainerControl | 
+   TcxImage | 
+   TdxRibbon | 
+   TdxRibbonTabAreaToolbarDockControl | 
+   TdxRibbonTabAreaToolbarBarControl | Tab area toolbar
+   TdxRibbonTabAreaSearchToolbarDockControl | 
+   TdxRibbonQuickAccessToolbarDockControl | 
+   TdxRibbonGroupsDockControlSite | 
+   TdxRibbonGroupsDockControl | 
+   TdxRibbonGroupBarControl | Помощь
+   TdxRibbonGroupBarControl | Лицензия
+   TdxRibbonGroupBarControl | О программе
+   TdxRibbonGroupsDockControl | 
+   TdxRibbonGroupBarControl | Сервер синхронизации
+   TdxRibbonGroupBarControl | Active directory
+   TdxRibbonGroupBarControl | Адресные книги
+   TdxRibbonGroupsDockControl | 
+   TdxRibbonGroupBarControl | Настройки
+   TdxRibbonGroupBarControl | Удаленная установка
+   TdxRibbonGroupBarControl | Сеть
+   TdxRibbonGroupsDockControl | 
+   TdxRibbonGroupBarControl | Вид
+   TdxRibbonGroupBarControl | Представление
+   TdxRibbonGroupBarControl | Размер эскиза
+   TdxRibbonGroupsDockControl | 
+   TdxRibbonGroupBarControl | Правка
+   TdxRibbonGroupBarControl | Параметры
+   TdxRibbonGroupBarControl | Статус
+   TdxRibbonGroupsDockControl | 
+   TdxRibbonGroupBarControl | 
+   TdxRibbonGroupBarControl | Соединение
+   TdxRibbonGalleryScrollBar | 
+
+--- TdxRibbonFormShadowWindow | 
+   (custom drawn, no controls)
+
+--- ConsoleWindowClass | Администратор: C:\Windows\system32\cmd.exe
+   (custom drawn, no controls)
+
+--- TApplication | 
+   (custom drawn, no controls)
+
+--- #32770 | 
+   (custom drawn, no controls)
+
+--- #32770 | GenieFloater
+   (custom drawn, no controls)
+
+--- CabinetWClass | system (C:)
+   BrowserFrameGripperClass | 
+   WorkerW | 
+   ReBarWindow32 | 
+   TravelBand | 
+   ToolbarWindow32 | 
+   Address Band Root | 
+   msctls_progress32 | 
+   Breadcrumb Parent | 
+   ToolbarWindow32 | Адрес: C:\
+   ToolbarWindow32 | 
+   UniversalSearchBand | 
+   Search Box | 
+   SearchEditBoxWrapperClass | 
+   DirectUIHWND | 
+   ShellTabWindowClass | system (C:)
+   DUIViewWndClassName | 
+   DirectUIHWND | 
+   CtrlNotifySink | 
+   Shell Preview Extension Host | Shell Preview Extension Host
+   CtrlNotifySink | 
+   NamespaceTreeControl | Эл. управления дерева пространства имен
+   Static | Эл. управления дерева пространства имен
+   SysTreeView32 | Дерево
+   CtrlNotifySink | 
+   SHELLDLL_DefView | ShellView
+   DirectUIHWND | 
+   CtrlNotifySink | 
+   ScrollBar | 
+   CtrlNotifySink | 
+   ScrollBar | 
+   WorkerW | 
+   ReBarWindow32 | 
+   ToolbarWindow32 | 
+   msctls_statusbar32 | 
+   ATL:6EF5F6E8 | 
+
+--- WorkerW | 
+   SHELLDLL_DefView | 
+   SysListView32 | FolderView
+   SysHeader32 | 
+
+--- WorkerW | 
+   (custom drawn, no controls)
+
+--- Progman | Program Manager
+   (custom drawn, no controls)
