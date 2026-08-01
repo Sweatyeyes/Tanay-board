@@ -250,6 +250,45 @@ FEMALE_NAMES = [
 
 FIRST_NAMES = MALE_NAMES + FEMALE_NAMES
 
+# Стафф аэродрома: выделяются на странице другим цветом. Заодно это
+# словарь фамилий: распознанное подгоняется к нему, поэтому у стаффа
+# фамилии всегда выходят без опечаток.
+STAFF = [
+    "Башмаков Иван", "Воробьев Вячеслав", "Калинин Александр",
+    "Ковган Сергей", "Костюков Роман", "Моисеенко Алексей",
+    "Памятных Ринат", "Панченко Станислав", "Пахомов Антон",
+    "Пометелин Дмитрий", "Сорока Виктор", "Толстов Анатолий",
+    "Трофимов Сергей", "Тырышкин Ярослав", "Шнуров Максим",
+    "Ерофеев Алексей", "Капралов Евгений", "Колпаков Дмитрий",
+    "Мышкевич Сергей", "Павлов Александр", "Титков Сергей",
+    "Трофимова Ирина", "Ярмонов Сергей",
+]
+
+
+def match_staff(name):
+    """Сверяет "Фамилия Имя" со списком стаффа с допуском на ошибки OCR.
+
+    Имя к этому моменту уже подогнано к словарю, поэтому требуем его
+    точного совпадения, а фамилию сравниваем фуззи (порог 0.7 пропускает
+    "Башызков" -> "Башмаков", но не склеивает разных людей с одинаковым
+    именем). Возвращает (каноническое имя, True) или (как было, False).
+    """
+    parts = (name or "").split()
+    if len(parts) != 2:
+        return name, False
+    surname, first = parts
+    best, best_r = None, 0.0
+    for s in STAFF:
+        s_sur, s_first = s.split()
+        if s_first != first:
+            continue
+        r = difflib.SequenceMatcher(None, surname.lower(), s_sur.lower()).ratio()
+        if r > best_r:
+            best, best_r = s, r
+    if best and best_r >= 0.7:
+        return best, True
+    return name, False
+
 
 def guess_gender(surname, patronymic=""):
     """Пол по отчеству (надёжнее), иначе по окончанию фамилии.
@@ -666,6 +705,9 @@ def main():
             name_cell = im.crop((nx0, ty0, nx1, ty1))
             name = normalize_name(ocr_best(name_cell).replace("|", "").strip())
             is_service = name.startswith("КВОРУМ") or name == "(Вып.)"
+            is_staff = False
+            if not is_service:
+                name, is_staff = match_staff(name)
 
             cat_cell = im.crop((cx0, ty0, cx1, ty1))
             cat_raws = ocr_category(cat_cell)
@@ -678,6 +720,7 @@ def main():
             load["rows"].append({
                 "n": r + 1,
                 "name": name,
+                "staff": is_staff,
                 "cat": cat,
                 "cat_raw": cat_raw,
             })
