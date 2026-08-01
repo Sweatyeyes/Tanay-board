@@ -365,7 +365,8 @@ def fix_surname(s, first_name=""):
     if len(s) < 5 or "." in s or "…" in s:
         return s
     t = s
-    for bad, good in (("ьза", "ьев"), ("ое", "ов"), ("ее", "ев"),
+    for bad, good in (("евыч", "евич"), ("овыч", "ович"), ("фьга", "фьев"),
+                      ("ьза", "ьев"), ("ое", "ов"), ("ее", "ев"),
                       ("еа", "ев"), ("зв", "ев"), ("ес", "ев")):
         if t.endswith(bad):
             t = t[:-len(bad)] + good
@@ -387,14 +388,18 @@ def fix_surname(s, first_name=""):
     return t
 
 
-def reconcile_names(loads):
-    """Сверяет дубли: один человек часто записан в несколько взлётов.
+def reconcile_names(loads, history=None):
+    """Сверяет дубли и память прошлых прогонов.
 
-    Ошибки распознавания в разных строках разные, поэтому среди вариантов
-    написания выбирается самый частый, при равенстве - распознанный
-    с большей уверенностью. Строки, совпавшие со списком стаффа,
-    считаются эталонными.
+    Один человек часто записан в несколько взлётов, а окно RMS дрейфует,
+    поэтому ошибки распознавания в разных строках и в разных прогонах
+    разные - правильное же написание всегда одно. Побеждает вариант
+    с наибольшим весом: вхождения в текущем кадре весят по 2, накопленные
+    прошлыми прогонами (history) - по 1 (с потолком 20, чтобы память
+    не становилась неисправимой), совпадение со стаффом - решает сразу.
+    При равенстве выбирается распознанный с большей уверенностью.
     """
+    history = history or {}
     entries = []
     for li, l in enumerate(loads):
         for ri, r in enumerate(l["rows"]):
@@ -421,17 +426,49 @@ def reconcile_names(loads):
             if r >= 0.75:
                 cluster.append(entries[b])
                 used[b] = True
-        if len(cluster) < 2:
-            continue
-        variants = {}
+
+        first = cluster[0][3]
+        weights, confs = {}, {}
         for e in cluster:
-            v = variants.setdefault(e[2], [0, 0.0])
-            v[0] += 1
-            v[1] = max(v[1], e[4])
-        best = max(variants, key=lambda k: (variants[k][0], variants[k][1]))
+            weights[e[2]] = weights.get(e[2], 0.0) + (1000.0 if e[4] >= 200 else 2.0)
+            confs[e[2]] = max(confs.get(e[2], 0.0), e[4])
+        for key, cnt in history.items():
+            ksur, _, kfirst = key.partition(" ")
+            if kfirst != first:
+                continue
+            r = difflib.SequenceMatcher(
+                None, ksur.lower(), cluster[0][2].lower()).ratio()
+            if r >= 0.75:
+                weights[ksur] = weights.get(ksur, 0.0) + min(float(cnt), 20.0)
+                confs.setdefault(ksur, 0.0)
+        if len(weights) < 2:
+            continue
+        best = max(weights, key=lambda k: (weights[k], confs[k]))
         for e in cluster:
             if e[2] != best:
                 loads[e[0]]["rows"][e[1]]["name"] = best + " " + e[3]
+
+
+def update_history(history, loads):
+    """Копит счётчик написаний между прогонами и потихоньку забывает.
+
+    Затухание нужно, чтобы разовые ошибки и уехавшие люди со временем
+    исчезали, а потолок - чтобы даже устойчивая ошибка статичного кадра
+    не могла стать неисправимой.
+    """
+    for l in loads:
+        for r in l["rows"]:
+            n = r["name"]
+            if not n or n.startswith("КВОРУМ") or n == "(Вып.)":
+                continue
+            if len(n.split()) == 2:
+                history[n] = min(float(history.get(n, 0)) + 1.0, 50.0)
+    out = {}
+    for k, v in history.items():
+        v = round(float(v) * 0.98, 2)
+        if v >= 0.5:
+            out[k] = v
+    return out
 
 
 def normalize_name(name):
@@ -713,6 +750,15 @@ def main():
     src = sys.argv[1] if len(sys.argv) > 1 else "board.png"
     dst = sys.argv[2] if len(sys.argv) > 2 else "board.json"
     dbg = sys.argv[3] if len(sys.argv) > 3 else None
+    hist_path = sys.argv[4] if len(sys.argv) > 4 else None
+
+    history = {}
+    if hist_path and os.path.exists(hist_path):
+        try:
+            with open(hist_path, encoding="utf-8") as f:
+                history = {str(k): float(v) for k, v in json.load(f).items()}
+        except Exception as e:
+            sys.stderr.write("history load error: %s\n" % e)
 
     im = Image.open(src).convert("RGB")
     arr = np.array(im).astype(int)
@@ -837,10 +883,15 @@ def main():
         if load["rows"] or load["free_from"]:
             result["loads"].append(load)
 
-    reconcile_names(result["loads"])
+    reconcile_names(result["loads"], history)
     for l in result["loads"]:
         for r0 in l["rows"]:
             r0.pop("_conf", None)
+
+    if hist_path:
+        history = update_history(history, result["loads"])
+        with open(hist_path, "w", encoding="utf-8") as f:
+            json.dump(history, f, ensure_ascii=False, indent=1)
 
     os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
     with open(dst, "w", encoding="utf-8") as f:
