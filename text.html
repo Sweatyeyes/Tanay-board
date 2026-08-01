@@ -6,22 +6,39 @@
 <title>Табло — текст</title>
 <style>
   body { margin:0; background:#111; color:#eee; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; padding:12px; }
-  .top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
-  .clock { font-size:17px; font-weight:500; }
-  .until { font-size:14px; color:#EF9F27; }
-  .load { background:#1c1c1c; border-radius:8px; padding:10px 12px; margin-bottom:10px; }
-  .load h2 { margin:0 0 8px; font-size:16px; font-weight:500; color:#5DCAA5; display:flex; justify-content:space-between; align-items:baseline; }
-  .count { font-size:12px; color:#888; font-weight:400; }
-  .row { display:flex; gap:8px; padding:4px 0; border-bottom:1px solid #2a2a2a; font-size:14px; }
+  .top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
+  .clock { font-size:20px; font-weight:600; }
+  .until { font-size:15px; color:#EF9F27; }
+  .legend { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .legend .hint { font-size:13px; color:#888; }
+  .legend .hint b { color:#FFC94D; font-weight:600; }
+  .toggle-all { background:#242424; color:#aaa; border:1px solid #333; border-radius:6px;
+                padding:6px 12px; font-size:13px; cursor:pointer; }
+  .toggle-all:active { background:#2e2e2e; }
+  .msg { background:#3a1212; color:#FF8A80; border-radius:8px; padding:10px 12px; margin-bottom:10px; font-size:16px; font-weight:600; }
+  .stale { background:#3a2a12; color:#EF9F27; border-radius:8px; padding:10px 12px; margin-bottom:10px; font-size:14px; }
+  .load { background:#1c1c1c; border-radius:8px; margin-bottom:10px; overflow:hidden; }
+  .load h2 { margin:0; padding:12px; font-size:18px; font-weight:600; color:#5DCAA5;
+             display:flex; align-items:baseline; gap:8px; cursor:pointer; user-select:none;
+             -webkit-tap-highlight-color:transparent; }
+  .load h2 .chev { color:#666; font-size:13px; transition:transform .15s; flex:none; transform:rotate(90deg); }
+  .load.closed h2 .chev { transform:rotate(0deg); }
+  .load h2 .t { flex:1; }
+  .count { font-size:13px; color:#888; font-weight:400; flex:none; }
+  .body { padding:0 12px 10px; }
+  .load.closed .body { display:none; }
+  .row { display:flex; gap:10px; padding:6px 0; border-bottom:1px solid #2a2a2a; font-size:17px; align-items:baseline; }
   .row:last-child { border-bottom:none; }
-  .num { color:#5F5E5A; width:22px; flex:none; }
+  .num { color:#5F5E5A; width:26px; flex:none; font-size:15px; }
   .name { flex:1; }
-  .cat { color:#85B7EB; flex:none; }
+  .staff .name { color:#FFC94D; font-weight:600; }
+  .staff .name::before { content:"● "; font-size:11px; vertical-align:2px; }
+  .service .name, .service .cat { color:#777; }
+  .cat { color:#85B7EB; flex:none; font-size:15px; }
   .free { color:#97C459; }
-  .note { color:#888; font-size:14px; line-height:1.6; padding:20px 4px; }
+  .note { color:#888; font-size:15px; line-height:1.6; padding:20px 4px; }
   a.switch { display:block; text-align:center; color:#666; font-size:13px; text-decoration:none; padding:14px; }
   a.switch:hover { color:#aaa; }
-  .stale { background:#3a2a12; color:#EF9F27; border-radius:8px; padding:10px 12px; margin-bottom:10px; font-size:14px; }
 </style>
 </head>
 <body>
@@ -32,43 +49,98 @@
   var MAX_AGE_MS = 10 * 60 * 1000;
   var app = document.getElementById('app');
 
+  // какие взлёты свёрнуты - переживает и перерисовку, и перезагрузку страницы
+  var collapsed = {};
+  try { collapsed = JSON.parse(localStorage.getItem('tanay_collapsed') || '{}'); } catch (e) {}
+  function saveCollapsed() {
+    try { localStorage.setItem('tanay_collapsed', JSON.stringify(collapsed)); } catch (e) {}
+  }
+
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];
     });
   }
 
+  function isService(r) {
+    var n = String(r.name || '');
+    return n.indexOf('КВОРУМ') === 0 || n === '(Вып.)';
+  }
+
   function render(d) {
     var html = '';
     html += '<div class="top"><span class="clock">' + esc(d.clock || '') + '</span>';
-    if (d.work_until) html += '<span class="until">до ' + esc(d.work_until) + '</span>';
+    if (d.work_until) html += '<span class="until">' + esc(d.work_until) + '</span>';
     html += '</div>';
 
+    var loads = d.loads || [];
+    var anyStaff = loads.some(function(L){ return (L.rows||[]).some(function(r){ return r.staff; }); });
+    html += '<div class="legend"><span class="hint">' + (anyStaff ? '<b>●</b> — стафф' : '') + '</span>';
+    if (loads.length) {
+      var allClosed = loads.every(function(_, i){ return collapsed[i]; });
+      html += '<button class="toggle-all" id="toggleAll">' + (allClosed ? 'Развернуть все' : 'Свернуть все') + '</button>';
+    }
+    html += '</div>';
+
+    if (d.status === 'no_board') {
+      html += '<div class="stale">Табло сейчас не транслируется — на экране заставка подключения. Обычно это ненадолго.</div>';
+    }
     if (d.updated) {
       var age = Date.now() - new Date(d.updated).getTime();
       if (age > MAX_AGE_MS) html += '<div class="stale">Данные не обновлялись более 10 минут</div>';
     }
+    if (d.message) html += '<div class="msg">' + esc(d.message) + '</div>';
 
-    var loads = d.loads || [];
-    if (!loads.length) html += '<div class="note">Пока никого не записано.</div>';
+    if (!loads.length && d.status !== 'no_board') html += '<div class="note">Пока никого не записано.</div>';
 
     for (var i = 0; i < loads.length; i++) {
       var L = loads[i], rows = L.rows || [];
-      html += '<div class="load"><h2>' + esc(L.title || ('взлёт ' + (i+1)));
+      var closed = collapsed[i] ? ' closed' : '';
+      html += '<div class="load' + closed + '" data-i="' + i + '">';
+      html += '<h2><span class="chev">▶</span><span class="t">' + esc(L.title || ('взлёт ' + (i+1))) + '</span>';
       html += '<span class="count">' + rows.length + (L.capacity ? ' / ' + L.capacity : '') + '</span></h2>';
+      html += '<div class="body">';
       for (var j = 0; j < rows.length; j++) {
-        html += '<div class="row"><span class="num">' + esc(rows[j].n) + '</span>'
-             +  '<span class="name">' + esc(rows[j].name) + '</span>'
-             +  '<span class="cat">' + esc(rows[j].cat) + '</span></div>';
+        var r = rows[j];
+        var cls = 'row' + (r.staff ? ' staff' : '') + (isService(r) ? ' service' : '');
+        html += '<div class="' + cls + '"><span class="num">' + esc(r.n) + '</span>'
+             +  '<span class="name">' + esc(r.name) + '</span>'
+             +  '<span class="cat">' + esc(r.cat) + '</span></div>';
       }
       if (L.free_from) {
         html += '<div class="row"><span class="num free">' + esc(L.free_from) + '</span>'
              +  '<span class="name free">свободно</span></div>';
       }
-      html += '</div>';
+      html += '</div></div>';
     }
     app.innerHTML = html;
   }
+
+  // один обработчик на контейнер - переживает перерисовки
+  app.addEventListener('click', function(e) {
+    var btn = e.target.closest ? e.target.closest('#toggleAll') : null;
+    if (btn) {
+      var blocks = app.querySelectorAll('.load');
+      var allClosed = true;
+      blocks.forEach(function(b){ if (!b.classList.contains('closed')) allClosed = false; });
+      blocks.forEach(function(b){
+        var i = b.getAttribute('data-i');
+        if (allClosed) { b.classList.remove('closed'); delete collapsed[i]; }
+        else { b.classList.add('closed'); collapsed[i] = 1; }
+      });
+      btn.textContent = allClosed ? 'Свернуть все' : 'Развернуть все';
+      saveCollapsed();
+      return;
+    }
+    var h = e.target.closest ? e.target.closest('.load h2') : null;
+    if (h) {
+      var block = h.parentNode;
+      var i = block.getAttribute('data-i');
+      if (block.classList.toggle('closed')) collapsed[i] = 1;
+      else delete collapsed[i];
+      saveCollapsed();
+    }
+  });
 
   function tick() {
     fetch(JSON_URL + '?t=' + Date.now(), { cache: 'no-store' })
