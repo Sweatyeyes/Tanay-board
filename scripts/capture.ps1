@@ -2,6 +2,7 @@
 # ASCII only.
 
 $DataPath  = "C:\Tanay-data"
+$CodePath  = "C:\Tanay-board"
 $ImageName = "board.png"
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -16,6 +17,19 @@ $g.Dispose()
 $bmp.Dispose()
 
 (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") | Out-File -FilePath (Join-Path $DataPath "last_update.txt") -Encoding ascii
+
+# ---- keep the workflow file inside the data branch ----
+# Every push then triggers recognition on Actions. The cron schedule on
+# free Actions actually fires only once in a few hours, so this push
+# trigger is the reliable path.
+try {
+  $wfSrc = Join-Path $CodePath "scripts\ocr-data.yml"
+  $wfDir = Join-Path $DataPath ".github\workflows"
+  if (Test-Path $wfSrc) {
+    if (-not (Test-Path $wfDir)) { New-Item -ItemType Directory -Force -Path $wfDir | Out-Null }
+    Copy-Item $wfSrc (Join-Path $wfDir "ocr.yml") -Force
+  }
+} catch { }
 
 # ---- window report ----
 try {
