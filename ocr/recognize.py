@@ -10,11 +10,12 @@
 
 import json
 import os
+import re
 import sys
 import difflib
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 import pytesseract
 
 # Положение таблицы не задаётся числами: окно RMS съезжает между снимками,
@@ -38,7 +39,8 @@ TESS_MIX = "--oem 1 --psm 7 -l rus+eng"
 SAMPLES = []   # образцы ячеек для отладочной картинки
 
 
-def prep(img, invert=True, scale=4, threshold=110, margin=16):
+def prep(img, invert=True, scale=4, threshold=110, margin=16,
+         hline_thr=0.85, smooth=False):
     """Готовит картинку к распознаванию.
 
     Фон определяется автоматически (самый частый цвет), текстом считается всё,
@@ -47,6 +49,15 @@ def prep(img, invert=True, scale=4, threshold=110, margin=16):
 
     Дальше: обрезка по основной полосе текста (чтобы выбросить линии-разделители),
     увеличение и белые поля - Tesseract заметно точнее, когда текст не у края.
+
+    hline_thr - порог стирания горизонтальных линий (доля ширины кадра).
+    Обычно 0.85, но у надписей в рамке (например "Работа до ...") рамка
+    занимает меньше половины ширины кадра и порог 0.85 её не берёт -
+    тогда ocr() повторяет попытку с порогом пониже.
+
+    smooth - сгладить ступеньки после увеличения. Жирный блочный шрифт после
+    резкого увеличения иногда читается хуже, чем слегка размытый; какой вариант
+    лучше - решается по уверенности Tesseract (см. ocr_best).
     """
     rgb = np.array(img.convert("RGB")).astype(int)
     flat = rgb.reshape(-1, 3)
@@ -66,7 +77,7 @@ def prep(img, invert=True, scale=4, threshold=110, margin=16):
     dark = b < 128
     row_has = dark.sum(axis=1)
     for y in range(h):
-        if row_has[y] > w * 0.85:
+        if row_has[y] > w * hline_thr:
             b[y, :] = 255
 
     # Оставляем только основную полосу с текстом. Строки-разделители и обрывки
@@ -107,18 +118,93 @@ def prep(img, invert=True, scale=4, threshold=110, margin=16):
 
     canvas = Image.new("L", (out.width + margin * 2, out.height + margin * 2), 255)
     canvas.paste(out, (margin, margin))
+    if smooth:
+        canvas = canvas.filter(ImageFilter.GaussianBlur(radius=scale * 0.5))
     return canvas
 
 
 def ocr(img, cfg=TESS_RU, invert=True, scale=4):
-    """Распознаёт одну строку текста."""
+    """Распознаёт одну строку текста.
+
+    Если первая попытка дала пустоту, пробует ещё раз с агрессивным
+    стиранием горизонтальных линий - выручает надписи в рамке.
+    """
     if img.width < 3 or img.height < 3:
         return ""
     try:
-        return pytesseract.image_to_string(prep(img, invert, scale), config=cfg).strip()
+        text = pytesseract.image_to_string(
+            prep(img, invert, scale), config=cfg).strip()
+        if not text:
+            text = pytesseract.image_to_string(
+                prep(img, invert, scale, hline_thr=0.4), config=cfg).strip()
+        return text
     except Exception as e:
         sys.stderr.write("ocr error: %s\n" % e)
         return ""
+
+
+def ocr_with_conf(img, cfg):
+    """Распознаёт и возвращает (текст, средняя уверенность)."""
+    try:
+        data = pytesseract.image_to_data(
+            img, config=cfg, output_type=pytesseract.Output.DICT)
+    except Exception as e:
+        sys.stderr.write("ocr error: %s\n" % e)
+        return "", -1.0
+    words, confs = [], []
+    for txt, c in zip(data.get("text", []), data.get("conf", [])):
+        t = (txt or "").strip()
+        try:
+            c = float(c)
+        except (TypeError, ValueError):
+            c = -1.0
+        if t and c >= 0:
+            words.append(t)
+            confs.append(c)
+    if not words:
+        return "", -1.0
+    return " ".join(words), sum(confs) / len(confs)
+
+
+def ocr_best(img, cfg=TESS_RU):
+    """Распознаёт двумя вариантами препроцессинга, берёт более уверенный.
+
+    Резкое увеличение оставляет ступеньки на жирном шрифте, из-за них
+    Tesseract путает похожие буквы (е-а, и-ы). Сглаженный вариант иногда
+    читается лучше, иногда хуже - решает уверенность самого Tesseract.
+    """
+    if img.width < 3 or img.height < 3:
+        return ""
+    best_text, best_conf = "", -1.0
+    for smooth in (False, True):
+        text, conf = ocr_with_conf(prep(img, smooth=smooth), cfg)
+        if conf > best_conf and text:
+            best_text, best_conf = text, conf
+    if not best_text:
+        best_text = ocr(img, cfg=cfg)
+    return best_text
+
+
+def normalize_name(name):
+    """Подгоняет служебные строки к каноническому виду.
+
+    "КВОРУМ DZ", "КВОРУМ DZ 1"... Латинское "DZ" при распознавании с -l rus
+    превращается в "02"/"ОХ" и т.п., а "К" - в "И". Поэтому: первое слово
+    похоже на КВОРУМ - строка переписывается как "КВОРУМ DZ" плюс номер,
+    если последнее слово - одиночная цифра.
+    """
+    t = (name or "").strip()
+    if not t:
+        return t
+    parts = t.split()
+    ratio = difflib.SequenceMatcher(None, parts[0].upper(), "КВОРУМ").ratio()
+    if ratio >= 0.7:
+        num = ""
+        rest = parts[1:]
+        if rest and re.fullmatch(r"[1-9]", rest[-1]):
+            num = " " + rest[-1]
+        return "КВОРУМ DZ" + num
+    return t
 
 
 def snap_category(text):
@@ -126,8 +212,33 @@ def snap_category(text):
     t = (text or "").strip()
     if not t:
         return ""
+    if "?" in t:
+        return "???"
     m = difflib.get_close_matches(t, KNOWN_CATS, n=1, cutoff=0.6)
     return m[0] if m else t
+
+
+def pick_category(raw_rus, raw_mix, is_service):
+    """Выбирает категорию из двух прогонов распознавания.
+
+    rus+eng на кириллических категориях иногда галлюцинирует латиницей
+    ("COMBA" вместо "Спортивный"), поэтому категория распознаётся дважды:
+    чистым rus и rus+eng. Побеждает тот результат, который подогнался
+    к списку известных категорий.
+    """
+    for raw in (raw_rus, raw_mix):
+        if "?" in (raw or ""):
+            return "???"
+    s_rus = snap_category(raw_rus)
+    s_mix = snap_category(raw_mix)
+    if s_rus in KNOWN_CATS:
+        return s_rus
+    if s_mix in KNOWN_CATS:
+        return s_mix
+    # у служебных строк на табло всегда "???"
+    if is_service:
+        return "???"
+    return s_mix or s_rus
 
 
 def not_background(arr):
@@ -339,17 +450,22 @@ def main():
             cx1 = x0 + int(pw * COL_CAT[1])
 
             name_cell = im.crop((nx0, ty0, nx1, ty1))
-            name = ocr(name_cell)
-            cat_raw = ocr(im.crop((cx0, ty0, cx1, ty1)), cfg=TESS_MIX)
+            name = normalize_name(ocr_best(name_cell).replace("|", "").strip())
+            is_service = name.startswith("КВОРУМ")
+
+            cat_cell = im.crop((cx0, ty0, cx1, ty1))
+            cat_raw_rus = ocr(cat_cell, cfg=TESS_RU)
+            cat_raw_mix = ocr(cat_cell, cfg=TESS_MIX)
+            cat = pick_category(cat_raw_rus, cat_raw_mix, is_service)
 
             # копим образцы того, что видит распознаватель
             if len(SAMPLES) < 12:
                 SAMPLES.append((name_cell.copy(), prep(name_cell)))
             load["rows"].append({
                 "n": r + 1,
-                "name": name.replace("|", "").strip(),
-                "cat": snap_category(cat_raw),
-                "cat_raw": cat_raw,
+                "name": name,
+                "cat": cat,
+                "cat_raw": cat_raw_mix or cat_raw_rus,
             })
 
         if load["rows"] or load["free_from"]:
