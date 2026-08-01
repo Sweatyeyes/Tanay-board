@@ -27,16 +27,46 @@ COL_NAME = (0.086, 0.759)
 COL_CAT  = (0.762, 0.991)
 
 # известные категории - результат распознавания подгоняется к ближайшей.
-# AFF бывает уровней 1-7 плюс отдельный "AFF 8-1".
+# AFF бывает уровней 1-7 плюс дефисные "AFF 8-1" и "AFF 8-2".
 KNOWN_CATS = [
     "Спортивный", "ФВ",
-    "AFF 1", "AFF 2", "AFF 3", "AFF 4", "AFF 5", "AFF 6", "AFF 7", "AFF 8-1",
-    "TM4000 90", "TM4000 100", "TM4000 120",
-    "TM3000 90", "TM3000 100", "TM3000 120",
+    "AFF 1", "AFF 2", "AFF 3", "AFF 4", "AFF 5", "AFF 6", "AFF 7",
+    "AFF 8-1", "AFF 8-2",
+    "ХК ТМ3 90", "ХК ТМ4 90",
+    "ТМ4000 90", "ТМ4000 100", "ТМ4000 120",
+    "ТМ3000 90", "ТМ3000 100", "ТМ3000 120",
 ]
+
+# латинские двойники кириллицы + частые ошибки распознавания цифр:
+# S - это криво прочитанная 3, $ - это 9
+LAT2CYR = str.maketrans({
+    "A": "А", "B": "В", "C": "С", "E": "Е", "H": "Н", "K": "К", "M": "М",
+    "O": "О", "P": "Р", "T": "Т", "X": "Х", "Y": "У", "S": "3", "$": "9",
+})
+
+# буквы, неотличимые от цифр на этом шрифте, приводим к цифрам.
+# Применяется и к распознанному, и к эталонам (см. CAT_CANON ниже),
+# поэтому сравнение остаётся честным.
+CYR2DIGIT = str.maketrans({
+    "О": "0", "З": "3", "Б": "6", "В": "8", "Ч": "4", "І": "1",
+})
+
+
+def canon_cat(text):
+    """Сжимает категорию до канонического вида для сравнения."""
+    t = (text or "").upper().translate(LAT2CYR).translate(CYR2DIGIT)
+    return re.sub(r"[^А-ЯЁ0-9]", "", t)
+
+
+# те же категории в каноническом виде - для сравнения с распознанным,
+# у которого пробелы и похожие буквы гуляют как попало.
+# AFF-категории сюда не входят: у них отдельный разбор по буквам.
+CAT_CANON = {canon_cat(c): c for c in KNOWN_CATS if not c.startswith("AFF")}
+CAT_CANON["ФЕ"] = "ФВ"   # Е вместо В - частая ошибка на этом шрифте
 
 TESS_RU = "--oem 1 --psm 7 -l rus"
 TESS_MIX = "--oem 1 --psm 7 -l rus+eng"
+TESS_MIX8 = "--oem 1 --psm 8 -l rus+eng"
 
 SAMPLES = []   # образцы ячеек для отладочной картинки
 
@@ -172,14 +202,16 @@ def ocr_best(img, cfg=TESS_RU):
     """Распознаёт двумя вариантами препроцессинга, берёт более уверенный.
 
     Резкое увеличение оставляет ступеньки на жирном шрифте, из-за них
-    Tesseract путает похожие буквы (е-а, и-ы). Сглаженный вариант иногда
-    читается лучше, иногда хуже - решает уверенность самого Tesseract.
+    Tesseract путает похожие буквы (е-а, и-ы). Сглаживание убирает ступеньки,
+    а увеличение x6 против x4 в замерах на живых снимках дало ещё несколько
+    процентов точности. Между двумя сглаженными вариантами решает
+    уверенность самого Tesseract.
     """
     if img.width < 3 or img.height < 3:
         return ""
     best_text, best_conf = "", -1.0
-    for smooth in (False, True):
-        text, conf = ocr_with_conf(prep(img, smooth=smooth), cfg)
+    for scale in (6, 4):
+        text, conf = ocr_with_conf(prep(img, scale=scale, smooth=True), cfg)
         if conf > best_conf and text:
             best_text, best_conf = text, conf
     if not best_text:
@@ -190,42 +222,82 @@ def ocr_best(img, cfg=TESS_RU):
 # Имена и отчества - закрытые словари, распознанное подгоняется к ближайшему.
 # Фамилии не трогаем: их список открытый, а уведомления всё равно сверяют
 # фамилию с допуском на ошибки распознавания.
-FIRST_NAMES = [
-    "Александр", "Алексей", "Анатолий", "Андрей", "Антон", "Аркадий",
-    "Арсений", "Артём", "Артем", "Борис", "Вадим", "Валентин", "Валерий",
-    "Василий", "Виктор", "Виталий", "Владимир", "Владислав", "Вячеслав",
-    "Геннадий", "Георгий", "Глеб", "Григорий", "Даниил", "Данил", "Денис",
-    "Дмитрий", "Евгений", "Егор", "Иван", "Игорь", "Илья", "Кирилл",
-    "Константин", "Лев", "Леонид", "Максим", "Марк", "Матвей", "Михаил",
-    "Никита", "Николай", "Олег", "Павел", "Пётр", "Петр", "Роман", "Руслан",
-    "Семён", "Семен", "Сергей", "Станислав", "Степан", "Тимофей", "Тимур",
-    "Фёдор", "Федор", "Эдуард", "Юрий", "Ярослав",
-    "Александра", "Алина", "Алла", "Анастасия", "Анна", "Валентина",
-    "Валерия", "Вера", "Вероника", "Виктория", "Галина", "Дарья", "Диана",
-    "Евгения", "Екатерина", "Елена", "Елизавета", "Жанна", "Инна", "Ирина",
-    "Карина", "Кристина", "Ксения", "Лариса", "Лидия", "Любовь", "Людмила",
-    "Маргарита", "Марина", "Мария", "Надежда", "Наталья", "Наталия", "Нина",
-    "Оксана", "Ольга", "Полина", "Светлана", "Софья", "София", "Татьяна",
+MALE_NAMES = [
+    "Александр", "Алексей", "Альберт", "Анатолий", "Андрей", "Антон",
+    "Аркадий", "Арсений", "Артём", "Артем", "Артур", "Богдан", "Борис",
+    "Вадим", "Валентин", "Валерий", "Василий", "Виктор", "Виталий",
+    "Владимир", "Владислав", "Всеволод", "Вячеслав", "Геннадий", "Георгий",
+    "Герман", "Глеб", "Григорий", "Давид", "Дамир", "Даниил", "Данил",
+    "Данила", "Денис", "Дмитрий", "Евгений", "Егор", "Иван", "Игорь",
+    "Ильдар", "Илья", "Камиль", "Кирилл", "Константин", "Лев", "Леонид",
+    "Максим", "Марат", "Марк", "Матвей", "Михаил", "Никита", "Николай",
+    "Олег", "Павел", "Пётр", "Петр", "Равиль", "Рамиль", "Ренат", "Ринат",
+    "Роберт", "Родион", "Роман", "Руслан", "Рустам", "Савелий", "Семён",
+    "Семен", "Сергей", "Станислав", "Степан", "Тарас", "Тимофей", "Тимур",
+    "Фёдор", "Федор", "Эдуард", "Эмиль", "Юрий", "Ян", "Ярослав",
+]
+
+FEMALE_NAMES = [
+    "Аделина", "Александра", "Алина", "Алла", "Анастасия", "Анна", "Арина",
+    "Валентина", "Валерия", "Варвара", "Вера", "Вероника", "Виктория",
+    "Галина", "Дарья", "Диана", "Евгения", "Екатерина", "Елена", "Елизавета",
+    "Жанна", "Инна", "Ирина", "Карина", "Кристина", "Ксения", "Лариса",
+    "Лидия", "Любовь", "Людмила", "Маргарита", "Марина", "Мария", "Милана",
+    "Надежда", "Наталья", "Наталия", "Нина", "Оксана", "Ольга", "Полина",
+    "Светлана", "Софья", "София", "Тамара", "Татьяна", "Ульяна", "Эльвира",
     "Юлия", "Яна",
 ]
 
-def fix_token(token, vocab, cutoff=0.66):
-    """Подгоняет слово к ближайшему из словаря.
+FIRST_NAMES = MALE_NAMES + FEMALE_NAMES
 
-    Обрезанные многоточием слова ("Александро...") не трогаем - на экране
-    нет их полного варианта, и подгонять не к чему.
+
+def guess_gender(surname, patronymic=""):
+    """Пол по отчеству (надёжнее), иначе по окончанию фамилии.
+
+    None - не определить (Сорока, Памятных без отчества).
+    """
+    p = (patronymic or "").lower().rstrip(".…")
+    if p.endswith(("ич", "ыч")) or (len(p) > 5 and p.endswith("ч")):
+        return "m"
+    if p.endswith(("вна", "чна", "шна")):
+        return "f"
+    s = (surname or "").lower()
+    if s.endswith(("ова", "ева", "ёва", "ина", "ына", "ая", "яя", "ская")):
+        return "f"
+    if s.endswith(("ов", "ев", "ёв", "ин", "ын", "ий", "ый", "ский")):
+        return "m"
+    return None
+
+
+def fix_first_name(token, surname, patronymic=""):
+    """Подгоняет имя к словарю с учётом пола (по отчеству или фамилии).
+
+    Ловит случаи вида "Гольцов Евгения": распозналось женское имя, но
+    человек мужского пола - предпочитаем близкий мужской вариант (Евгений).
+    Или "Памятных Нинат Сергеевич": фамилия пол не выдаёт, а отчество - да,
+    и вместо ближайшей "Нины" побеждает "Ринат".
     """
     t = (token or "").strip()
     if not t or "." in t or "…" in t or len(t) < 3:
         return token
-    m = difflib.get_close_matches(t, vocab, n=1, cutoff=cutoff)
-    return m[0] if m else token
+    cands = difflib.get_close_matches(t, FIRST_NAMES, n=3, cutoff=0.66)
+    if not cands:
+        return token
+    g = guess_gender(surname, patronymic)
+    if g:
+        pool = MALE_NAMES if g == "m" else FEMALE_NAMES
+        best_r = difflib.SequenceMatcher(None, t, cands[0]).ratio()
+        for c in cands:
+            if c in pool:
+                r = difflib.SequenceMatcher(None, t, c).ratio()
+                if r >= best_r - 0.15:
+                    return c
+    return cands[0]
 
-
-# "AFF" при распознавании кириллицей превращается в "АРЕ", "АГТ" и т.п.:
+# "AFF" при распознавании кириллицей превращается в "АРЕ", "ВЕЕ" и т.п.:
 # буква F не входит в алфавит и заменяется похожей по начертанию.
 # "АФФ" на табло - легальная отдельная пометка, Ф в набор не входит.
-AFF_A = "AАД"
+AFF_A = "AАДВ"
 AFF_F = "FРЕГТ"
 
 
@@ -253,9 +325,9 @@ def normalize_name(name):
     ratio = difflib.SequenceMatcher(None, parts[0].upper(), "КВОРУМ").ratio()
     if ratio >= 0.7:
         rest = "".join(parts[1:])
-        # отрезаем само "DZ" в любом прочтении, остаток - номер
+        # отрезаем само "DZ" в любом прочтении, остаток - номер (бывает 10+)
         rest = re.sub(r"^[DOОdoо0][Zz2Хх7]", "", rest)
-        m = re.search(r"([1-9])$", rest)
+        m = re.search(r"([1-9][0-9]?)$", rest)
         return "КВОРУМ DZ" + (" " + m.group(1) if m else "")
 
     core = re.sub(r"[^\w]", "", t, flags=re.UNICODE).lower()
@@ -263,7 +335,8 @@ def normalize_name(name):
         return "(Вып.)"
 
     if len(parts) >= 2:
-        parts[1] = fix_token(parts[1], FIRST_NAMES)
+        patronymic = parts[2] if len(parts) >= 3 else ""
+        parts[1] = fix_first_name(parts[1], parts[0], patronymic)
     return " ".join(parts[:2])
 
 
@@ -278,7 +351,12 @@ def normalize_category(text):
 
     AFF-категории разбираются по буквам: цифры восстанавливаются из похожих
     букв, а не подгоняются фуззи-матчем - иначе "AFF ТГ" превращался
-    в "AFF 8" вместо "AFF 7". Остальное подгоняется к списку известных.
+    в "AFF 8" вместо "AFF 7". Дефисные уровни всегда начинаются с 8
+    (бывают 8-1 и 8-2), а первая цифра дефисного часто читается криво.
+
+    Остальное сжимается до канонического вида (без пробелов, латиница
+    приведена к кириллице) и подгоняется к списку известных - так
+    "АК TMS 30" находит "ХК ТМ3 90", а "ХК TM4 90" не гнётся в "ТМ4000 90".
     """
     t = (text or "").strip()
     if not t:
@@ -296,37 +374,85 @@ def normalize_category(text):
     if aff is not None:
         digits = "".join(DIGIT_FIX.get(c, c) for c in aff)
         digits = "".join(c for c in digits if c.isdigit() or c == "-")
-        # дефисный уровень существует только один; "8" без хвоста - тоже он
-        if "-" in digits or digits == "8":
-            digits = "8-1"
+        if "-" in digits:
+            digits = "8-" + digits.split("-")[-1]
         return "AFF " + digits if digits else "AFF"
-    m = difflib.get_close_matches(t, KNOWN_CATS, n=1, cutoff=0.6)
-    return m[0] if m else t
+    c = canon_cat(t)
+    if c in CAT_CANON:
+        return CAT_CANON[c]
+    # коротким обрывкам ("ТО90") нужен строгий порог, иначе они цепляются
+    # к первой попавшейся категории
+    if len(c) >= 2:
+        cutoff = 0.55 if len(c) >= 6 else 0.75
+        m = difflib.get_close_matches(c, list(CAT_CANON), n=1, cutoff=cutoff)
+        if m:
+            return CAT_CANON[m[0]]
+    return t
 
 
-def pick_category(raw_rus, raw_mix, is_service):
-    """Выбирает категорию из двух прогонов распознавания.
+def ocr_category(img):
+    """Распознаёт ячейку категории четырьмя способами, возвращает сырые.
 
-    rus+eng на кириллических категориях иногда галлюцинирует латиницей
-    ("COMBA" вместо "Спортивный"), поэтому категория распознаётся дважды:
-    чистым rus и rus+eng. Побеждает результат, совпавший со списком
-    известных категорий, затем AFF-образный (у rus+eng цифры надёжнее).
+    Разные конфигурации ошибаются по-разному: psm 8 читает целиком там,
+    где psm 7 возвращает пустоту ("Ты 3000 90"), чистый rus не
+    галлюцинирует латиницей на "Спортивный", а сглаженные варианты
+    надёжнее на мелких цифрах. Состав ансамбля подобран замером на живых
+    снимках (47/49 против 36/49 у одиночного прогона). Итог выбирается
+    голосованием в pick_category.
     """
-    for raw in (raw_rus, raw_mix):
-        if "?" in (raw or ""):
+    if img.width < 3 or img.height < 3:
+        return []
+    variants = [
+        (prep(img), TESS_MIX8),
+        (prep(img, smooth=True), TESS_MIX),
+        (prep(img), TESS_RU),
+        (prep(img, scale=6, smooth=True), TESS_MIX),
+    ]
+    raws = []
+    for p, cfg in variants:
+        try:
+            raws.append(pytesseract.image_to_string(p, config=cfg).strip())
+        except Exception as e:
+            sys.stderr.write("ocr error: %s\n" % e)
+            raws.append("")
+    if not any(raws):
+        try:
+            raws.append(pytesseract.image_to_string(
+                prep(img, hline_thr=0.4), config=TESS_MIX8).strip())
+        except Exception:
+            pass
+    return raws
+
+
+def pick_category(raws, is_service):
+    """Выбирает категорию голосованием нескольких прогонов распознавания.
+
+    Сначала побеждает категория из списка известных, набравшая больше
+    голосов (при равенстве - от более надёжной конфигурации). Потом
+    "???", AFF-образные, служебные строки, и только затем сырой текст.
+    """
+    norms = [normalize_category(r) for r in raws]
+    votes = [n for n in norms if n in KNOWN_CATS]
+    if votes:
+        best, best_c = None, 0
+        for n in votes:
+            c = votes.count(n)
+            if c > best_c:
+                best, best_c = n, c
+        return best
+    for src in (norms, raws):
+        if any("?" in (x or "") for x in src):
             return "???"
-    n_rus = normalize_category(raw_rus)
-    n_mix = normalize_category(raw_mix)
-    for n in (n_rus, n_mix):
-        if n in KNOWN_CATS:
-            return n
-    for n in (n_mix, n_rus):
+    for n in norms:
         if n.startswith("AFF"):
             return n
     # у служебных строк на табло всегда "???"
     if is_service:
         return "???"
-    return n_mix or n_rus
+    for n in norms:
+        if n:
+            return n
+    return ""
 
 
 def not_background(arr):
@@ -542,9 +668,9 @@ def main():
             is_service = name.startswith("КВОРУМ") or name == "(Вып.)"
 
             cat_cell = im.crop((cx0, ty0, cx1, ty1))
-            cat_raw_rus = ocr(cat_cell, cfg=TESS_RU)
-            cat_raw_mix = ocr(cat_cell, cfg=TESS_MIX)
-            cat = pick_category(cat_raw_rus, cat_raw_mix, is_service)
+            cat_raws = ocr_category(cat_cell)
+            cat = pick_category(cat_raws, is_service)
+            cat_raw = next((r for r in cat_raws if r), "")
 
             # копим образцы того, что видит распознаватель
             if len(SAMPLES) < 12:
@@ -553,7 +679,7 @@ def main():
                 "n": r + 1,
                 "name": name,
                 "cat": cat,
-                "cat_raw": cat_raw_mix or cat_raw_rus,
+                "cat_raw": cat_raw,
             })
 
         if load["rows"] or load["free_from"]:
