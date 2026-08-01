@@ -811,6 +811,8 @@ def main():
         pw = x1 - x0
         title = ocr(im.crop((max(0, x0 - 10), max(0, top - 26), x1 + 10, top - 3)),
                     cfg=TESS_MIX)
+        # на табло пишут "готов 5 мин." - на странице хотим "готовность"
+        title = re.sub(r"\bготов\b", "готовность", title)
 
         load = {"index": pi + 1, "title": title, "capacity": n_rows,
                 "rows": [], "free_from": None}
