@@ -29,7 +29,7 @@ COL_CAT  = (0.762, 0.991)
 # известные категории - результат распознавания подгоняется к ближайшей.
 # AFF бывает уровней 1-7 плюс дефисные "AFF 8-1" и "AFF 8-2".
 KNOWN_CATS = [
-    "Спортивный", "ФВ",
+    "Спортивный", "ФВ", "Совершенствование",
     "AFF 1", "AFF 2", "AFF 3", "AFF 4", "AFF 5", "AFF 6", "AFF 7",
     "AFF 8-1", "AFF 8-2",
     "ХК ТМ3 90", "ХК ТМ4 90",
@@ -359,7 +359,12 @@ def normalize_name(name):
     t = (name or "").strip()
     if not t:
         return t
-    parts = t.split()
+    # мусорные символы внутри слов ("Сушко@") выбрасываем; точки и дефисы
+    # оставляем - это обрезки и двойные фамилии
+    parts = [re.sub(r"[^0-9A-Za-zА-Яа-яЁё.…-]", "", p) for p in t.split()]
+    parts = [p for p in parts if p]
+    if not parts:
+        return ""
 
     ratio = difflib.SequenceMatcher(None, parts[0].upper(), "КВОРУМ").ratio()
     if ratio >= 0.7:
@@ -713,6 +718,19 @@ def main():
             cat_raws = ocr_category(cat_cell)
             cat = pick_category(cat_raws, is_service)
             cat_raw = next((r for r in cat_raws if r), "")
+            # спасательный проход: если ансамбль дал мусор, пробуем
+            # увеличение x8 - оно вытаскивает совсем мелкие ячейки
+            if cat not in KNOWN_CATS and cat != "???":
+                for scale in (8, 6):
+                    try:
+                        r2 = pytesseract.image_to_string(
+                            prep(cat_cell, scale=scale), config=TESS_MIX8).strip()
+                    except Exception:
+                        continue
+                    n2 = normalize_category(r2)
+                    if n2 in KNOWN_CATS:
+                        cat, cat_raw = n2, r2
+                        break
 
             # копим образцы того, что видит распознаватель
             if len(SAMPLES) < 12:
