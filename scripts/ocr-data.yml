@@ -1,0 +1,65 @@
+# scripts/ocr-data.yml
+# This file lives in MAIN as a template. The laptop copies it into the
+# data branch as .github/workflows/ocr.yml on every push, so every push
+# of a fresh screenshot triggers recognition reliably (the cron schedule
+# on free Actions fires only once in a few hours in practice).
+# ASCII only: the file travels through a Windows 7 machine.
+
+name: OCR board (data push)
+
+on:
+  push:
+    branches: [data]
+
+# No cancel-in-progress: pushes arrive every minute, a run takes longer,
+# and cancelling would mean no run ever finishes. With a shared group
+# GitHub keeps one running plus the newest pending, older ones are skipped.
+concurrency:
+  group: ocr
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  recognize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code (main)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: code
+
+      - name: Checkout image (data)
+        uses: actions/checkout@v4
+        with:
+          ref: data
+          path: data
+
+      - name: Install Tesseract with Russian
+        run: |
+          sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-rus \
+            || (sudo apt-get update -qq && sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-rus)
+
+      - name: Install Python libraries
+        run: pip install --quiet pillow numpy pytesseract
+
+      - name: Recognize
+        run: |
+          mkdir -p out
+          cp data/board.png out/source.png
+          python code/ocr/recognize.py data/board.png out/board.json out/debug.png
+          echo "--- board.json ---"
+          cat out/board.json
+
+      - name: Publish to ocr branch
+        run: |
+          cd out
+          git init -q
+          git config user.name "ocr-bot"
+          git config user.email "ocr-bot@users.noreply.github.com"
+          git checkout -q -b ocr
+          git add -A
+          git commit -q -m "ocr result"
+          git push -q --force "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" ocr
