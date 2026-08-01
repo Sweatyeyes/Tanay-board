@@ -208,7 +208,7 @@ def ocr_best(img, cfg=TESS_RU):
     уверенность самого Tesseract.
     """
     if img.width < 3 or img.height < 3:
-        return ""
+        return "", -1.0
     best_text, best_conf = "", -1.0
     for scale in (6, 4):
         text, conf = ocr_with_conf(prep(img, scale=scale, smooth=True), cfg)
@@ -216,7 +216,7 @@ def ocr_best(img, cfg=TESS_RU):
             best_text, best_conf = text, conf
     if not best_text:
         best_text = ocr(img, cfg=cfg)
-    return best_text
+    return best_text, best_conf
 
 
 # Имена и отчества - закрытые словари, распознанное подгоняется к ближайшему.
@@ -346,6 +346,94 @@ def looks_like_aff(tok):
             and t[1] in AFF_F and t[2] in AFF_F)
 
 
+VOWELS = "аеёиоуыэюя"
+
+
+def fix_surname(s, first_name=""):
+    """Чинит типовые ошибки распознавания в фамилии без словаря.
+
+    Опирается на устройство русского языка, а не на список фамилий:
+    - окончаний "-ое", "-еа", "-зв", "-ес" у фамилий не бывает - это
+      битые "-ов"/"-ев" (Кривощекое, Астафьеа, Соловьзв, Тукачес);
+    - "м" между двумя согласными не встречается - это буква "и",
+      прочитанная как "м" (Вавмлов, Савмна, Кокормн);
+    - "жс", "шы", "жы", "ии" в середине слова тоже артефакты (Ажсенов,
+      Хорошылова, Шиикевич);
+    - женское окончание фамилии при мужском имени - лишняя "а" на конце
+      (Гордова Владислав).
+    """
+    if len(s) < 5 or "." in s or "…" in s:
+        return s
+    t = s
+    for bad, good in (("ьза", "ьев"), ("ое", "ов"), ("ее", "ев"),
+                      ("еа", "ев"), ("зв", "ев"), ("ес", "ев")):
+        if t.endswith(bad):
+            t = t[:-len(bad)] + good
+            break
+    t = t.replace("жс", "кс").replace("пст", "лст")
+    t = t.replace("шы", "ши").replace("жы", "жи")
+    i = t.find("ии", 1)
+    if i != -1 and i + 2 < len(t):
+        t = t[:i + 1] + "н" + t[i + 2:]
+    chars = list(t)
+    for i in range(1, len(chars) - 1):
+        if chars[i] == "м":
+            l, r = chars[i - 1].lower(), chars[i + 1].lower()
+            if l not in VOWELS + "ьъ" and r not in VOWELS + "ьъ":
+                chars[i] = "и"
+    t = "".join(chars)
+    if first_name in MALE_NAMES and re.search(r"(ов|ев|ёв|ин|ын)а$", t):
+        t = t[:-1]
+    return t
+
+
+def reconcile_names(loads):
+    """Сверяет дубли: один человек часто записан в несколько взлётов.
+
+    Ошибки распознавания в разных строках разные, поэтому среди вариантов
+    написания выбирается самый частый, при равенстве - распознанный
+    с большей уверенностью. Строки, совпавшие со списком стаффа,
+    считаются эталонными.
+    """
+    entries = []
+    for li, l in enumerate(loads):
+        for ri, r in enumerate(l["rows"]):
+            n = r["name"]
+            if not n or n.startswith("КВОРУМ") or n == "(Вып.)":
+                continue
+            parts = n.split()
+            if len(parts) != 2:
+                continue
+            conf = 200.0 if r.get("staff") else float(r.get("_conf") or 0.0)
+            entries.append([li, ri, parts[0], parts[1], conf])
+
+    used = [False] * len(entries)
+    for a in range(len(entries)):
+        if used[a]:
+            continue
+        cluster = [entries[a]]
+        used[a] = True
+        for b in range(a + 1, len(entries)):
+            if used[b] or entries[b][3] != entries[a][3]:
+                continue
+            r = difflib.SequenceMatcher(
+                None, entries[b][2].lower(), entries[a][2].lower()).ratio()
+            if r >= 0.75:
+                cluster.append(entries[b])
+                used[b] = True
+        if len(cluster) < 2:
+            continue
+        variants = {}
+        for e in cluster:
+            v = variants.setdefault(e[2], [0, 0.0])
+            v[0] += 1
+            v[1] = max(v[1], e[4])
+        best = max(variants, key=lambda k: (variants[k][0], variants[k][1]))
+        for e in cluster:
+            if e[2] != best:
+                loads[e[0]]["rows"][e[1]]["name"] = best + " " + e[3]
+
+
 def normalize_name(name):
     """Подгоняет распознанную строку к каноническому виду.
 
@@ -381,6 +469,7 @@ def normalize_name(name):
     if len(parts) >= 2:
         patronymic = parts[2] if len(parts) >= 3 else ""
         parts[1] = fix_first_name(parts[1], parts[0], patronymic)
+        parts[0] = fix_surname(parts[0], parts[1])
     return " ".join(parts[:2])
 
 
@@ -708,7 +797,8 @@ def main():
             cx1 = x0 + int(pw * COL_CAT[1])
 
             name_cell = im.crop((nx0, ty0, nx1, ty1))
-            name = normalize_name(ocr_best(name_cell).replace("|", "").strip())
+            name_txt, name_conf = ocr_best(name_cell)
+            name = normalize_name(name_txt.replace("|", "").strip())
             is_service = name.startswith("КВОРУМ") or name == "(Вып.)"
             is_staff = False
             if not is_service:
@@ -741,10 +831,16 @@ def main():
                 "staff": is_staff,
                 "cat": cat,
                 "cat_raw": cat_raw,
+                "_conf": name_conf,
             })
 
         if load["rows"] or load["free_from"]:
             result["loads"].append(load)
+
+    reconcile_names(result["loads"])
+    for l in result["loads"]:
+        for r0 in l["rows"]:
+            r0.pop("_conf", None)
 
     os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
     with open(dst, "w", encoding="utf-8") as f:
