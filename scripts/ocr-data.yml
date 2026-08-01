@@ -37,6 +37,13 @@ jobs:
           ref: data
           path: data
 
+      - name: Checkout previous result (ocr, may not exist yet)
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: ocr
+          path: prev
+
       - name: Install Tesseract with Russian
         run: |
           sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-rus \
@@ -49,7 +56,8 @@ jobs:
         run: |
           mkdir -p out
           cp data/board.png out/source.png
-          python code/ocr/recognize.py data/board.png out/board.json out/debug.png
+          cp prev/history.json out/history.json 2>/dev/null || true
+          python code/ocr/recognize.py data/board.png out/board.json out/debug.png out/history.json
           echo "--- board.json ---"
           cat out/board.json
 
