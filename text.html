@@ -9,24 +9,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Russo+One&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg:#060b18; --ink:#1b1433; --line:rgba(255,255,255,.16); --line2:rgba(255,255,255,.09);
-    --card:rgba(255,255,255,.055); --text:#f0f5ff; --mut:#93a3c4;
-    --orange:#E8511A; --orange2:#ff6a2e; --gold:#FFC94D; --blue:#9cc4ff;
-    --green:#97C459; --red:#FF7A70;
+    --line:rgba(255,255,255,.16); --line2:rgba(255,255,255,.12);
+    --card:rgba(10,7,20,.38); --text:#fdf6ef; --mut:rgba(255,255,255,.55);
+    --orange:#E8511A; --orange2:#ff7a4d; --gold:#FFC94D; --blue:#bcd4ff;
+    --green:#c9f08a;
   }
   * { box-sizing:border-box; }
-  body { margin:0; color:var(--text); padding:14px 12px 4px;
-         font-family:'Manrope',-apple-system,"Segoe UI",Roboto,sans-serif;
-         background:#060b18;
-         background-image:
-           radial-gradient(1px 1px at 12% 8%, rgba(255,255,255,.7) 50%, transparent 51%),
-           radial-gradient(1px 1px at 33% 4%, rgba(255,255,255,.5) 50%, transparent 51%),
-           radial-gradient(1px 1px at 58% 11%, rgba(255,255,255,.6) 50%, transparent 51%),
-           radial-gradient(1px 1px at 76% 6%, rgba(255,255,255,.4) 50%, transparent 51%),
-           radial-gradient(2px 2px at 89% 13%, rgba(255,255,255,.5) 50%, transparent 51%),
-           radial-gradient(1px 1px at 21% 17%, rgba(255,255,255,.4) 50%, transparent 51%),
-           linear-gradient(180deg,#060b18 0%,#0c1730 45%,#16294e 100%);
-         background-repeat:no-repeat; background-size:100% 900px; background-attachment:scroll; }
+  body { margin:0; color:var(--text); padding:14px 12px 4px; background:#0a0716;
+         font-family:'Manrope',-apple-system,"Segoe UI",Roboto,sans-serif; }
+  /* закат приколочен к экрану: списки скроллятся, солнце остаётся у горизонта */
+  body::before { content:''; position:fixed; inset:0; z-index:-1;
+    background-image:
+      radial-gradient(1px 1px at 12% 6%, rgba(255,255,255,.7) 50%, transparent 51%),
+      radial-gradient(1px 1px at 33% 3%, rgba(255,255,255,.5) 50%, transparent 51%),
+      radial-gradient(1px 1px at 58% 9%, rgba(255,255,255,.6) 50%, transparent 51%),
+      radial-gradient(1px 1px at 76% 4%, rgba(255,255,255,.4) 50%, transparent 51%),
+      radial-gradient(2px 2px at 89% 11%, rgba(255,255,255,.5) 50%, transparent 51%),
+      radial-gradient(1px 1px at 21% 14%, rgba(255,255,255,.45) 50%, transparent 51%),
+      radial-gradient(1px 1px at 45% 18%, rgba(255,255,255,.35) 50%, transparent 51%),
+      linear-gradient(180deg,#0a0716 0%,#1b1433 34%,#3a1a3f 62%,#7a2b2a 86%,#c2511f 100%);
+  }
 
   .brand { display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
            margin-bottom:16px; }
@@ -40,22 +42,22 @@
 
   .bar-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
   .until { font-family:'Russo One',sans-serif; font-size:12px; letter-spacing:.08em;
-           color:var(--gold); border:1px solid rgba(255,201,77,.35);
-           background:rgba(255,201,77,.07); padding:7px 12px; }
-  .toggle-all { background:transparent; color:var(--mut); border:1px solid var(--line);
+           color:var(--gold); border:1px solid rgba(255,201,77,.4);
+           background:rgba(20,12,8,.35); padding:7px 12px; }
+  .toggle-all { background:rgba(10,7,20,.3); color:var(--mut); border:1px solid var(--line);
                 padding:7px 14px; font-size:12px; font-weight:800; font-family:inherit;
                 letter-spacing:.06em; text-transform:uppercase; cursor:pointer; }
-  .toggle-all:active { background:rgba(255,255,255,.06); }
+  .toggle-all:active { background:rgba(255,255,255,.08); }
 
-  .msg { background:rgba(232,81,26,.12); color:var(--orange2); border:1px solid rgba(232,81,26,.5);
+  .msg { background:rgba(120,20,10,.4); color:#ffb3a6; border:1px solid rgba(255,122,77,.5);
          border-left:4px solid var(--orange); padding:12px 14px; margin-bottom:12px;
          font-size:16px; font-weight:800; }
-  .stale { background:rgba(255,201,77,.07); color:var(--gold); border:1px solid rgba(255,201,77,.3);
+  .stale { background:rgba(60,40,8,.4); color:var(--gold); border:1px solid rgba(255,201,77,.35);
            border-left:4px solid var(--gold); padding:11px 14px; margin-bottom:12px; font-size:14px; }
 
-  .load { background:var(--card); border:1px solid var(--line2); border-left:4px solid var(--orange);
-          margin-bottom:12px; overflow:hidden; backdrop-filter:blur(8px);
-          -webkit-backdrop-filter:blur(8px); }
+  .load { background:var(--card); border:1px solid var(--line2); border-left:4px solid var(--gold);
+          margin-bottom:12px; overflow:hidden; backdrop-filter:blur(10px);
+          -webkit-backdrop-filter:blur(10px); }
   .load h2 { margin:0; padding:12px 13px 10px; font-family:'Russo One',sans-serif;
              font-weight:400; font-size:15px; letter-spacing:.03em; color:var(--text);
              display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none;
@@ -68,30 +70,30 @@
   .t .sent { color:var(--orange2); }
   .count { font-family:'Manrope',sans-serif; font-size:11px; color:var(--mut); font-weight:800;
            flex:none; border:1px solid var(--line2); padding:4px 9px; letter-spacing:.05em; }
-  .fill { height:3px; background:rgba(255,255,255,.07); }
+  .fill { height:3px; background:rgba(255,255,255,.12); }
   .fill i { display:block; height:100%; background:var(--orange); transition:width .4s; }
   .load.full .fill i { background:var(--gold); }
 
   .body { padding:2px 13px 12px; }
   .load.closed .body, .load.closed .fill { display:none; }
-  .row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid var(--line2);
+  .row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,.1);
          font-size:17px; align-items:baseline; }
   .row:last-child { border-bottom:none; }
-  .num { color:#54648a; width:26px; flex:none; font-size:12px; font-weight:800; }
+  .num { color:rgba(255,255,255,.4); width:26px; flex:none; font-size:12px; font-weight:800; }
   .name { flex:1; font-weight:600; }
   .staff .name { color:var(--gold); font-weight:800; }
-  .service .name, .service .cat { color:#5b6b8f; font-weight:400; }
+  .service .name, .service .cat { color:rgba(255,255,255,.42); font-weight:400; }
   .cat { color:var(--blue); flex:none; font-size:13px; font-weight:600; }
   .freechip { display:inline-block; margin-top:9px; color:var(--green); font-size:12px;
-              font-weight:800; letter-spacing:.04em; border:1px solid rgba(151,196,89,.35);
-              background:rgba(151,196,89,.07); padding:5px 11px; }
+              font-weight:800; letter-spacing:.04em; border:1px solid rgba(201,240,138,.4);
+              background:rgba(20,25,8,.3); padding:5px 11px; }
 
   .note { color:var(--mut); font-size:15px; line-height:1.6; padding:20px 4px; }
-  a.switch { display:block; text-align:center; color:#54648a; font-size:13px;
+  a.switch { display:block; text-align:center; color:rgba(255,255,255,.45); font-size:13px;
              text-decoration:none; padding:16px; }
-  a.switch:hover { color:var(--mut); }
-  .foot { text-align:center; color:#3a4a70; font-family:'Russo One',sans-serif; font-size:10px;
-          letter-spacing:.3em; text-transform:uppercase; padding-bottom:14px; }
+  a.switch:hover { color:var(--text); }
+  .foot { text-align:center; color:rgba(255,255,255,.35); font-family:'Russo One',sans-serif;
+          font-size:10px; letter-spacing:.3em; text-transform:uppercase; padding-bottom:14px; }
 </style>
 </head>
 <body>
