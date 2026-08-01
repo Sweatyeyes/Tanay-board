@@ -9,9 +9,7 @@
   .top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px; }
   .clock { font-size:20px; font-weight:600; }
   .until { font-size:15px; color:#EF9F27; }
-  .legend { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-  .legend .hint { font-size:13px; color:#888; }
-  .legend .hint b { color:#FFC94D; font-weight:600; }
+  .legend { display:flex; justify-content:flex-end; margin-bottom:10px; }
   .toggle-all { background:#242424; color:#aaa; border:1px solid #333; border-radius:6px;
                 padding:6px 12px; font-size:13px; cursor:pointer; }
   .toggle-all:active { background:#2e2e2e; }
@@ -32,7 +30,6 @@
   .num { color:#5F5E5A; width:26px; flex:none; font-size:15px; }
   .name { flex:1; }
   .staff .name { color:#FFC94D; font-weight:600; }
-  .staff .name::before { content:"● "; font-size:11px; vertical-align:2px; }
   .service .name, .service .cat { color:#777; }
   .cat { color:#85B7EB; flex:none; font-size:15px; }
   .free { color:#97C459; }
@@ -74,13 +71,11 @@
     html += '</div>';
 
     var loads = d.loads || [];
-    var anyStaff = loads.some(function(L){ return (L.rows||[]).some(function(r){ return r.staff; }); });
-    html += '<div class="legend"><span class="hint">' + (anyStaff ? '<b>●</b> — стафф' : '') + '</span>';
     if (loads.length) {
       var allClosed = loads.every(function(_, i){ return collapsed[i]; });
-      html += '<button class="toggle-all" id="toggleAll">' + (allClosed ? 'Развернуть все' : 'Свернуть все') + '</button>';
+      html += '<div class="legend"><button class="toggle-all" id="toggleAll">'
+           + (allClosed ? 'Развернуть все' : 'Свернуть все') + '</button></div>';
     }
-    html += '</div>';
 
     if (d.status === 'no_board') {
       html += '<div class="stale">Табло сейчас не транслируется — на экране заставка подключения. Обычно это ненадолго.</div>';
