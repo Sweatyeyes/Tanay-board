@@ -79,23 +79,27 @@
   .load { background:var(--card); border:1px solid var(--line2); border-left:4px solid var(--gold);
           margin-bottom:12px; overflow:hidden; backdrop-filter:blur(10px);
           -webkit-backdrop-filter:blur(10px); }
+  /* шапка взлёта - тёплая закатная полоса, чтобы отделяться от списка */
   .load h2 { margin:0; padding:12px 13px 10px; font-family:'Russo One',sans-serif;
-             font-weight:400; font-size:15px; letter-spacing:.03em; color:var(--text);
+             font-weight:400; font-size:15px; letter-spacing:.03em; color:#fff4e8;
+             background:linear-gradient(180deg,rgba(232,81,26,.42) 0%,rgba(150,40,30,.34) 100%);
+             border-bottom:1px solid rgba(255,201,77,.28);
              display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none;
              -webkit-tap-highlight-color:transparent; }
-  .load h2 .chev { color:var(--mut); font-size:10px; transition:transform .18s; flex:none;
-                   transform:rotate(90deg); }
+  .load h2 .chev { color:rgba(255,255,255,.75); font-size:10px; transition:transform .18s;
+                   flex:none; transform:rotate(90deg); }
   .load.closed h2 .chev { transform:rotate(0deg); }
   .load h2 .t { flex:1; line-height:1.4; }
   .t .ready { color:var(--gold); }
   .t .sent { color:var(--orange2); }
-  .count { font-family:'Manrope',sans-serif; font-size:11px; color:var(--mut); font-weight:800;
-           flex:none; border:1px solid var(--line2); padding:4px 9px; letter-spacing:.05em; }
+  .count { font-family:'Manrope',sans-serif; font-size:11px; color:rgba(255,255,255,.8);
+           font-weight:800; flex:none; border:1px solid rgba(255,255,255,.28);
+           background:rgba(10,7,20,.3); padding:4px 9px; letter-spacing:.05em; }
   .fill { height:3px; background:rgba(255,255,255,.12); }
   .fill i { display:block; height:100%; background:var(--orange); transition:width .4s; }
   .load.full .fill i { background:var(--gold); }
 
-  .body { padding:2px 13px 12px; }
+  .body { padding:2px 13px 12px; background:rgba(6,4,14,.34); }
   .load.closed .body, .load.closed .fill { display:none; }
   .row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid rgba(255,255,255,.1);
          font-size:17px; align-items:baseline; }
