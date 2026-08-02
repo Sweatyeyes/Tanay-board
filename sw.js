@@ -3,7 +3,7 @@
 // идут в сеть - воркер их не перехватывает, чтобы табло не показывало
 // устаревшее. Без сети страница открывается из кэша и сама покажет
 // "данные не обновлялись".
-var CACHE = 'tanay-v1';
+var CACHE = 'tanay-v2';
 var ASSETS = [
   './',
   './index.html',
@@ -29,6 +29,22 @@ self.addEventListener('activate', function (e) {
         if (k !== CACHE) return caches.delete(k);
       }));
     }).then(function () { return self.clients.claim(); })
+  );
+});
+
+// тап по уведомлению открывает табло, а не новую вкладку
+self.addEventListener('notificationclick', function (e) {
+  e.notification.close();
+  e.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then(function (list) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].url.indexOf('text.html') !== -1 && 'focus' in list[i]) {
+            return list[i].focus();
+          }
+        }
+        if (self.clients.openWindow) return self.clients.openWindow('./text.html');
+      })
   );
 });
 
