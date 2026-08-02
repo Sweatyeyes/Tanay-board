@@ -129,6 +129,15 @@
     return n.indexOf('КВОРУМ') === 0 || n === '(Вып.)';
   }
 
+  function plural(n, one, few, many) {
+    var m = n % 100;
+    if (m >= 11 && m <= 14) return many;
+    m = n % 10;
+    if (m === 1) return one;
+    if (m >= 2 && m <= 4) return few;
+    return many;
+  }
+
   function fmtTitle(t) {
     var s = esc(t).replace(/(^|\s)готов(?=\s|$)/, '$1готовность');
     s = s.replace(/(ОТПРАВЛЕН!*)/, '<span class="sent">$1</span>');
@@ -180,8 +189,11 @@
              +  '<span class="name">' + esc(r.name) + '</span>'
              +  '<span class="cat">' + esc(r.cat) + '</span></div>';
       }
-      if (L.free_from) {
-        html += '<span class="freechip">свободно с ' + esc(L.free_from) + '-го места</span>';
+      var free = (L.free != null) ? L.free
+               : (L.free_from ? Math.max(0, 19 - L.free_from) : 0);
+      if (free > 0) {
+        html += '<span class="freechip">свободно ' + free + ' '
+             +  plural(free, 'место', 'места', 'мест') + '</span>';
       }
       html += '</div></div>';
     }
