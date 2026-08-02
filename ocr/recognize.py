@@ -815,7 +815,7 @@ def main():
         title = re.sub(r"\bготов\b", "готовность", title)
 
         load = {"index": pi + 1, "title": title, "capacity": n_rows,
-                "rows": [], "free_from": None}
+                "rows": [], "free_from": None, "free": 0}
 
         for r in range(n_rows):
             ry0 = int(round(origin + r * pitch))
@@ -833,8 +833,10 @@ def main():
                          "empty": (80, 80, 80)}[kind]
                 draw.rectangle([x0, ry0, x1 - 1, ry1 - 1], outline=color)
 
-            if kind == "free" and load["free_from"] is None:
-                load["free_from"] = r + 1
+            if kind == "free":
+                load["free"] += 1
+                if load["free_from"] is None:
+                    load["free_from"] = r + 1
             if kind != "filled":
                 continue
 
@@ -869,6 +871,12 @@ def main():
                     if n2 in KNOWN_CATS:
                         cat, cat_raw = n2, r2
                         break
+
+            # шум на пустых строках (курсор, блики): пары букв вместо имени
+            # и мусор вместо категории - такую строку выбрасываем
+            letters = re.sub(r"[^А-Яа-яЁёA-Za-z]", "", name)
+            if not is_service and len(letters) < 4 and cat not in KNOWN_CATS:
+                continue
 
             # копим образцы того, что видит распознаватель
             if len(SAMPLES) < 12:
