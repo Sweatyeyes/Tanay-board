@@ -117,11 +117,10 @@
              border-bottom:1px solid rgba(255,201,77,.28);
              display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none;
              -webkit-tap-highlight-color:transparent; }
-  .load h2 .chev { color:rgba(255,255,255,.75); font-size:10px; transition:transform .18s;
-                   flex:none; transform:rotate(90deg); }
-  .load.closed h2 .chev { transform:rotate(0deg); }
   .load h2 .t { flex:1; line-height:1.4; }
-  .t .ready { color:var(--gold); }
+  /* готовность - отдельной строкой под названием взлёта */
+  .t .ready { display:block; color:var(--gold); font-size:13px; margin-top:3px;
+              letter-spacing:.02em; }
   .t .sent { color:var(--orange2); }
   .count { font-family:'Manrope',sans-serif; font-size:11px; color:rgba(255,255,255,.8);
            font-weight:800; flex:none; border:1px solid rgba(255,255,255,.28);
@@ -416,7 +415,8 @@
   function fmtTitle(t) {
     var s = esc(t).replace(/(^|\s)готов(?=\s|$)/, '$1готовность');
     s = s.replace(/(ОТПРАВЛЕН!*)/, '<span class="sent">$1</span>');
-    s = s.replace(/(готовность[^<]*)/, '<span class="ready">$1</span>');
+    // готовность выносим в отдельную строку, поэтому пробел перед ней убираем
+    s = s.replace(/\s*(готовность[^<]*)/, '<span class="ready">$1</span>');
     return s;
   }
 
@@ -455,7 +455,7 @@
         if (!isService(rows[m]) && isWatched(rows[m].name)) { hasMine = true; break; }
       }
       html += '<div class="load' + closed + full + (hasMine ? ' mine' : '') + '" data-i="' + i + '">';
-      html += '<h2><span class="chev">▶</span><span class="t">' + fmtTitle(L.title || ('взлёт ' + (i+1))) + '</span>';
+      html += '<h2><span class="t">' + fmtTitle(L.title || ('взлёт ' + (i+1))) + '</span>';
       html += '<span class="count">' + rows.length + (L.capacity ? ' / ' + L.capacity : '') + '</span></h2>';
       html += '<div class="fill"><i style="width:' + pct + '%"></i></div>';
       html += '<div class="body">';
