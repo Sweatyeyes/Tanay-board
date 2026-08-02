@@ -4,6 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Табло</title>
+<meta name="theme-color" content="#0a0716">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<script>
+  // Тихий режим установки: манифест подключается только при заходе с меткой
+  // .../index.html?app и в уже установленном приложении. Обычные посетители
+  // ничего не замечают, браузер не предлагает установку.
+  // Чтобы открыть установку для всех - убрать проверку APP_MODE ниже.
+  (function () {
+    var APP_MODE = /[?&]app\b/.test(location.search)
+      || window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true;
+    if (!APP_MODE) return;
+    var l = document.createElement('link');
+    l.rel = 'manifest';
+    l.href = 'manifest.webmanifest';
+    document.head.appendChild(l);
+    window.__TANAY_APP = true;
+  })();
+</script>
 <style>
   body { margin:0; background:#000; display:flex; flex-direction:column;
          justify-content:center; align-items:center; min-height:100vh;
@@ -55,6 +76,11 @@
   }
   tick();
   setInterval(tick, 20000);
+
+  // воркер тоже только в режиме приложения - см. пояснение в шапке
+  if (window.__TANAY_APP && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  }
 </script>
 </body>
 </html>
