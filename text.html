@@ -33,7 +33,7 @@
     --line:rgba(255,255,255,.16); --line2:rgba(255,255,255,.12);
     --card:rgba(10,7,20,.38); --text:#fdf6ef; --mut:rgba(255,255,255,.55);
     --orange:#E8511A; --orange2:#ff7a4d; --gold:#FFC94D; --blue:#bcd4ff;
-    --green:#c9f08a;
+    --green:#c9f08a; --me:#5CF08A;
   }
   * { box-sizing:border-box; }
   body { margin:0; color:var(--text); padding:14px 12px 4px; background:#0a0716;
@@ -51,15 +51,21 @@
       linear-gradient(180deg,#0a0716 0%,#1b1433 34%,#3a1a3f 62%,#7a2b2a 86%,#c2511f 100%);
   }
 
-  .brand { display:flex; align-items:flex-end; justify-content:space-between; gap:12px;
+  .brand { display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
            margin-bottom:16px; }
   .brand img { height:58px; display:block; }
   .brand .word { font-family:'Russo One',sans-serif; font-size:20px; letter-spacing:.06em; }
+  .headright { display:flex; align-items:flex-end; gap:10px; }
   .clock { font-family:'Russo One',sans-serif; font-size:24px; letter-spacing:.05em;
            text-align:right; line-height:1; }
   .clock small { display:block; font-family:'Manrope',sans-serif; font-weight:600;
                  font-size:11px; color:var(--mut); letter-spacing:.2em;
                  text-transform:uppercase; margin-bottom:5px; }
+  .gear { background:rgba(10,7,20,.3); border:1px solid var(--line); color:var(--text);
+          width:38px; height:38px; font-size:19px; line-height:1; cursor:pointer;
+          padding:0; flex:none; }
+  .gear:active { background:rgba(255,255,255,.08); }
+  .gear.on { border-color:rgba(92,240,138,.6); color:var(--me); }
 
   .bar-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
   .until { font-family:'Russo One',sans-serif; font-size:12px; letter-spacing:.08em;
@@ -70,6 +76,35 @@
                 letter-spacing:.06em; text-transform:uppercase; cursor:pointer; }
   .toggle-all:active { background:rgba(255,255,255,.08); }
 
+  /* ---- настройки ---- */
+  .settings { display:none; background:rgba(10,7,20,.55); border:1px solid var(--line);
+              border-left:4px solid var(--me); padding:14px; margin-bottom:12px;
+              backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+  .settings.open { display:block; }
+  .settings h3 { margin:0 0 4px; font-family:'Russo One',sans-serif; font-weight:400;
+                 font-size:14px; letter-spacing:.04em; }
+  .settings p { margin:0 0 12px; font-size:13px; color:var(--mut); line-height:1.5; }
+  .addrow { display:flex; gap:8px; margin-bottom:10px; }
+  .addrow input { flex:1; min-width:0; background:rgba(0,0,0,.35); border:1px solid var(--line);
+                  color:var(--text); font-family:inherit; font-size:15px; padding:9px 11px; }
+  .addrow input::placeholder { color:rgba(255,255,255,.35); }
+  .addrow button { background:rgba(92,240,138,.14); border:1px solid rgba(92,240,138,.5);
+                   color:var(--me); font-family:inherit; font-weight:800; font-size:13px;
+                   padding:9px 14px; cursor:pointer; letter-spacing:.05em; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+  .chip { display:inline-flex; align-items:center; gap:8px; color:var(--me); font-size:14px;
+          font-weight:600; border:1px solid rgba(92,240,138,.45); background:rgba(20,40,25,.4);
+          padding:6px 8px 6px 11px; }
+  .chip b { font-weight:600; }
+  .chip span { cursor:pointer; color:rgba(255,255,255,.6); font-size:16px; line-height:1;
+               padding:0 2px; }
+  .opt { display:flex; align-items:flex-start; gap:10px; font-size:14px; padding:7px 0;
+         cursor:pointer; }
+  .opt input { margin:2px 0 0; width:18px; height:18px; flex:none; accent-color:#5CF08A; }
+  .opt small { display:block; color:var(--mut); font-size:12px; margin-top:2px; }
+  .warn { font-size:12px; color:var(--gold); line-height:1.5; margin-top:10px;
+          border-top:1px solid var(--line2); padding-top:10px; }
+
   .msg { background:rgba(120,20,10,.4); color:#ffb3a6; border:1px solid rgba(255,122,77,.5);
          border-left:4px solid var(--orange); padding:12px 14px; margin-bottom:12px;
          font-size:16px; font-weight:800; }
@@ -79,6 +114,7 @@
   .load { background:var(--card); border:1px solid var(--line2); border-left:4px solid var(--gold);
           margin-bottom:12px; overflow:hidden; backdrop-filter:blur(10px);
           -webkit-backdrop-filter:blur(10px); }
+  .load.mine { border-left-color:var(--me); }
   /* шапка взлёта - тёплая закатная полоса, чтобы отделяться от списка */
   .load h2 { margin:0; padding:12px 13px 10px; font-family:'Russo One',sans-serif;
              font-weight:400; font-size:15px; letter-spacing:.03em; color:#fff4e8;
@@ -109,6 +145,10 @@
   .staff .name { color:var(--gold); font-weight:800; }
   .service .name, .service .cat { color:rgba(255,255,255,.42); font-weight:400; }
   .cat { color:var(--blue); flex:none; font-size:13px; font-weight:600; }
+  /* своя фамилия из настроек - зелёным, поверх стаффа */
+  .row.me { background:rgba(92,240,138,.13); margin:0 -13px; padding-left:13px;
+            padding-right:13px; border-left:3px solid var(--me); }
+  .row.me .name, .row.staff.me .name { color:var(--me); font-weight:800; }
   .freechip { display:inline-block; margin-top:9px; color:var(--green); font-size:12px;
               font-weight:800; letter-spacing:.04em; border:1px solid rgba(201,240,138,.4);
               background:rgba(20,25,8,.3); padding:5px 11px; }
@@ -125,8 +165,26 @@
 <div class="brand">
   <img src="logo.png" alt="Skydive Tanay"
        onerror="this.outerHTML='&lt;div class=&quot;word&quot;&gt;SKYDIVE TANAY&lt;/div&gt;'">
-  <div class="clock" id="clock"><small>борт-время</small>—</div>
+  <div class="headright">
+    <button class="gear" id="gear" aria-label="Настройки">&#9881;</button>
+    <div class="clock" id="clock"><small>борт-время</small>—</div>
+  </div>
 </div>
+
+<div class="settings" id="settings">
+  <h3>Слежу за фамилиями</h3>
+  <p>Строка с этой фамилией подсветится зелёным, и придёт уведомление, когда человек появится во взлёте.</p>
+  <div class="addrow">
+    <input id="watchInput" type="text" placeholder="Мышкевич" autocomplete="off"
+           autocapitalize="words" spellcheck="false">
+    <button id="watchAdd">Добавить</button>
+  </div>
+  <div class="chips" id="watchChips"></div>
+  <label class="opt"><input type="checkbox" id="optNotify">
+    <span>Уведомления<small id="notifyState">запись во взлёт, готовность 15 и 5 минут</small></span></label>
+  <div class="warn" id="notifyWarn"></div>
+</div>
+
 <div id="app"><div class="note">Загрузка…</div></div>
 <a class="switch" href="index.html">← версия с картинкой</a>
 <div class="foot">Skydive Tanay · Drop Zone Board</div>
@@ -136,12 +194,19 @@
   var app = document.getElementById('app');
   var clockEl = document.getElementById('clock');
 
-  // какие взлёты свёрнуты - переживает и перерисовку, и перезагрузку страницы
-  var collapsed = {};
-  try { collapsed = JSON.parse(localStorage.getItem('tanay_collapsed') || '{}'); } catch (e) {}
-  function saveCollapsed() {
-    try { localStorage.setItem('tanay_collapsed', JSON.stringify(collapsed)); } catch (e) {}
+  // ---------- хранилище ----------
+  function load(key, def) {
+    try { var v = JSON.parse(localStorage.getItem(key)); return v == null ? def : v; }
+    catch (e) { return def; }
   }
+  function save(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
+  }
+
+  var collapsed = load('tanay_collapsed', {});
+  var watch     = load('tanay_watch', []);          // фамилии, за которыми следим
+  var notifyOn  = load('tanay_notify', false);
+  var sent      = load('tanay_sent', {});           // что уже отправляли, чтобы не повторяться
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
@@ -149,20 +214,207 @@
     });
   }
 
+  function plural(n, one, few, many) {
+    var n10 = n % 10, n100 = n % 100;
+    if (n10 === 1 && n100 !== 11) return one;
+    if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return few;
+    return many;
+  }
+
   function isService(r) {
     var n = String(r.name || '');
     return n.indexOf('КВОРУМ') === 0 || n === '(Вып.)';
   }
 
-  function plural(n, one, few, many) {
-    var m = n % 100;
-    if (m >= 11 && m <= 14) return many;
-    m = n % 10;
-    if (m === 1) return one;
-    if (m >= 2 && m <= 4) return few;
-    return many;
+  // ---------- сверка фамилий с допуском на ошибки распознавания ----------
+  function norm(s) {
+    return String(s || '').toLowerCase().replace(/ё/g, 'е').replace(/[^a-zа-я]/g, '');
+  }
+  function dist(a, b) {                       // расстояние Левенштейна
+    var m = a.length, n = b.length, prev = [], cur = [], i, j;
+    for (j = 0; j <= n; j++) prev[j] = j;
+    for (i = 1; i <= m; i++) {
+      cur[0] = i;
+      for (j = 1; j <= n; j++) {
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1,
+                          prev[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+      }
+      for (j = 0; j <= n; j++) prev[j] = cur[j];
+    }
+    return prev[n];
+  }
+  // одна-две перепутанные буквы - всё ещё тот же человек
+  function looksSame(a, b) {
+    a = norm(a); b = norm(b);
+    if (!a || !b) return false;
+    if (a === b) return true;
+    if (Math.abs(a.length - b.length) > 2) return false;
+    var allow = a.length <= 5 ? 1 : 2;
+    return dist(a, b) <= allow;
+  }
+  // возвращает фамилию из настроек (она постоянна), а не распознанную:
+  // иначе "Мышкевич" и "Мышквич" в разных прогонах дадут разные ключи
+  // уведомлений, и одно и то же придёт дважды
+  function matchedWatch(rowName) {
+    var surname = String(rowName || '').split(' ')[0];
+    for (var i = 0; i < watch.length; i++) {
+      if (looksSame(surname, watch[i])) return watch[i];
+    }
+    return null;
+  }
+  function isWatched(rowName) { return matchedWatch(rowName) != null; }
+
+  // ---------- уведомления ----------
+  var swReg = null;
+  function notifySupported() { return 'Notification' in window; }
+
+  function showNote(title, body, tag) {
+    var opts = { body: body, tag: tag, icon: 'icon-192.png', badge: 'icon-192.png',
+                 renotify: true, vibrate: [120, 60, 120] };
+    try {
+      if (swReg && swReg.showNotification) swReg.showNotification(title, opts);
+      else new Notification(title, opts);
+    } catch (e) {}
   }
 
+  function loadNumber(title) {
+    var m = String(title || '').match(/(\d+)\s*взл/i);
+    return m ? m[1] : '';
+  }
+  function readyMinutes(title) {
+    var m = String(title || '').match(/готов\S*\s+(\d+)\s*мин/i);
+    return m ? parseInt(m[1], 10) : null;
+  }
+
+  // ключи отправленного чистим, когда взлёт пропал с табло
+  function pruneSent(validKeys) {
+    var out = {};
+    for (var k in sent) if (validKeys[k]) out[k] = sent[k];
+    sent = out;
+    save('tanay_sent', sent);
+  }
+
+  function checkNotifications(d) {
+    if (!notifyOn || !watch.length || !notifySupported()) return;
+    if (Notification.permission !== 'granted') return;
+
+    var loads = d.loads || [], valid = {}, fresh = [];
+    for (var i = 0; i < loads.length; i++) {
+      var L = loads[i], rows = L.rows || [], num = loadNumber(L.title) || (i + 1);
+      var mine = null, who = null;
+      for (var j = 0; j < rows.length; j++) {
+        var hit = isService(rows[j]) ? null : matchedWatch(rows[j].name);
+        if (hit) { mine = rows[j]; who = hit; break; }
+      }
+      if (!mine) continue;
+
+      var base = num + '|' + norm(who);
+      var events = [{ key: base + '|in',
+                      title: 'Вы записаны во взлёт ' + num,
+                      body: mine.name + (mine.cat ? ' · ' + mine.cat : '') }];
+
+      var mins = readyMinutes(L.title);
+      if (mins != null && mins <= 15 && mins > 5) {
+        events.push({ key: base + '|15', title: 'Взлёт ' + num + ' — готовность 15 минут',
+                      body: 'Пора собираться' });
+      }
+      if (mins != null && mins <= 5) {
+        events.push({ key: base + '|5', title: 'Взлёт ' + num + ' — готовность 5 минут',
+                      body: 'На посадку' });
+      }
+      if (/ОТПРАВЛЕН/i.test(L.title || '')) valid[base + '|in'] = 1;
+
+      for (var e = 0; e < events.length; e++) {
+        valid[events[e].key] = 1;
+        if (!sent[events[e].key]) fresh.push(events[e]);
+      }
+    }
+
+    pruneSent(valid);
+    for (var f = 0; f < fresh.length; f++) {
+      showNote(fresh[f].title, fresh[f].body, fresh[f].key);
+      sent[fresh[f].key] = Date.now();
+    }
+    if (fresh.length) save('tanay_sent', sent);
+  }
+
+  // ---------- отрисовка настроек ----------
+  var gear = document.getElementById('gear');
+  var settings = document.getElementById('settings');
+  var chipsEl = document.getElementById('watchChips');
+  var inputEl = document.getElementById('watchInput');
+  var optNotify = document.getElementById('optNotify');
+  var notifyWarn = document.getElementById('notifyWarn');
+
+  function renderChips() {
+    var html = '';
+    for (var i = 0; i < watch.length; i++) {
+      html += '<span class="chip"><b>' + esc(watch[i]) + '</b>'
+           +  '<span data-del="' + i + '" role="button" aria-label="Убрать">&times;</span></span>';
+    }
+    chipsEl.innerHTML = html || '<span style="color:rgba(255,255,255,.45);font-size:13px;">'
+                              + 'Пока никого — добавьте фамилию выше.</span>';
+    gear.className = watch.length ? 'gear on' : 'gear';
+  }
+
+  function renderNotifyState() {
+    optNotify.checked = notifyOn && notifySupported() && Notification.permission === 'granted';
+    var warn = '';
+    if (!notifySupported()) {
+      warn = 'Этот браузер не умеет уведомления. На iPhone они работают только '
+           + 'в приложении, добавленном на экран «Домой».';
+    } else if (Notification.permission === 'denied') {
+      warn = 'Уведомления запрещены в настройках браузера для этого сайта — '
+           + 'разрешите их там, иначе приложение не сможет ничего прислать.';
+    } else if (notifyOn) {
+      warn = 'Уведомления приходят, пока приложение открыто или свёрнуто в фоне. '
+           + 'Если закрыть его полностью, телефон перестанет проверять табло.';
+    }
+    notifyWarn.innerHTML = warn;
+  }
+
+  gear.addEventListener('click', function () {
+    settings.classList.toggle('open');
+  });
+
+  function addWatch() {
+    var v = inputEl.value.trim().replace(/\s+/g, ' ');
+    if (!v) return;
+    var dup = false;
+    for (var i = 0; i < watch.length; i++) if (norm(watch[i]) === norm(v)) dup = true;
+    if (!dup) { watch.push(v); save('tanay_watch', watch); }
+    inputEl.value = '';
+    renderChips();
+    if (lastData) render(lastData);
+  }
+  document.getElementById('watchAdd').addEventListener('click', addWatch);
+  inputEl.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { e.preventDefault(); addWatch(); }
+  });
+  chipsEl.addEventListener('click', function (e) {
+    var i = e.target.getAttribute && e.target.getAttribute('data-del');
+    if (i == null) return;
+    watch.splice(parseInt(i, 10), 1);
+    save('tanay_watch', watch);
+    renderChips();
+    if (lastData) render(lastData);
+  });
+
+  optNotify.addEventListener('change', function () {
+    if (!optNotify.checked) {
+      notifyOn = false; save('tanay_notify', notifyOn); renderNotifyState(); return;
+    }
+    if (!notifySupported()) { optNotify.checked = false; renderNotifyState(); return; }
+    Notification.requestPermission().then(function (p) {
+      notifyOn = (p === 'granted');
+      save('tanay_notify', notifyOn);
+      renderNotifyState();
+      if (notifyOn) showNote('Уведомления включены',
+        'Сообщу, когда ваша фамилия появится во взлёте.', 'test');
+    });
+  });
+
+  // ---------- отрисовка табло ----------
   function fmtTitle(t) {
     var s = esc(t).replace(/(^|\s)готов(?=\s|$)/, '$1готовность');
     s = s.replace(/(ОТПРАВЛЕН!*)/, '<span class="sent">$1</span>');
@@ -170,7 +422,10 @@
     return s;
   }
 
+  var lastData = null;
+
   function render(d) {
+    lastData = d;
     clockEl.innerHTML = '<small>борт-время</small>' + esc(d.clock || '—');
 
     var html = '';
@@ -202,14 +457,20 @@
       var pct = Math.min(100, Math.round(rows.length / denom * 100));
       var closed = collapsed[i] ? ' closed' : '';
       var full = (!L.free_from && rows.length) ? ' full' : '';
-      html += '<div class="load' + closed + full + '" data-i="' + i + '">';
+      var hasMine = false;
+      for (var m = 0; m < rows.length; m++) {
+        if (!isService(rows[m]) && isWatched(rows[m].name)) { hasMine = true; break; }
+      }
+      html += '<div class="load' + closed + full + (hasMine ? ' mine' : '') + '" data-i="' + i + '">';
       html += '<h2><span class="chev">▶</span><span class="t">' + fmtTitle(L.title || ('взлёт ' + (i+1))) + '</span>';
       html += '<span class="count">' + rows.length + (L.capacity ? ' / ' + L.capacity : '') + '</span></h2>';
       html += '<div class="fill"><i style="width:' + pct + '%"></i></div>';
       html += '<div class="body">';
       for (var j = 0; j < rows.length; j++) {
         var r = rows[j];
-        var cls = 'row' + (r.staff ? ' staff' : '') + (isService(r) ? ' service' : '');
+        var service = isService(r);
+        var cls = 'row' + (r.staff ? ' staff' : '') + (service ? ' service' : '')
+                + (!service && isWatched(r.name) ? ' me' : '');
         html += '<div class="' + cls + '"><span class="num">' + esc(r.n) + '</span>'
              +  '<span class="name">' + esc(r.name) + '</span>'
              +  '<span class="cat">' + esc(r.cat) + '</span></div>';
@@ -238,7 +499,7 @@
         else { b.classList.add('closed'); collapsed[i] = 1; }
       });
       btn.textContent = allClosed ? 'Свернуть все' : 'Развернуть все';
-      saveCollapsed();
+      save('tanay_collapsed', collapsed);
       return;
     }
     var h = e.target.closest ? e.target.closest('.load h2') : null;
@@ -247,26 +508,30 @@
       var i = block.getAttribute('data-i');
       if (block.classList.toggle('closed')) collapsed[i] = 1;
       else delete collapsed[i];
-      saveCollapsed();
+      save('tanay_collapsed', collapsed);
     }
   });
 
   function tick() {
     fetch(JSON_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
-      .then(render)
+      .then(function(d){ render(d); checkNotifications(d); })
       .catch(function(){
+        if (lastData) return;
         app.innerHTML = '<div class="note">Текстовая версия ещё готовится — распознавание пока не запущено.<br><br>'
                       + 'Рабочее табло доступно по ссылке ниже.</div>';
       });
   }
 
+  renderChips();
+  renderNotifyState();
   tick();
   setInterval(tick, 20000);
 
-  // воркер тоже только в режиме приложения - см. пояснение в шапке
-  if (window.__TANAY_APP && 'serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(function(){});
+  // воркер нужен и для установки, и для уведомлений (он их показывает на Android)
+  if ('serviceWorker' in navigator && (window.__TANAY_APP || notifyOn)) {
+    navigator.serviceWorker.register('sw.js').then(function (reg) { swReg = reg; })
+      .catch(function(){});
   }
 </script>
 </body>
