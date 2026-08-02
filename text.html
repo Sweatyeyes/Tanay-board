@@ -55,7 +55,6 @@
            margin-bottom:16px; }
   .brand img { height:58px; display:block; }
   .brand .word { font-family:'Russo One',sans-serif; font-size:20px; letter-spacing:.06em; }
-  .headright { display:flex; align-items:flex-end; gap:10px; }
   .clock { font-family:'Russo One',sans-serif; font-size:24px; letter-spacing:.05em;
            text-align:right; line-height:1; }
   .clock small { display:block; font-family:'Manrope',sans-serif; font-weight:600;
@@ -71,10 +70,6 @@
   .until { font-family:'Russo One',sans-serif; font-size:12px; letter-spacing:.08em;
            color:var(--gold); border:1px solid rgba(255,201,77,.4);
            background:rgba(20,12,8,.35); padding:7px 12px; }
-  .toggle-all { background:rgba(10,7,20,.3); color:var(--mut); border:1px solid var(--line);
-                padding:7px 14px; font-size:12px; font-weight:800; font-family:inherit;
-                letter-spacing:.06em; text-transform:uppercase; cursor:pointer; }
-  .toggle-all:active { background:rgba(255,255,255,.08); }
 
   /* ---- настройки ---- */
   .settings { display:none; background:rgba(10,7,20,.55); border:1px solid var(--line);
@@ -165,10 +160,12 @@
 <div class="brand">
   <img src="logo.png" alt="Skydive Tanay"
        onerror="this.outerHTML='&lt;div class=&quot;word&quot;&gt;SKYDIVE TANAY&lt;/div&gt;'">
-  <div class="headright">
-    <button class="gear" id="gear" aria-label="Настройки">&#9881;</button>
-    <div class="clock" id="clock"><small>борт-время</small>—</div>
-  </div>
+  <div class="clock" id="clock"><small>борт-время</small>—</div>
+</div>
+
+<div class="bar-top">
+  <span id="until"></span>
+  <button class="gear" id="gear" aria-label="Настройки">&#9881;</button>
 </div>
 
 <div class="settings" id="settings">
@@ -193,6 +190,7 @@
   var MAX_AGE_MS = 10 * 60 * 1000;
   var app = document.getElementById('app');
   var clockEl = document.getElementById('clock');
+  var untilEl = document.getElementById('until');
 
   // ---------- хранилище ----------
   function load(key, def) {
@@ -428,16 +426,11 @@
     lastData = d;
     clockEl.innerHTML = '<small>борт-время</small>' + esc(d.clock || '—');
 
+    untilEl.innerHTML = d.work_until
+      ? '<span class="until">' + esc(d.work_until) + '</span>' : '';
+
     var html = '';
     var loads = d.loads || [];
-    html += '<div class="bar-top">';
-    html += d.work_until ? '<span class="until">' + esc(d.work_until) + '</span>' : '<span></span>';
-    if (loads.length) {
-      var allClosed = loads.every(function(_, i){ return collapsed[i]; });
-      html += '<button class="toggle-all" id="toggleAll">'
-           + (allClosed ? 'Развернуть все' : 'Свернуть все') + '</button>';
-    }
-    html += '</div>';
 
     if (d.status === 'no_board') {
       html += '<div class="stale">Табло сейчас не транслируется — на экране заставка подключения. Обычно это ненадолго.</div>';
@@ -488,20 +481,6 @@
 
   // один обработчик на контейнер - переживает перерисовки
   app.addEventListener('click', function(e) {
-    var btn = e.target.closest ? e.target.closest('#toggleAll') : null;
-    if (btn) {
-      var blocks = app.querySelectorAll('.load');
-      var allClosed = true;
-      blocks.forEach(function(b){ if (!b.classList.contains('closed')) allClosed = false; });
-      blocks.forEach(function(b){
-        var i = b.getAttribute('data-i');
-        if (allClosed) { b.classList.remove('closed'); delete collapsed[i]; }
-        else { b.classList.add('closed'); collapsed[i] = 1; }
-      });
-      btn.textContent = allClosed ? 'Свернуть все' : 'Развернуть все';
-      save('tanay_collapsed', collapsed);
-      return;
-    }
     var h = e.target.closest ? e.target.closest('.load h2') : null;
     if (h) {
       var block = h.parentNode;
