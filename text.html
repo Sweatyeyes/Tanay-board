@@ -185,8 +185,11 @@
 <a class="switch" href="index.html">← версия с картинкой</a>
 <div class="foot">Skydive Tanay · Drop Zone Board</div>
 <script>
-  var JSON_URL   = "https://raw.githubusercontent.com/Sweatyeyes/Tanay-board/ocr/board.json";
+  // через Worker, а не raw.githubusercontent: тот кэширует ответ на ~5 минут
+  var JSON_URL   = "https://tanay-board.myshkevich.workers.dev/board.json";
+  var JSON_FALLBACK = "https://raw.githubusercontent.com/Sweatyeyes/Tanay-board/ocr/board.json";
   var MAX_AGE_MS = 10 * 60 * 1000;
+  var POLL_MS    = 10000;
   var app = document.getElementById('app');
   var clockEl = document.getElementById('clock');
   var untilEl = document.getElementById('until');
@@ -491,9 +494,14 @@
     }
   });
 
+  function fetchJson(url) {
+    return fetch(url + '?t=' + Date.now(), { cache: 'no-store' })
+      .then(function(r){ return r.ok ? r.json() : Promise.reject(); });
+  }
+
   function tick() {
-    fetch(JSON_URL + '?t=' + Date.now(), { cache: 'no-store' })
-      .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+    fetchJson(JSON_URL)
+      .catch(function(){ return fetchJson(JSON_FALLBACK); })   // если воркер недоступен
       .then(function(d){ render(d); checkNotifications(d); })
       .catch(function(){
         if (lastData) return;
@@ -505,7 +513,7 @@
   renderChips();
   renderNotifyState();
   tick();
-  setInterval(tick, 20000);
+  setInterval(tick, POLL_MS);
 
   // воркер нужен и для установки, и для уведомлений (он их показывает на Android)
   if ('serviceWorker' in navigator && (window.__TANAY_APP || notifyOn)) {
