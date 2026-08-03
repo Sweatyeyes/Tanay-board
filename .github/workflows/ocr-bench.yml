@@ -1,0 +1,46 @@
+# .github/workflows/ocr-bench.yml
+# Разовый замер: сравнивает движки распознавания на снимках из ocr-test/.
+# Запускается только вручную (Actions -> OCR bench -> Run workflow),
+# на рабочее табло никак не влияет.
+
+name: OCR bench
+
+on:
+  workflow_dispatch:
+    inputs:
+      engines:
+        description: 'Какие движки мерить (через пробел): tesseract easyocr paddle'
+        required: false
+        default: 'tesseract easyocr paddle'
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Tesseract с русским
+        run: |
+          sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-rus \
+            || (sudo apt-get update -qq && sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-rus)
+
+      - name: Базовые библиотеки
+        run: pip install --quiet pillow numpy pytesseract
+
+      - name: EasyOCR (модели тянутся при первом запуске)
+        if: contains(github.event.inputs.engines, 'easyocr')
+        run: pip install --quiet easyocr
+
+      - name: PaddleOCR
+        if: contains(github.event.inputs.engines, 'paddle')
+        run: |
+          pip install --quiet paddlepaddle
+          pip install --quiet "paddleocr>=2.7"
+
+      - name: Замер
+        run: python ocr-test/bench.py ${{ github.event.inputs.engines }}
