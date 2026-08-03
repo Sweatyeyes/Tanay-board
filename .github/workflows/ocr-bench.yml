@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       engines:
-        description: 'Какие движки мерить (через пробел): tesseract easyocr paddle'
+        description: 'Движки: tesseract easyocr easy_post duet paddle'
         required: false
-        default: 'tesseract easyocr paddle'
+        default: 'tesseract easyocr easy_post duet'
 
 jobs:
   bench:
@@ -32,10 +32,13 @@ jobs:
       - name: Базовые библиотеки
         run: pip install --quiet pillow numpy pytesseract
 
+      # ставим всегда: easy_post и duet тоже требуют easyocr, а угадывать
+      # по названию движка оказалось ненадёжно
       - name: EasyOCR (модели тянутся при первом запуске)
-        if: contains(github.event.inputs.engines, 'easyocr')
         run: pip install --quiet easyocr
 
+      # Paddle оказался нерабочим (падает на несовместимости версий) и очень
+      # медленным - ставим только по явному запросу
       - name: PaddleOCR
         if: contains(github.event.inputs.engines, 'paddle')
         run: |
