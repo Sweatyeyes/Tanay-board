@@ -1,27 +1,26 @@
-# scripts/capture.ps1  (temporary version: also collects a window report)
-# ASCII only.
+# scripts/capture.ps1
+# ASCII only: file travels through a Windows 7 machine with PowerShell 2.0.
+#
+# The scheduler still starts this once a minute. Inside, we take several
+# screenshots with a short pause and push only when the board actually
+# changed - that keeps traffic and Actions runs low while cutting the delay
+# from 60 seconds down to SHOT_INTERVAL.
+#
+# Comparison ignores the top strip with the clock: it ticks every minute
+# and would make every frame look "changed".
 
-$DataPath  = "C:\Tanay-data"
-$CodePath  = "C:\Tanay-board"
-$ImageName = "board.png"
+$DataPath      = "C:\Tanay-data"
+$CodePath      = "C:\Tanay-board"
+$ImageName     = "board.png"
+$SHOTS         = 4      # snapshots per launch
+$SHOT_INTERVAL = 15     # seconds between snapshots
+$HEARTBEAT_SEC = 150    # push at least this often even without changes
+$SKIP_TOP_PX   = 40     # ignore the clock strip when comparing
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
-$bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
-$bmp = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
-$g = [System.Drawing.Graphics]::FromImage($bmp)
-$g.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
-$bmp.Save((Join-Path $DataPath $ImageName), [System.Drawing.Imaging.ImageFormat]::Png)
-$g.Dispose()
-$bmp.Dispose()
-
-(Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ") | Out-File -FilePath (Join-Path $DataPath "last_update.txt") -Encoding ascii
-
-# ---- keep the workflow file inside the data branch ----
-# Every push then triggers recognition on Actions. The cron schedule on
-# free Actions actually fires only once in a few hours, so this push
-# trigger is the reliable path.
+# ---- keep the workflow file inside the data branch (push-triggered OCR) ----
 try {
   $wfSrc = Join-Path $CodePath "scripts\ocr-data.yml"
   $wfDir = Join-Path $DataPath ".github\workflows"
@@ -31,71 +30,69 @@ try {
   }
 } catch { }
 
-# ---- window report ----
-try {
-  $sig = @"
-using System;
-using System.Text;
-using System.Runtime.InteropServices;
-public class WP {
-  [DllImport("user32.dll")] public static extern bool EnumWindows(EP cb, IntPtr l);
-  [DllImport("user32.dll")] public static extern bool EnumChildWindows(IntPtr h, EP cb, IntPtr l);
-  [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetWindowTextW(IntPtr h, StringBuilder s, int n);
-  [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetClassNameW(IntPtr h, StringBuilder s, int n);
-  [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr h);
-  public delegate bool EP(IntPtr h, IntPtr l);
-}
-"@
-  if (-not ("WP" -as [type])) { Add-Type -TypeDefinition $sig }
-
-  $script:rep = @()
-  $script:tops = New-Object System.Collections.ArrayList
-
-  $cb = [WP+EP]{
-    param($h, $l)
-    if ([WP]::IsWindowVisible($h)) {
-      $sb = New-Object System.Text.StringBuilder 512
-      [void][WP]::GetWindowTextW($h, $sb, 512)
-      $cn = New-Object System.Text.StringBuilder 256
-      [void][WP]::GetClassNameW($h, $cn, 256)
-      $script:rep += ("WIN class=" + $cn.ToString() + " | title=" + $sb.ToString())
-      [void]$script:tops.Add($h)
-    }
-    return $true
-  }
-  [void][WP]::EnumWindows($cb, [IntPtr]::Zero)
-
-  $script:rep += ""
-  $script:rep += "=== CHILDREN ==="
-  foreach ($t in $script:tops) {
-    $sb = New-Object System.Text.StringBuilder 512
-    [void][WP]::GetWindowTextW($t, $sb, 512)
-    $cn = New-Object System.Text.StringBuilder 256
-    [void][WP]::GetClassNameW($t, $cn, 256)
-    $script:rep += ""
-    $script:rep += ("--- " + $cn.ToString() + " | " + $sb.ToString())
-    $script:n = 0
-    $cbc = [WP+EP]{
-      param($h, $l)
-      if ($script:n -lt 100) {
-        $s1 = New-Object System.Text.StringBuilder 1024
-        [void][WP]::GetWindowTextW($h, $s1, 1024)
-        $s2 = New-Object System.Text.StringBuilder 256
-        [void][WP]::GetClassNameW($h, $s2, 256)
-        $script:rep += ("   " + $s2.ToString() + " | " + $s1.ToString())
-        $script:n++
-      }
-      return $true
-    }
-    [void][WP]::EnumChildWindows($t, $cbc, [IntPtr]::Zero)
-    if ($script:n -eq 0) { $script:rep += "   (custom drawn, no controls)" }
-  }
-  $script:rep | Out-File -FilePath (Join-Path $DataPath "probe_result.txt") -Encoding UTF8
-} catch {
-  ("probe failed: " + $_) | Out-File -FilePath (Join-Path $DataPath "probe_result.txt") -Encoding UTF8
+function Get-BoardHash($bmp) {
+  # MD5 over the image below the clock strip; PowerShell 2.0 has no Get-FileHash
+  $h = $bmp.Height - $SKIP_TOP_PX
+  if ($h -lt 10) { $h = $bmp.Height }
+  $rect = New-Object System.Drawing.Rectangle 0, $SKIP_TOP_PX, $bmp.Width, $h
+  $part = $bmp.Clone($rect, $bmp.PixelFormat)
+  $ms = New-Object System.IO.MemoryStream
+  $part.Save($ms, [System.Drawing.Imaging.ImageFormat]::Bmp)
+  $bytes = $ms.ToArray()
+  $ms.Close()
+  $part.Dispose()
+  $md5 = [System.Security.Cryptography.MD5]::Create()
+  $sum = $md5.ComputeHash($bytes)
+  return [System.BitConverter]::ToString($sum)
 }
 
-Set-Location $DataPath
-cmd /c "git add -A" 2>&1 | Out-Null
-cmd /c "git commit --amend -m board --allow-empty" 2>&1 | Out-Null
-cmd /c "git push --force origin data" 2>&1 | Out-Null
+function Push-Board {
+  Set-Location $DataPath
+  cmd /c "git add -A" 2>&1 | Out-Null
+  cmd /c "git commit --amend -m board --allow-empty" 2>&1 | Out-Null
+  cmd /c "git push --force origin data" 2>&1 | Out-Null
+}
+
+$stateFile = Join-Path $DataPath "last_hash.txt"
+$lastHash = ""
+if (Test-Path $stateFile) { $lastHash = (Get-Content $stateFile -ErrorAction SilentlyContinue | Select-Object -First 1) }
+
+$lastPush = [DateTime]::MinValue
+$pushFile = Join-Path $DataPath "last_update.txt"
+if (Test-Path $pushFile) {
+  try { $lastPush = [DateTime]::Parse((Get-Content $pushFile | Select-Object -First 1)).ToUniversalTime() } catch { }
+}
+
+$bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+
+for ($i = 0; $i -lt $SHOTS; $i++) {
+  $started = Get-Date
+
+  $bmp = New-Object System.Drawing.Bitmap $bounds.Width, $bounds.Height
+  $g = [System.Drawing.Graphics]::FromImage($bmp)
+  $g.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+
+  $hash = ""
+  try { $hash = Get-BoardHash $bmp } catch { $hash = "" }
+
+  $age = ([DateTime]::UtcNow - $lastPush).TotalSeconds
+  $changed = ($hash -eq "") -or ($hash -ne $lastHash)
+
+  if ($changed -or ($age -ge $HEARTBEAT_SEC)) {
+    $bmp.Save((Join-Path $DataPath $ImageName), [System.Drawing.Imaging.ImageFormat]::Png)
+    ([DateTime]::UtcNow).ToString("yyyy-MM-ddTHH:mm:ssZ") | Out-File -FilePath $pushFile -Encoding ascii
+    $hash | Out-File -FilePath $stateFile -Encoding ascii
+    Push-Board
+    $lastHash = $hash
+    $lastPush = [DateTime]::UtcNow
+  }
+
+  $g.Dispose()
+  $bmp.Dispose()
+
+  if ($i -lt ($SHOTS - 1)) {
+    $spent = ((Get-Date) - $started).TotalSeconds
+    $wait = $SHOT_INTERVAL - $spent
+    if ($wait -gt 0) { Start-Sleep -Seconds ([int]$wait) }
+  }
+}
