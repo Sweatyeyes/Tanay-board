@@ -99,6 +99,13 @@
   .opt small { display:block; color:var(--mut); font-size:12px; margin-top:2px; }
   .warn { font-size:12px; color:var(--gold); line-height:1.5; margin-top:10px;
           border-top:1px solid var(--line2); padding-top:10px; }
+  .diag { font-size:11px; color:rgba(255,255,255,.45); line-height:1.6; margin-top:8px;
+          font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .testbtn { margin-top:10px; background:rgba(10,7,20,.3); color:var(--mut);
+             border:1px solid var(--line); padding:8px 14px; font-family:inherit;
+             font-size:12px; font-weight:800; letter-spacing:.05em;
+             text-transform:uppercase; cursor:pointer; }
+  .testbtn:active { background:rgba(255,255,255,.08); }
 
   .msg { background:rgba(120,20,10,.4); color:#ffb3a6; border:1px solid rgba(255,122,77,.5);
          border-left:4px solid var(--orange); padding:12px 14px; margin-bottom:12px;
@@ -179,6 +186,8 @@
   <label class="opt"><input type="checkbox" id="optNotify">
     <span>Уведомления<small id="notifyState">запись во взлёт, готовность 15 и 5 минут</small></span></label>
   <div class="warn" id="notifyWarn"></div>
+  <div class="diag" id="notifyDiag"></div>
+  <button class="testbtn" id="notifyTest">Проверить уведомление</button>
 </div>
 
 <div id="app"><div class="note">Загрузка…</div></div>
@@ -268,14 +277,33 @@
   var swReg = null;
   function notifySupported() { return 'Notification' in window; }
 
+  // Сервис-воркер нужен для показа уведомлений: на iPhone это вообще
+  // единственный работающий способ, а он есть не сразу - регистрацию
+  // приходится дожидаться.
+  function ensureSw() {
+    if (swReg) return Promise.resolve(swReg);
+    if (!('serviceWorker' in navigator)) return Promise.resolve(null);
+    return navigator.serviceWorker.register('sw.js')
+      .then(function () { return navigator.serviceWorker.ready; })
+      .then(function (reg) { swReg = reg; return reg; })
+      .catch(function () { return null; });
+  }
+
   function showNote(title, body, tag) {
     var opts = { body: body, tag: tag, icon: 'icon-192.png', badge: 'icon-192.png',
                  renotify: true, vibrate: [120, 60, 120] };
-    try {
-      if (swReg && swReg.showNotification) swReg.showNotification(title, opts);
-      else new Notification(title, opts);
-    } catch (e) {}
+    return ensureSw().then(function (reg) {
+      if (reg && reg.showNotification) return reg.showNotification(title, opts);
+      try { new Notification(title, opts); } catch (e) {
+        lastNoteError = String(e && e.message || e);
+        renderNotifyState();
+      }
+    }).catch(function (e) {
+      lastNoteError = String(e && e.message || e);
+      renderNotifyState();
+    });
   }
+  var lastNoteError = '';
 
   function loadNumber(title) {
     var m = String(title || '').match(/(\d+)\s*взл/i);
@@ -345,6 +373,8 @@
   var inputEl = document.getElementById('watchInput');
   var optNotify = document.getElementById('optNotify');
   var notifyWarn = document.getElementById('notifyWarn');
+  var notifyDiag = document.getElementById('notifyDiag');
+  var notifyTest = document.getElementById('notifyTest');
 
   function renderChips() {
     var html = '';
@@ -357,20 +387,40 @@
     gear.className = watch.length ? 'gear on' : 'gear';
   }
 
+  function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches
+        || window.navigator.standalone === true;
+  }
+
   function renderNotifyState() {
     optNotify.checked = notifyOn && notifySupported() && Notification.permission === 'granted';
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || '');
     var warn = '';
     if (!notifySupported()) {
-      warn = 'Этот браузер не умеет уведомления. На iPhone они работают только '
-           + 'в приложении, добавленном на экран «Домой».';
+      warn = isIOS && !isStandalone()
+        ? 'На iPhone уведомления работают только в приложении, добавленном на экран «Домой» '
+          + '(«Поделиться» → «На экран Домой»), и на iOS 16.4 или новее. В Safari их не будет.'
+        : 'Этот браузер не умеет уведомления.';
     } else if (Notification.permission === 'denied') {
-      warn = 'Уведомления запрещены в настройках браузера для этого сайта — '
+      warn = 'Уведомления запрещены для этого сайта в настройках телефона — '
            + 'разрешите их там, иначе приложение не сможет ничего прислать.';
+    } else if (isIOS && !isStandalone()) {
+      warn = 'Сейчас страница открыта в браузере. На iPhone уведомления приходят только '
+           + 'из приложения, добавленного на экран «Домой».';
     } else if (notifyOn) {
       warn = 'Уведомления приходят, пока приложение открыто или свёрнуто в фоне. '
            + 'Если закрыть его полностью, телефон перестанет проверять табло.';
     }
     notifyWarn.innerHTML = warn;
+
+    // видимая диагностика: чтобы не гадать, что именно не сработало
+    var d = [];
+    d.push('разрешение: ' + (notifySupported() ? Notification.permission : 'не поддерживается'));
+    d.push('режим: ' + (isStandalone() ? 'приложение' : 'браузер'));
+    d.push('воркер: ' + (swReg ? 'готов' : ('serviceWorker' in navigator ? 'не запущен' : 'нет')));
+    if (watch.length) d.push('слежу за: ' + watch.join(', '));
+    if (lastNoteError) d.push('ошибка показа: ' + lastNoteError);
+    notifyDiag.innerHTML = esc(d.join(' · '));
   }
 
   gear.addEventListener('click', function () {
@@ -408,10 +458,26 @@
     Notification.requestPermission().then(function (p) {
       notifyOn = (p === 'granted');
       save('tanay_notify', notifyOn);
+      lastNoteError = '';
       renderNotifyState();
-      if (notifyOn) showNote('Уведомления включены',
-        'Сообщу, когда ваша фамилия появится во взлёте.', 'test');
+      if (notifyOn) {
+        return ensureSw().then(function () {
+          return showNote('Уведомления включены',
+                          'Сообщу, когда ваша фамилия появится во взлёте.', 'test');
+        }).then(renderNotifyState);
+      }
     });
+  });
+
+  notifyTest.addEventListener('click', function () {
+    lastNoteError = '';
+    if (!notifySupported()) { renderNotifyState(); return; }
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission().then(function () { renderNotifyState(); });
+      return;
+    }
+    showNote('Проверка', 'Если вы это видите — уведомления работают.',
+             'test' + Date.now()).then(renderNotifyState);
   });
 
   // ---------- отрисовка табло ----------
