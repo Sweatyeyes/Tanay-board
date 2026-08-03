@@ -37,13 +37,18 @@ def cells():
     for snap in SNAPS:
         img_path = os.path.join(HERE, "source-%d.png" % snap)
         truth_path = os.path.join(HERE, "truth%d.json" % snap)
-        if not (os.path.exists(img_path) and os.path.exists(truth_path)):
+        if not os.path.exists(img_path):
+            print("нет файла:", img_path)
+            continue
+        if not os.path.exists(truth_path):
+            print("нет файла:", truth_path)
             continue
         truth = json.load(open(truth_path, encoding="utf-8"))["panels"]
         im = Image.open(img_path).convert("RGB")
         arr = np.array(im).astype(int)
         bands = R.find_bands(arr)
         if not bands:
+            print("панели не найдены на", os.path.basename(img_path))
             continue
         panels, top, bottom = bands[0]
         origin, pitch, n_rows = R.fit_grid(arr, panels[0][0], panels[0][1], top, bottom)
@@ -131,6 +136,11 @@ def score(run, data, limit=None):
 
 def main():
     want_engines = sys.argv[1:] or list(ENGINES)
+    print("папка замера:", HERE)
+    try:
+        print("что в ней лежит:", sorted(os.listdir(HERE)))
+    except Exception as e:
+        print("не читается:", e)
     data = cells()
     print("ячеек для проверки: %d" % len(data))
     if not data:
