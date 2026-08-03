@@ -64,6 +64,17 @@ def canon_cat(text):
 CAT_CANON = {canon_cat(c): c for c in KNOWN_CATS if not c.startswith("AFF")}
 CAT_CANON["ФЕ"] = "ФВ"   # Е вместо В - частая ошибка на этом шрифте
 
+# Борта аэродрома и число мест. Вместимость всё равно меряется по табло
+# (сколько строк закрашено зелёным), таблица нужна как подстраховка, когда
+# борт только что отправлен и зелёных строк уже нет.
+# Ан-2 - уточнить: бывает 10 или 12, пока берём по табло.
+AIRCRAFT = [
+    ("Л-410", ["Л-410", "Л410", "L-410", "L410"], 18),
+    ("Ан-2",  ["Ан-2", "Ан2", "AH-2", "AN-2"],    None),
+    ("Ми-2",  ["Ми-2", "Ми2", "MU-2", "MN-2"],    7),
+    ("Ми-8",  ["Ми-8", "Ми8", "MU-8", "MN-8"],    18),
+]
+
 TESS_RU = "--oem 1 --psm 7 -l rus"
 TESS_MIX = "--oem 1 --psm 7 -l rus+eng"
 TESS_MIX8 = "--oem 1 --psm 8 -l rus+eng"
@@ -471,6 +482,16 @@ def update_history(history, loads):
     return out
 
 
+def detect_aircraft(title):
+    """Определяет борт по заголовку взлёта. Возвращает (имя, число мест)."""
+    t = re.sub(r"[\s.]", "", (title or "").upper()).replace("O", "О")
+    for name, variants, seats in AIRCRAFT:
+        for v in variants:
+            if re.sub(r"[\s.]", "", v.upper()) in t:
+                return name, seats
+    return "", None
+
+
 def normalize_name(name):
     """Подгоняет распознанную строку к каноническому виду.
 
@@ -640,41 +661,35 @@ def not_background(arr):
     return np.abs(arr - bg).sum(axis=2) > 90
 
 
-def find_table(arr):
-    """Находит панели по горизонтали и границы таблицы по вертикали.
-
-    Окно RMS может съезжать, поэтому ничего не задаём числами - ищем каждый раз.
-    Возвращает (список панелей, верх, низ) или (None, None, None).
-    """
-    mask = not_background(arr)
-    h, w = mask.shape
-
-    # 1. Панели по столбцам: у панели почти вся высота столбца - не фон
-    colsum = mask.sum(axis=0)
-    thr_col = h * 0.35
+def _panels_in(mask, y0, y1, min_width=60):
+    """Ищет панели по столбцам внутри полосы строк [y0, y1)."""
+    band = mask[y0:y1, :]
+    bh, w = band.shape
+    colsum = band.sum(axis=0)
+    thr = bh * 0.35
     panels, inside, s = [], False, 0
     for x in range(w):
-        if colsum[x] > thr_col and not inside:
+        if colsum[x] > thr and not inside:
             inside, s = True, x
-        elif colsum[x] <= thr_col and inside:
+        elif colsum[x] <= thr and inside:
             inside = False
-            if x - s > 100:
+            if x - s > min_width:
                 panels.append((s, x))
-    if inside and w - s > 100:
+    if inside and w - s > min_width:
         panels.append((s, w))
-    if not panels:
-        return None, None, None
+    return panels
 
-    # 2. Верх и низ меряем по самой панели: её строки заполнены целиком
-    x0, x1 = panels[0]
-    inner = mask[:, x0 + 3:x1 - 3]
+
+def _edges(mask, x0, x1, y0, y1):
+    """Верх и низ таблицы внутри панели: её строки заполнены целиком."""
+    inner = mask[y0:y1, x0 + 3:x1 - 3]
+    if inner.shape[1] < 5:
+        return None, None
     need = inner.shape[1] * 0.9
-    rows = [y for y in range(h) if inner[y].sum() >= need]
+    rows = [y for y in range(inner.shape[0]) if inner[y].sum() >= need]
     if not rows:
-        return panels, None, None
-
-    groups, start = [], None
-    prev = None
+        return None, None
+    groups, start, prev = [], None, None
     for y in rows:
         if start is None:
             start = y
@@ -683,7 +698,48 @@ def find_table(arr):
         prev = y
     groups.append((start, prev + 1))
     top, bottom = max(groups, key=lambda g: g[1] - g[0])
-    return panels, top, bottom
+    return top + y0, bottom + y0
+
+
+def find_bands(arr):
+    """Находит ряды таблиц: панели могут идти в один ряд, а могут в два.
+
+    Табло иногда показывает не 4 панели, а 8 - тогда они лягут двумя
+    рядами. Поэтому сначала ищем горизонтальные полосы с таблицами, и
+    уже внутри каждой полосы - панели и границы строк. Один ряд -
+    поведение прежнее.
+
+    Возвращает список (панели, верх, низ), сверху вниз.
+    """
+    mask = not_background(arr)
+    h, w = mask.shape
+
+    # полосы: строки, где заметная часть ширины занята не фоном
+    rowsum = mask.sum(axis=1)
+    thr_row = w * 0.30
+    bands, inside, s = [], False, 0
+    for y in range(h):
+        if rowsum[y] > thr_row and not inside:
+            inside, s = True, y
+        elif rowsum[y] <= thr_row and inside:
+            inside = False
+            if y - s > 40:
+                bands.append((s, y))
+    if inside and h - s > 40:
+        bands.append((s, h))
+    if not bands:
+        bands = [(0, h)]
+
+    out = []
+    for (by0, by1) in bands:
+        panels = _panels_in(mask, by0, by1)
+        if not panels:
+            continue
+        top, bottom = _edges(mask, panels[0][0], panels[0][1], by0, by1)
+        if top is None:
+            continue
+        out.append((panels, top, bottom))
+    return out
 
 
 def fit_grid(arr, x0, x1, top, bottom, default=17.85):
@@ -777,45 +833,60 @@ def main():
     from datetime import datetime
     result["updated"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    panels, top, bottom = find_table(arr)
+    bands = find_bands(arr)
 
     # Если панелей нет - скорее всего RMS показывает заглушку "Подключение..."
-    if not panels or top is None:
+    if not bands:
         result["status"] = "no_board"
         with open(dst, "w", encoding="utf-8") as f:
             json.dump(result, f, ensure_ascii=False, indent=1)
         print("панели не найдены - похоже, табло сейчас не показывается")
         return
 
-    origin, pitch, n_rows = fit_grid(arr, panels[0][0], panels[0][1], top, bottom)
-    result["grid"] = {"top": top, "bottom": bottom, "origin": round(origin, 2),
-                      "pitch": round(pitch, 3), "rows": n_rows,
-                      "panels": [list(p) for p in panels]}
+    top0 = bands[0][1]            # верх самого первого ряда - под ним шапка
+    bottom_last = bands[-1][2]    # низ последнего ряда - под ним сообщение
+    result["grid"] = {"bands": []}
 
     # шапка находится над таблицей, её положение тоже плавает вместе с окном
-    hy0 = max(0, top - 58)
-    hy1 = max(1, top - 26)
+    hy0 = max(0, top0 - 58)
+    hy1 = max(hy0 + 1, top0 - 26)
     result["clock"] = ocr(im.crop((0, hy0, 420, hy1)), cfg=TESS_MIX)
     result["work_until"] = ocr(im.crop((max(0, W - 420), hy0, W, hy1)), cfg=TESS_MIX)
 
     # ---- сообщение внизу (под таблицей) ----
-    msg_crop = im.crop((0, min(H - 1, bottom + 90), W, min(H, bottom + 190)))
+    msg_crop = im.crop((0, min(H - 1, bottom_last + 90), W, min(H, bottom_last + 190)))
     msg_arr = np.array(msg_crop).astype(int)
     if (msg_arr.sum(axis=2) < 200).mean() > 0.002:
         result["message"] = ocr(msg_crop, cfg=TESS_RU, invert=False, scale=2)
 
     draw = ImageDraw.Draw(im) if dbg else None
 
-    # ---- панели ----
-    for pi, (x0, x1) in enumerate(panels):
+    # ---- ряды таблиц, в каждом - свои панели ----
+    pi = -1
+    for panels, top, bottom in bands:
+      origin, pitch, n_rows = fit_grid(arr, panels[0][0], panels[0][1], top, bottom)
+      result["grid"]["bands"].append(
+          {"top": top, "bottom": bottom, "origin": round(origin, 2),
+           "pitch": round(pitch, 3), "rows": n_rows,
+           "panels": [list(p) for p in panels]})
+
+      for (x0, x1) in panels:
+        pi += 1
         pw = x1 - x0
-        title = ocr(im.crop((max(0, x0 - 10), max(0, top - 26), x1 + 10, top - 3)),
-                    cfg=TESS_MIX)
+        # заголовок взлёта над панелью; у верхнего ряда места может не хватать
+        ty_a = max(0, top - 26)
+        ty_b = max(ty_a + 1, top - 3)
+        title = ocr(im.crop((max(0, x0 - 10), ty_a, x1 + 10, ty_b)), cfg=TESS_MIX)
         # на табло пишут "готов 5 мин." - на странице хотим "готовность"
         title = re.sub(r"\bготов\b", "готовность", title)
 
-        load = {"index": pi + 1, "title": title, "capacity": n_rows,
-                "rows": [], "free_from": None, "free": 0}
+        # capacity считаем по самому табло: занятые + свободные строки.
+        # Это вместимость борта (у Л-410 - 18), а не высота сетки: ниже
+        # последней строки идёт чёрное поле, оно к местам отношения не имеет.
+        craft, craft_seats = detect_aircraft(title)
+        load = {"index": pi + 1, "title": title, "aircraft": craft,
+                "capacity": 0, "rows": [], "free_from": None, "free": 0}
+        seats = 0
 
         for r in range(n_rows):
             ry0 = int(round(origin + r * pitch))
@@ -833,6 +904,8 @@ def main():
                          "empty": (80, 80, 80)}[kind]
                 draw.rectangle([x0, ry0, x1 - 1, ry1 - 1], outline=color)
 
+            if kind in ("free", "filled"):
+                seats = r + 1          # последняя непустая строка панели
             if kind == "free":
                 load["free"] += 1
                 if load["free_from"] is None:
@@ -890,6 +963,12 @@ def main():
                 "_conf": name_conf,
             })
 
+        # мест на борту: меряем по табло, но у отправленного взлёта зелёных
+        # строк уже нет - тогда берём из таблицы бортов
+        load["capacity"] = seats or craft_seats or 0
+        if craft_seats and seats and seats != craft_seats:
+            sys.stderr.write("панель %d: на табло %d мест, у %s обычно %d\n"
+                             % (pi + 1, seats, craft, craft_seats))
         if load["rows"] or load["free_from"]:
             result["loads"].append(load)
 
