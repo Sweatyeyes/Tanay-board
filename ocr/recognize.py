@@ -12,6 +12,7 @@ import json
 import os
 import re
 import sys
+import time
 import difflib
 
 import numpy as np
@@ -225,6 +226,9 @@ def ocr_best(img, cfg=TESS_RU):
         text, conf = ocr_with_conf(prep(img, scale=scale, smooth=True), cfg)
         if conf > best_conf and text:
             best_text, best_conf = text, conf
+        # уверенное чтение - второй прогон не нужен
+        if best_conf >= 88:
+            break
     if not best_text:
         best_text = ocr(img, cfg=cfg)
     return best_text, best_conf
@@ -593,19 +597,27 @@ def ocr_category(img):
     """
     if img.width < 3 or img.height < 3:
         return []
+    # готовим картинки лениво: часто хватает первых двух прогонов
     variants = [
-        (prep(img), TESS_MIX8),
-        (prep(img, smooth=True), TESS_MIX),
-        (prep(img), TESS_RU),
-        (prep(img, scale=6, smooth=True), TESS_MIX),
+        (lambda: prep(img), TESS_MIX8),
+        (lambda: prep(img, smooth=True), TESS_MIX),
+        (lambda: prep(img), TESS_RU),
+        (lambda: prep(img, scale=6, smooth=True), TESS_MIX),
     ]
     raws = []
-    for p, cfg in variants:
+    for i, (mk, cfg) in enumerate(variants):
         try:
-            raws.append(pytesseract.image_to_string(p, config=cfg).strip())
+            raws.append(pytesseract.image_to_string(mk(), config=cfg).strip())
         except Exception as e:
             sys.stderr.write("ocr error: %s\n" % e)
             raws.append("")
+        # ранний выход: два прогона сошлись на известной категории -
+        # остальные ничего не изменят, а время экономят заметно
+        if i >= 1:
+            good = [normalize_category(x) for x in raws]
+            good = [g for g in good if g in KNOWN_CATS or g == "???"]
+            if len(good) >= 2 and good[0] == good[1]:
+                break
     if not any(raws):
         try:
             raws.append(pytesseract.image_to_string(
@@ -802,7 +814,46 @@ def classify_row(cell):
     return "empty"
 
 
+def recognize_row(job):
+    """Распознаёт одну строку: имя и категорию. Вызывается из нескольких потоков.
+
+    Tesseract работает отдельным процессом, поэтому потоки дают настоящее
+    ускорение - на четырёх ядрах раннера примерно вчетверо.
+    """
+    name_cell, cat_cell = job["name_cell"], job["cat_cell"]
+
+    name_txt, name_conf = ocr_best(name_cell)
+    name = normalize_name(name_txt.replace("|", "").strip())
+    is_service = name.startswith("КВОРУМ") or name == "(Вып.)"
+    is_staff = False
+    if not is_service:
+        name, is_staff = match_staff(name)
+
+    cat_raws = ocr_category(cat_cell)
+    cat = pick_category(cat_raws, is_service)
+    cat_raw = next((x for x in cat_raws if x), "")
+    # спасательный проход: если ансамбль дал мусор, пробуем
+    # увеличение x8 - оно вытаскивает совсем мелкие ячейки
+    if cat not in KNOWN_CATS and cat != "???":
+        for scale in (8, 6):
+            try:
+                r2 = pytesseract.image_to_string(
+                    prep(cat_cell, scale=scale), config=TESS_MIX8).strip()
+            except Exception:
+                continue
+            n2 = normalize_category(r2)
+            if n2 in KNOWN_CATS:
+                cat, cat_raw = n2, r2
+                break
+
+    job["result"] = {"n": job["n"], "name": name, "staff": is_staff,
+                     "cat": cat, "cat_raw": cat_raw, "_conf": name_conf,
+                     "service": is_service}
+    return job
+
+
 def main():
+    t_start = time.time()
     src = sys.argv[1] if len(sys.argv) > 1 else "board.png"
     dst = sys.argv[2] if len(sys.argv) > 2 else "board.json"
     dbg = sys.argv[3] if len(sys.argv) > 3 else None
@@ -860,6 +911,7 @@ def main():
         result["message"] = ocr(msg_crop, cfg=TESS_RU, invert=False, scale=2)
 
     draw = ImageDraw.Draw(im) if dbg else None
+    jobs = []          # что распознавать; сами прогоны идут ниже, параллельно
 
     # ---- ряды таблиц, в каждом - свои панели ----
     pi = -1
@@ -920,48 +972,10 @@ def main():
             cx1 = x0 + int(pw * COL_CAT[1])
 
             name_cell = im.crop((nx0, ty0, nx1, ty1))
-            name_txt, name_conf = ocr_best(name_cell)
-            name = normalize_name(name_txt.replace("|", "").strip())
-            is_service = name.startswith("КВОРУМ") or name == "(Вып.)"
-            is_staff = False
-            if not is_service:
-                name, is_staff = match_staff(name)
-
             cat_cell = im.crop((cx0, ty0, cx1, ty1))
-            cat_raws = ocr_category(cat_cell)
-            cat = pick_category(cat_raws, is_service)
-            cat_raw = next((r for r in cat_raws if r), "")
-            # спасательный проход: если ансамбль дал мусор, пробуем
-            # увеличение x8 - оно вытаскивает совсем мелкие ячейки
-            if cat not in KNOWN_CATS and cat != "???":
-                for scale in (8, 6):
-                    try:
-                        r2 = pytesseract.image_to_string(
-                            prep(cat_cell, scale=scale), config=TESS_MIX8).strip()
-                    except Exception:
-                        continue
-                    n2 = normalize_category(r2)
-                    if n2 in KNOWN_CATS:
-                        cat, cat_raw = n2, r2
-                        break
-
-            # шум на пустых строках (курсор, блики): пары букв вместо имени
-            # и мусор вместо категории - такую строку выбрасываем
-            letters = re.sub(r"[^А-Яа-яЁёA-Za-z]", "", name)
-            if not is_service and len(letters) < 4 and cat not in KNOWN_CATS:
-                continue
-
-            # копим образцы того, что видит распознаватель
-            if len(SAMPLES) < 12:
-                SAMPLES.append((name_cell.copy(), prep(name_cell)))
-            load["rows"].append({
-                "n": r + 1,
-                "name": name,
-                "staff": is_staff,
-                "cat": cat,
-                "cat_raw": cat_raw,
-                "_conf": name_conf,
-            })
+            # сами прогоны распознавания делаются позже и параллельно
+            jobs.append({"load": load, "n": r + 1,
+                         "name_cell": name_cell, "cat_cell": cat_cell})
 
         # мест на борту: меряем по табло, но у отправленного взлёта зелёных
         # строк уже нет - тогда берём из таблицы бортов
@@ -969,8 +983,38 @@ def main():
         if craft_seats and seats and seats != craft_seats:
             sys.stderr.write("панель %d: на табло %d мест, у %s обычно %d\n"
                              % (pi + 1, seats, craft, craft_seats))
-        if load["rows"] or load["free_from"]:
+        if load["rows"] or load["free_from"] or jobs:
             result["loads"].append(load)
+
+    # ---- само распознавание: параллельно по числу ядер ----
+    if jobs:
+        workers = min(8, max(2, (os.cpu_count() or 2)))
+        try:
+            from concurrent.futures import ThreadPoolExecutor
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                list(pool.map(recognize_row, jobs))
+        except Exception as e:
+            sys.stderr.write("параллельный режим не вышел (%s), считаю по очереди\n" % e)
+            for job in jobs:
+                recognize_row(job)
+
+        for job in jobs:
+            res = job.get("result")
+            if not res:
+                continue
+            # шум на пустых строках (курсор, блики): пара букв вместо имени
+            # и мусор вместо категории - такую строку выбрасываем
+            letters = re.sub(r"[^А-Яа-яЁёA-Za-z]", "", res["name"])
+            if not res["service"] and len(letters) < 4 and res["cat"] not in KNOWN_CATS:
+                continue
+            res.pop("service", None)
+            job["load"]["rows"].append(res)
+
+        for l in result["loads"]:
+            l["rows"].sort(key=lambda r0: r0["n"])
+
+    # панели, где после отсева ничего не осталось, на страницу не выводим
+    result["loads"] = [l for l in result["loads"] if l["rows"] or l["free_from"]]
 
     reconcile_names(result["loads"], history)
     for l in result["loads"]:
@@ -1003,7 +1047,9 @@ def main():
             sheet.save(os.path.join(os.path.dirname(dbg) or ".", "cells.png"))
 
     total = sum(len(l["rows"]) for l in result["loads"])
-    print("панелей: %d, распознано строк: %d" % (len(panels), total))
+    n_panels = sum(len(b[0]) for b in bands)
+    print("панелей: %d, распознано строк: %d, время: %.1f с"
+          % (n_panels, total, time.time() - t_start))
     print("сообщение: %r" % result["message"])
 
 
