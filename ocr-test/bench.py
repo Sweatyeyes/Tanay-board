@@ -94,18 +94,85 @@ def engine_easyocr():
 
 def engine_paddle():
     from paddleocr import PaddleOCR
-    ocr = PaddleOCR(lang="cyrillic", use_angle_cls=False, show_log=False)
+    # имя набора для кириллицы у разных версий разное - пробуем по очереди
+    ocr, last = None, None
+    for lang in ("ru", "cyrillic", "rus"):
+        for kw in ({"lang": lang}, {"lang": lang, "use_angle_cls": False}):
+            try:
+                ocr = PaddleOCR(**kw)
+                print("   paddle: язык %r" % lang)
+                break
+            except Exception as e:
+                last = e
+        if ocr: break
+    if ocr is None:
+        raise RuntimeError("ни один язык не подошёл: %s" % last)
 
     def run(img):
-        res = ocr.ocr(np.array(upscale(img)), cls=False)
+        a = np.array(upscale(img))
+        try:
+            res = ocr.predict(a)              # новый API (3.x)
+            if isinstance(res, list) and res and isinstance(res[0], dict):
+                return " ".join(res[0].get("rec_texts", [])).strip()
+        except Exception:
+            pass
+        res = ocr.ocr(a)                      # старый API (2.x)
         if not res or not res[0]:
             return ""
-        return " ".join(line[1][0] for line in res[0]).strip()
+        out = []
+        for line in res[0]:
+            try: out.append(line[1][0])
+            except Exception: pass
+        return " ".join(out).strip()
+    return run
+
+
+def _post(text):
+    """Наша постобработка: чистка, словарь имён, список стаффа."""
+    name = R.normalize_name(str(text).replace("|", "").strip())
+    if not name.startswith("КВОРУМ") and name != "(Вып.)":
+        name, _ = R.match_staff(name)
+    return name
+
+
+def engine_easy_post():
+    """EasyOCR плюс наша постобработка - так работал бы рабочий конвейер."""
+    raw = engine_easyocr()
+    return lambda img: _post(raw(img))
+
+
+def engine_duet():
+    """Два движка вместе: где расходятся - берём ответ, похожий на фамилию.
+
+    Ошибки у Tesseract и EasyOCR почти не пересекаются, поэтому если один
+    из них дал знакомого стаффа или осмысленное имя - берём его.
+    """
+    t = engine_tesseract()
+    e = engine_easyocr()
+
+    def run(img):
+        a = t(img)
+        b = _post(e(img))
+        if a == b:
+            return a
+        # предпочитаем вариант, совпавший со списком стаффа
+        for cand in (a, b):
+            parts = cand.split()
+            if len(parts) >= 2 and R.match_staff(" ".join(parts[:2]))[1]:
+                return cand
+        # иначе - тот, где имя нашлось в словаре имён
+        for cand in (b, a):
+            parts = cand.split()
+            if len(parts) >= 2 and parts[1] in R.FIRST_NAMES:
+                return cand
+        return b
     return run
 
 
 ENGINES = {"tesseract": engine_tesseract,
            "easyocr": engine_easyocr,
+           "easy_post": engine_easy_post,
+           "duet": engine_duet,
            "paddle": engine_paddle}
 
 
