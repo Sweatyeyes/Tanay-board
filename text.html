@@ -567,7 +567,10 @@
   });
 
   function fetchJson(url) {
-    return fetch(url + '?t=' + Date.now(), { cache: 'no-store' })
+    // метка ?app нужна только для счётчика: так видно, сколько людей
+    // смотрят табло из приложения, а сколько из браузера
+    var mark = isStandalone() ? '&app=1' : '';
+    return fetch(url + '?t=' + Date.now() + mark, { cache: 'no-store' })
       .then(function(r){ return r.ok ? r.json() : Promise.reject(); });
   }
 
