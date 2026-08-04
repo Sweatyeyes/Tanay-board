@@ -510,14 +510,21 @@
 
     renderEvents();
 
-    // видимая диагностика: чтобы не гадать, что именно не сработало
-    var d = [];
-    d.push('разрешение: ' + (notifySupported() ? Notification.permission : 'не поддерживается'));
-    d.push('режим: ' + (isStandalone() ? 'приложение' : 'браузер'));
-    d.push('воркер: ' + (swReg ? 'готов' : ('serviceWorker' in navigator ? 'не запущен' : 'нет')));
-    if (watch.length) d.push('слежу за: ' + watch.join(', '));
-    if (lastNoteError) d.push('ошибка показа: ' + lastNoteError);
-    notifyDiag.innerHTML = esc(d.join(' · '));
+    // Подробности показываем только когда что-то не так: обычному человеку
+    // эта строка не нужна, а при разборе поломки без неё тяжело.
+    var trouble = lastNoteError
+      || (notifySupported() && Notification.permission === 'denied')
+      || (notifyOn && notifySupported() && Notification.permission === 'granted' && !swReg);
+    if (trouble) {
+      var d = [];
+      d.push('разрешение: ' + (notifySupported() ? Notification.permission : 'не поддерживается'));
+      d.push('режим: ' + (isStandalone() ? 'приложение' : 'браузер'));
+      d.push('воркер: ' + (swReg ? 'готов' : ('serviceWorker' in navigator ? 'не запущен' : 'нет')));
+      if (lastNoteError) d.push('ошибка показа: ' + lastNoteError);
+      notifyDiag.innerHTML = esc(d.join(' · '));
+    } else {
+      notifyDiag.innerHTML = '';
+    }
   }
 
   gear.addEventListener('click', function () {
