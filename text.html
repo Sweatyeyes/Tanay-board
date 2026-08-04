@@ -167,6 +167,23 @@
               background:rgba(20,25,8,.3); padding:5px 11px; }
 
   .note { color:var(--mut); font-size:15px; line-height:1.6; padding:20px 4px; }
+
+  /* На широком экране показываем табло целиком: взлёты рядом, всё развёрнуто,
+     сворачивать нечего. Раскладка сама выбирает число колонок по ширине. */
+  @media (min-width: 900px) {
+    body { padding:18px 20px 4px; }
+    .loads { display:grid; gap:14px; align-items:stretch;
+             grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); }
+    .load { margin-bottom:0; display:flex; flex-direction:column; }
+    .load h2 { cursor:default; min-height:58px; align-items:flex-start; }
+    .load.closed .body, .load.closed .fill { display:block; }
+    .brand img { height:64px; }
+    /* строки одной высоты - тогда соседние взлёты идут строка в строку */
+    .row { font-size:15px; height:30px; padding:0; align-items:center; }
+    .row.empty .name, .row.empty .cat { color:transparent; }
+    .row.empty { border-bottom-color:rgba(255,255,255,.06); }
+    .freechip { display:none; }
+  }
   a.switch { display:block; text-align:center; color:rgba(255,255,255,.45); font-size:13px;
              text-decoration:none; padding:16px; }
   a.switch:hover { color:var(--text); }
@@ -249,6 +266,11 @@
   function loadKey(L, i) {
     var n = loadNumber(L.title);
     return n ? 'L' + n : 'i' + i;
+  }
+
+  // широкий экран - монитор или ноутбук: там табло показываем целиком
+  function wide() {
+    return window.matchMedia('(min-width: 900px)').matches;
   }
 
   function esc(s) {
@@ -587,13 +609,16 @@
 
     if (!loads.length && d.status !== 'no_board') html += '<div class="note">Пока никого не записано.</div>';
 
+    html += '<div class="loads">';
+
     for (var i = 0; i < loads.length; i++) {
       var L = loads[i], rows = L.rows || [];
       var seats = L.free_from ? (L.free_from - 1) : rows.length;
       var denom = Math.max(seats, 18);
       var pct = Math.min(100, Math.round(rows.length / denom * 100));
       var key = loadKey(L, i);
-      var closed = opened[key] ? '' : ' closed';    // по умолчанию свёрнуто
+      // на широком экране показываем всё сразу, память о свёрнутых не в счёт
+      var closed = (wide() || opened[key]) ? '' : ' closed';
       var full = (!L.free_from && rows.length) ? ' full' : '';
       var hasMine = false;
       for (var m = 0; m < rows.length; m++) {
@@ -605,28 +630,53 @@
       html += '<span class="count">' + rows.length + (L.capacity ? ' / ' + L.capacity : '') + '</span></h2>';
       html += '<div class="fill"><i style="width:' + pct + '%"></i></div>';
       html += '<div class="body">';
-      for (var j = 0; j < rows.length; j++) {
-        var r = rows[j];
-        var service = isService(r);
-        var cls = 'row' + (r.staff ? ' staff' : '') + (service ? ' service' : '')
-                + (!service && isWatched(r.name) ? ' me' : '');
-        html += '<div class="' + cls + '"><span class="num">' + esc(r.n) + '</span>'
-             +  '<span class="name">' + esc(r.name) + '</span>'
-             +  '<span class="cat">' + esc(r.cat) + '</span></div>';
-      }
       var free = (L.free != null) ? L.free
                : (L.free_from ? Math.max(0, 19 - L.free_from) : 0);
-      if (free > 0) {
-        html += '<span class="freechip">свободно ' + free + ' '
-             +  plural(free, 'место', 'места', 'мест') + '</span>';
+
+      if (wide()) {
+        // на мониторе рисуем все места по порядку, свободные - пустой строкой.
+        // Так соседние взлёты выстраиваются строка в строку, как на табло.
+        var byNum = {};
+        for (var j = 0; j < rows.length; j++) byNum[rows[j].n] = rows[j];
+        var seatsTotal = L.capacity || (rows.length + free) || rows.length;
+        for (var n = 1; n <= seatsTotal; n++) {
+          var r = byNum[n];
+          if (!r) {
+            html += '<div class="row empty"><span class="num">' + n + '</span>'
+                 +  '<span class="name"></span><span class="cat"></span></div>';
+            continue;
+          }
+          var service = isService(r);
+          var cls = 'row' + (r.staff ? ' staff' : '') + (service ? ' service' : '')
+                  + (!service && isWatched(r.name) ? ' me' : '');
+          html += '<div class="' + cls + '"><span class="num">' + esc(r.n) + '</span>'
+               +  '<span class="name">' + esc(r.name) + '</span>'
+               +  '<span class="cat">' + esc(r.cat) + '</span></div>';
+        }
+      } else {
+        for (var j2 = 0; j2 < rows.length; j2++) {
+          var r2 = rows[j2];
+          var service2 = isService(r2);
+          var cls2 = 'row' + (r2.staff ? ' staff' : '') + (service2 ? ' service' : '')
+                   + (!service2 && isWatched(r2.name) ? ' me' : '');
+          html += '<div class="' + cls2 + '"><span class="num">' + esc(r2.n) + '</span>'
+               +  '<span class="name">' + esc(r2.name) + '</span>'
+               +  '<span class="cat">' + esc(r2.cat) + '</span></div>';
+        }
+        if (free > 0) {
+          html += '<span class="freechip">свободно ' + free + ' '
+               +  plural(free, 'место', 'места', 'мест') + '</span>';
+        }
       }
       html += '</div></div>';
     }
+    html += '</div>';
     app.innerHTML = html;
   }
 
   // один обработчик на контейнер - переживает перерисовки
   app.addEventListener('click', function(e) {
+    if (wide()) return;                 // на мониторе сворачивать нечего
     var h = e.target.closest ? e.target.closest('.load h2') : null;
     if (h) {
       var block = h.parentNode;
@@ -668,6 +718,11 @@
   document.addEventListener('visibilitychange', function () {
     if (alive()) tick();          // вернулись к приложению - сразу обновляем
   });
+  // окно растянули или сузили - перерисуем: на мониторе вид другой
+  window.matchMedia('(min-width: 900px)').addEventListener
+    ? window.matchMedia('(min-width: 900px)')
+        .addEventListener('change', function () { if (lastData) render(lastData); })
+    : window.addEventListener('resize', function () { if (lastData) render(lastData); });
 
   // воркер нужен и для установки, и для уведомлений (он их показывает на Android)
   if ('serviceWorker' in navigator && (window.__TANAY_APP || notifyOn)) {
