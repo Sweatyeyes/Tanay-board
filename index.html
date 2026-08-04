@@ -59,8 +59,14 @@
     ? '<img src="' + OFFLINE_IMAGE + '" alt="' + OFFLINE_TEXT + '">'
     : '<div class="msg">' + OFFLINE_TEXT + '</div>';
 
+  function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches
+        || window.navigator.standalone === true;
+  }
+
   function showBoard() {
-    imgEl.src = IMAGE_URL + '?t=' + Date.now();
+    // метка ?app - только для счётчика посещений на воркере
+    imgEl.src = IMAGE_URL + '?t=' + Date.now() + (isStandalone() ? '&app=1' : '');
     imgEl.style.display = 'block';
     offEl.style.display = 'none';
   }
