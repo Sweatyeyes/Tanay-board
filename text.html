@@ -588,8 +588,16 @@
 
   renderChips();
   renderNotifyState();
+  // опрашиваем только когда приложение на экране: в фоне телефон всё равно
+  // тормозит таймеры, а лишние запросы бьют по лимитам воркера
+  function alive() {
+    return !document.hidden;
+  }
   tick();
-  setInterval(tick, POLL_MS);
+  setInterval(function () { if (alive()) tick(); }, POLL_MS);
+  document.addEventListener('visibilitychange', function () {
+    if (alive()) tick();          // вернулись к приложению - сразу обновляем
+  });
 
   // воркер нужен и для установки, и для уведомлений (он их показывает на Android)
   if ('serviceWorker' in navigator && (window.__TANAY_APP || notifyOn)) {
