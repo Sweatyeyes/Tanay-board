@@ -230,12 +230,26 @@
     try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {}
   }
 
-  var collapsed = load('tanay_collapsed', {});
+  // по умолчанию взлёты свёрнуты; помним только те, что развернули вручную.
+  // Ключ - номер взлёта из заголовка, чтобы состояние следовало за бортом,
+  // а не за местом в списке.
+  var opened = load('tanay_opened', {});
   var watch     = load('tanay_watch', []);          // фамилии, за которыми следим
   var notifyOn  = load('tanay_notify', false);
   // о чём предупреждать: запись во взлёт и пороги готовности в минутах
   var events    = load('tanay_events', { in: true, "15": true, "10": false, "5": true });
   var sent      = load('tanay_sent', {});           // что уже отправляли, чтобы не повторяться
+
+  function saveOpened() {
+    save('tanay_opened', opened);
+  }
+
+  // ключ памяти: номер взлёта из заголовка, иначе позиция в списке.
+  // Так развёрнутость следует за конкретным бортом, а не за местом на экране.
+  function loadKey(L, i) {
+    var n = loadNumber(L.title);
+    return n ? 'L' + n : 'i' + i;
+  }
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){
@@ -578,13 +592,15 @@
       var seats = L.free_from ? (L.free_from - 1) : rows.length;
       var denom = Math.max(seats, 18);
       var pct = Math.min(100, Math.round(rows.length / denom * 100));
-      var closed = collapsed[i] ? ' closed' : '';
+      var key = loadKey(L, i);
+      var closed = opened[key] ? '' : ' closed';    // по умолчанию свёрнуто
       var full = (!L.free_from && rows.length) ? ' full' : '';
       var hasMine = false;
       for (var m = 0; m < rows.length; m++) {
         if (!isService(rows[m]) && isWatched(rows[m].name)) { hasMine = true; break; }
       }
-      html += '<div class="load' + closed + full + (hasMine ? ' mine' : '') + '" data-i="' + i + '">';
+      html += '<div class="load' + closed + full + (hasMine ? ' mine' : '')
+           +  '" data-key="' + esc(key) + '">';
       html += '<h2><span class="t">' + fmtTitle(L.title || ('взлёт ' + (i+1))) + '</span>';
       html += '<span class="count">' + rows.length + (L.capacity ? ' / ' + L.capacity : '') + '</span></h2>';
       html += '<div class="fill"><i style="width:' + pct + '%"></i></div>';
@@ -614,10 +630,10 @@
     var h = e.target.closest ? e.target.closest('.load h2') : null;
     if (h) {
       var block = h.parentNode;
-      var i = block.getAttribute('data-i');
-      if (block.classList.toggle('closed')) collapsed[i] = 1;
-      else delete collapsed[i];
-      save('tanay_collapsed', collapsed);
+      var key = block.getAttribute('data-key');
+      if (block.classList.toggle('closed')) delete opened[key];
+      else opened[key] = 1;
+      saveOpened();
     }
   });
 
