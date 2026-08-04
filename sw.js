@@ -3,16 +3,16 @@
 // идут в сеть - воркер их не перехватывает, чтобы табло не показывало
 // устаревшее. Без сети страница открывается из кэша и сама покажет
 // "данные не обновлялись".
-var CACHE = 'tanay-v2';
+var CACHE = 'tanay-v3';
 var ASSETS = [
   './',
   './index.html',
   './text.html',
   './logo.png',
   './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png',
-  './apple-touch-icon.png'
+  './icon-192-v2.png',
+  './icon-512-v2.png',
+  './apple-touch-icon-v2.png'
 ];
 
 self.addEventListener('install', function (e) {
