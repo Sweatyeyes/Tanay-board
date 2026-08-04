@@ -1105,12 +1105,20 @@ def main():
             shot_mtime = os.path.getmtime(src)
         except Exception:
             pass
-        # кадр считаем новым, если поменялся сам файл снимка
+        # "новый кадр" считаем по содержимому табло, а не по файлу.
+        # Часы в шапке в расчёт не идут - они тикают сами по себе.
+        # А вот заголовок взлёта берём целиком: "готовность 20 мин." -
+        # это настоящая информация, её смена и есть изменение табло.
         digest = None
         try:
             import hashlib
-            with open(src, "rb") as f:
-                digest = hashlib.md5(f.read()).hexdigest()
+            content = [
+                [l.get("title"), l.get("free"),
+                 [(r["n"], r["name"], r["cat"]) for r in l["rows"]]]
+                for l in result["loads"]
+            ]
+            blob = json.dumps(content, ensure_ascii=False, sort_keys=True)
+            digest = hashlib.md5(blob.encode("utf-8")).hexdigest()
         except Exception as e:
             sys.stderr.write("hash error: %s\n" % e)
         prev = {}
