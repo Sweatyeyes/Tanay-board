@@ -84,8 +84,12 @@
       })
       .catch(function(){ showBoard(); });
   }
+  // в фоне не опрашиваем: экономим и батарею, и лимиты воркера
   tick();
-  setInterval(tick, 20000);
+  setInterval(function () { if (!document.hidden) tick(); }, 20000);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) tick();
+  });
 
   // воркер тоже только в режиме приложения - см. пояснение в шапке
   if (window.__TANAY_APP && 'serviceWorker' in navigator) {
