@@ -30,13 +30,17 @@ COL_CAT  = (0.762, 0.991)
 # известные категории - результат распознавания подгоняется к ближайшей.
 # AFF бывает уровней 1-7 плюс дефисные "AFF 8-1" и "AFF 8-2".
 KNOWN_CATS = [
-    "Спортивный", "ФВ", "Совершенствование",
+    "Спортивный", "ФВ", "Совершенствование", "RW", "CP",
     "AFF 1", "AFF 2", "AFF 3", "AFF 4", "AFF 5", "AFF 6", "AFF 7",
     "AFF 8-1", "AFF 8-2",
-    "ХК ТМ3 90", "ХК ТМ4 90",
-    "ТМ4000 90", "ТМ4000 100", "ТМ4000 120",
-    "ТМ3000 90", "ТМ3000 100", "ТМ3000 120",
 ]
+# тандемы: ТМ3000/ТМ4000 и «хлопковые» ХК, вес 90-120
+for _mark in ("ТМ3000", "ТМ4000"):
+    for _w in ("90", "100", "110", "120"):
+        KNOWN_CATS.append("%s %s" % (_mark, _w))
+for _mark in ("ХК ТМ3", "ХК ТМ4"):
+    for _w in ("90", "100", "110", "120"):
+        KNOWN_CATS.append("%s %s" % (_mark, _w))
 
 # латинские двойники кириллицы + частые ошибки распознавания цифр:
 # S - это криво прочитанная 3, $ - это 9
@@ -671,6 +675,29 @@ def ocr_category(img):
     return raws
 
 
+# короткие подписи для страницы: колонка узкая, длинные слова её распирают
+SHORT_CATS = {
+    "Спортивный": "Спорт",
+    "Совершенствование": "Соверш.",
+}
+
+
+def short_category(cat):
+    """Сокращает подпись для показа: ТМ4000 90 -> ТМ4 90, Спортивный -> Спорт.
+
+    ФВ, RW, CP, AFF и "???" остаются как есть. У "ХК ТМ3 90" тысячи уже
+    свёрнуты в исходнике, поэтому строка не меняется.
+    """
+    c = (cat or "").strip()
+    if c in SHORT_CATS:
+        return SHORT_CATS[c]
+    # ТМ4000 90 -> ТМ4 90, в том числе с приставкой ХК
+    m = re.match(r"^(ХК\s+)?ТМ(\d)000(\s+\d+)?$", c)
+    if m:
+        return "%sТМ%s%s" % (m.group(1) or "", m.group(2), m.group(3) or "")
+    return c
+
+
 def pick_category(raws, is_service):
     """Выбирает категорию голосованием нескольких прогонов распознавания.
 
@@ -891,7 +918,8 @@ def recognize_row(job):
                 break
 
     job["result"] = {"n": job["n"], "name": name, "staff": is_staff,
-                     "cat": cat, "cat_raw": cat_raw, "_conf": name_conf,
+                     "cat": short_category(cat), "cat_full": cat,
+                     "cat_raw": cat_raw, "_conf": name_conf,
                      "service": is_service}
     return job
 
@@ -1050,9 +1078,11 @@ def main():
             # шум на пустых строках (курсор, блики): пара букв вместо имени
             # и мусор вместо категории - такую строку выбрасываем
             letters = re.sub(r"[^А-Яа-яЁёA-Za-z]", "", res["name"])
-            if not res["service"] and len(letters) < 4 and res["cat"] not in KNOWN_CATS:
+            # сверяем с полной подписью: короткой в списке известных нет
+            if not res["service"] and len(letters) < 4 and res.get("cat_full") not in KNOWN_CATS:
                 continue
             res.pop("service", None)
+            res.pop("cat_full", None)
             job["load"]["rows"].append(res)
 
         for l in result["loads"]:
