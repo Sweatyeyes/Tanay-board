@@ -104,6 +104,11 @@
          cursor:pointer; }
   .opt input { margin:2px 0 0; width:18px; height:18px; flex:none; accent-color:#5CF08A; }
   .opt small { display:block; color:var(--mut); font-size:12px; margin-top:2px; }
+  .events { display:flex; flex-direction:column; gap:2px; margin:2px 0 4px 28px; }
+  .events label { display:flex; align-items:center; gap:9px; font-size:14px;
+                  padding:5px 0; cursor:pointer; color:var(--text); }
+  .events input { width:17px; height:17px; flex:none; accent-color:#5CF08A; margin:0; }
+  .events.off { opacity:.4; pointer-events:none; }
   .warn { font-size:12px; color:var(--gold); line-height:1.5; margin-top:10px;
           border-top:1px solid var(--line2); padding-top:10px; }
   .diag { font-size:11px; color:rgba(255,255,255,.45); line-height:1.6; margin-top:8px;
@@ -191,7 +196,13 @@
   </div>
   <div class="chips" id="watchChips"></div>
   <label class="opt"><input type="checkbox" id="optNotify">
-    <span>Уведомления<small id="notifyState">запись во взлёт, готовность 15 и 5 минут</small></span></label>
+    <span>Уведомления<small id="notifyState">о чём предупреждать — выберите ниже</small></span></label>
+  <div class="events" id="events">
+    <label><input type="checkbox" data-ev="in"> запись во взлёт</label>
+    <label><input type="checkbox" data-ev="15"> готовность 15 минут</label>
+    <label><input type="checkbox" data-ev="10"> готовность 10 минут</label>
+    <label><input type="checkbox" data-ev="5"> готовность 5 минут</label>
+  </div>
   <div class="warn" id="notifyWarn"></div>
   <div class="diag" id="notifyDiag"></div>
   <button class="testbtn" id="notifyTest">Проверить уведомление</button>
@@ -222,6 +233,8 @@
   var collapsed = load('tanay_collapsed', {});
   var watch     = load('tanay_watch', []);          // фамилии, за которыми следим
   var notifyOn  = load('tanay_notify', false);
+  // о чём предупреждать: запись во взлёт и пороги готовности в минутах
+  var events    = load('tanay_events', { in: true, "15": true, "10": false, "5": true });
   var sent      = load('tanay_sent', {});           // что уже отправляли, чтобы не повторяться
 
   function esc(s) {
@@ -344,24 +357,46 @@
       if (!mine) continue;
 
       var base = num + '|' + norm(who);
-      var events = [{ key: base + '|in',
-                      title: 'Вы записаны во взлёт ' + num,
-                      body: mine.name + (mine.cat ? ' · ' + mine.cat : '') }];
+      // пока взлёт на табло, все его отметки считаем живыми - иначе чистка
+      // забудет, что мы уже предупреждали, и уведомление придёт повторно
+      valid[base + '|in'] = 1;
+      valid[base + '|15'] = 1;
+      valid[base + '|10'] = 1;
+      valid[base + '|5'] = 1;
 
-      var mins = readyMinutes(L.title);
-      if (mins != null && mins <= 15 && mins > 5) {
-        events.push({ key: base + '|15', title: 'Взлёт ' + num + ' — готовность 15 минут',
-                      body: 'Пора собираться' });
+      var list = [];
+      if (events["in"]) {
+        list.push({ key: base + '|in',
+                    title: 'Вы записаны во взлёт ' + num,
+                    body: mine.name + (mine.cat ? ' · ' + mine.cat : '') });
       }
-      if (mins != null && mins <= 5) {
-        events.push({ key: base + '|5', title: 'Взлёт ' + num + ' — готовность 5 минут',
-                      body: 'На посадку' });
+
+      // пороги готовности. Срабатывает тот, в чей промежуток попал отсчёт,
+      // и только если он отмечен галочкой. Каждый порог - один раз на взлёт,
+      // но если готовность отодвинули (было 15, стало 25), порог взводится
+      // заново: это уже другая готовность, и предупредить нужно снова.
+      var mins = readyMinutes(L.title);
+      var steps = [15, 10, 5];
+      for (var s = 0; s < steps.length; s++) {
+        var limit = steps[s];
+        var lower = (s + 1 < steps.length) ? steps[s + 1] : -1;   // нижняя граница
+        // запас в 3 минуты - чтобы дрожание распознавания не взводило порог
+        if (mins != null && mins >= limit + 3 && sent[base + '|' + limit]) {
+          delete sent[base + '|' + limit];
+          save('tanay_sent', sent);
+        }
+        if (!events[String(limit)] || mins == null) continue;
+        if (mins <= limit && mins > lower) {
+          list.push({ key: base + '|' + limit,
+                      title: 'Взлёт ' + num + ' — готовность ' + limit + ' минут',
+                      body: limit <= 5 ? 'На посадку' : 'Пора собираться' });
+        }
       }
       if (/ОТПРАВЛЕН/i.test(L.title || '')) valid[base + '|in'] = 1;
 
-      for (var e = 0; e < events.length; e++) {
-        valid[events[e].key] = 1;
-        if (!sent[events[e].key]) fresh.push(events[e]);
+      for (var e = 0; e < list.length; e++) {
+        valid[list[e].key] = 1;
+        if (!sent[list[e].key]) fresh.push(list[e]);
       }
     }
 
@@ -382,6 +417,23 @@
   var notifyWarn = document.getElementById('notifyWarn');
   var notifyDiag = document.getElementById('notifyDiag');
   var notifyTest = document.getElementById('notifyTest');
+  var eventsBox = document.getElementById('events');
+
+  function renderEvents() {
+    var boxes = eventsBox.querySelectorAll('input[data-ev]');
+    for (var i = 0; i < boxes.length; i++) {
+      boxes[i].checked = !!events[boxes[i].getAttribute('data-ev')];
+    }
+    eventsBox.className = optNotify.checked ? 'events' : 'events off';
+  }
+
+  eventsBox.addEventListener('change', function (e) {
+    var ev = e.target.getAttribute && e.target.getAttribute('data-ev');
+    if (!ev) return;
+    events[ev] = e.target.checked;
+    save('tanay_events', events);
+    renderNotifyState();
+  });
 
   function renderChips() {
     var html = '';
@@ -419,6 +471,8 @@
            + 'Если закрыть его полностью, телефон перестанет проверять табло.';
     }
     notifyWarn.innerHTML = warn;
+
+    renderEvents();
 
     // видимая диагностика: чтобы не гадать, что именно не сработало
     var d = [];
