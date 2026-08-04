@@ -109,8 +109,10 @@
                   padding:5px 0; cursor:pointer; color:var(--text); }
   .events input { width:17px; height:17px; flex:none; accent-color:#5CF08A; margin:0; }
   .events.off { opacity:.4; pointer-events:none; }
-  .warn { font-size:12px; color:var(--gold); line-height:1.5; margin-top:10px;
+  .warn { font-size:12px; line-height:1.5; margin-top:10px;
           border-top:1px solid var(--line2); padding-top:10px; }
+  .warn .problem { display:block; color:var(--gold); margin-bottom:8px; }
+  .warn .how { display:block; color:var(--mut); }
   .diag { font-size:11px; color:rgba(255,255,255,.45); line-height:1.6; margin-top:8px;
           font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
   .testbtn { margin-top:10px; background:rgba(10,7,20,.3); color:var(--mut);
@@ -490,23 +492,25 @@
   function renderNotifyState() {
     optNotify.checked = notifyOn && notifySupported() && Notification.permission === 'granted';
     var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent || '');
-    var warn = '';
+    // как это работает - показываем всегда, чтобы не было ложных ожиданий
+    var how = 'Уведомления приходят, пока приложение открыто или свёрнуто в фоне. '
+            + 'Если закрыть его полностью, телефон перестанет проверять табло.';
+    var problem = '';
     if (!notifySupported()) {
-      warn = isIOS && !isStandalone()
+      problem = isIOS && !isStandalone()
         ? 'На iPhone уведомления работают только в приложении, добавленном на экран «Домой» '
           + '(«Поделиться» → «На экран Домой»), и на iOS 16.4 или новее. В Safari их не будет.'
         : 'Этот браузер не умеет уведомления.';
     } else if (Notification.permission === 'denied') {
-      warn = 'Уведомления запрещены для этого сайта в настройках телефона — '
-           + 'разрешите их там, иначе приложение не сможет ничего прислать.';
+      problem = 'Уведомления запрещены для этого сайта в настройках телефона — '
+              + 'разрешите их там, иначе приложение не сможет ничего прислать.';
     } else if (isIOS && !isStandalone()) {
-      warn = 'Сейчас страница открыта в браузере. На iPhone уведомления приходят только '
-           + 'из приложения, добавленного на экран «Домой».';
-    } else if (notifyOn) {
-      warn = 'Уведомления приходят, пока приложение открыто или свёрнуто в фоне. '
-           + 'Если закрыть его полностью, телефон перестанет проверять табло.';
+      problem = 'Сейчас страница открыта в браузере. На iPhone уведомления приходят только '
+              + 'из приложения, добавленного на экран «Домой».';
     }
-    notifyWarn.innerHTML = warn;
+    notifyWarn.innerHTML = problem
+      ? '<span class="problem">' + problem + '</span><span class="how">' + how + '</span>'
+      : '<span class="how">' + how + '</span>';
 
     renderEvents();
 
