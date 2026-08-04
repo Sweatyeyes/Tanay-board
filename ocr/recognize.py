@@ -486,6 +486,50 @@ def update_history(history, loads):
     return out
 
 
+def update_stats(path, entry, keep=400):
+    """Копит замеры прогонов: частота смены кадра, задержки, время работы.
+
+    Файл лежит в ветке ocr рядом с board.json и переживает прогоны.
+    Хранится последние keep записей плюс сводка.
+    """
+    data = {"runs": []}
+    if path and os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception as e:
+            sys.stderr.write("stats load error: %s\n" % e)
+    runs = data.get("runs", [])
+    runs.append(entry)
+    runs = runs[-keep:]
+
+    # сводка: как часто реально меняется кадр и какова задержка
+    changed = [r for r in runs if r.get("changed")]
+    def gaps(items):
+        ts = sorted(r["t"] for r in items)
+        return [round(b - a, 1) for a, b in zip(ts, ts[1:]) if 0 < b - a < 3600]
+    g_all, g_ch = gaps(runs), gaps(changed)
+    def avg(xs):
+        return round(sum(xs) / len(xs), 1) if xs else None
+    lags = [r["lag"] for r in runs if r.get("lag") is not None]
+    durs = [r["sec"] for r in runs if r.get("sec") is not None]
+
+    data["runs"] = runs
+    data["summary"] = {
+        "прогонов": len(runs),
+        "из них с новым кадром": len(changed),
+        "интервал между прогонами, с": avg(g_all),
+        "интервал между сменами кадра, с": avg(g_ch),
+        "задержка снимок-распознавание, с": avg(lags),
+        "время распознавания, с": avg(durs),
+        "обновлено": entry.get("iso"),
+    }
+    if path:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=1)
+    return data["summary"]
+
+
 def detect_aircraft(title):
     """Определяет борт по заголовку взлёта. Возвращает (имя, число мест)."""
     t = re.sub(r"[\s.]", "", (title or "").upper()).replace("O", "О")
@@ -858,6 +902,7 @@ def main():
     dst = sys.argv[2] if len(sys.argv) > 2 else "board.json"
     dbg = sys.argv[3] if len(sys.argv) > 3 else None
     hist_path = sys.argv[4] if len(sys.argv) > 4 else None
+    stats_path = sys.argv[5] if len(sys.argv) > 5 else None
 
     history = {}
     if hist_path and os.path.exists(hist_path):
@@ -1048,9 +1093,47 @@ def main():
 
     total = sum(len(l["rows"]) for l in result["loads"])
     n_panels = sum(len(b[0]) for b in bands)
+    dur = time.time() - t_start
     print("панелей: %d, распознано строк: %d, время: %.1f с"
-          % (n_panels, total, time.time() - t_start))
+          % (n_panels, total, dur))
     print("сообщение: %r" % result["message"])
+
+    # ---- замеры: как часто меняется кадр и какова задержка ----
+    if stats_path:
+        shot_mtime = None
+        try:
+            shot_mtime = os.path.getmtime(src)
+        except Exception:
+            pass
+        # кадр считаем новым, если поменялся сам файл снимка
+        digest = None
+        try:
+            import hashlib
+            with open(src, "rb") as f:
+                digest = hashlib.md5(f.read()).hexdigest()
+        except Exception as e:
+            sys.stderr.write("hash error: %s\n" % e)
+        prev = {}
+        if os.path.exists(stats_path):
+            try:
+                with open(stats_path, encoding="utf-8") as f:
+                    prev = json.load(f)
+            except Exception:
+                prev = {}
+        last_digest = (prev.get("runs") or [{}])[-1].get("digest")
+        now = time.time()
+        entry = {
+            "t": round(now, 1),
+            "iso": result["updated"],
+            "digest": digest,
+            "changed": bool(digest and digest != last_digest),
+            "lag": round(now - shot_mtime, 1) if shot_mtime else None,
+            "sec": round(dur, 1),
+            "rows": total,
+            "clock": result["clock"],
+        }
+        summary = update_stats(stats_path, entry)
+        print("замеры:", json.dumps(summary, ensure_ascii=False))
 
 
 if __name__ == "__main__":
