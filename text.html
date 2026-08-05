@@ -74,9 +74,9 @@
   .gear.on { border-color:rgba(92,240,138,.6); color:var(--me); }
 
   /* ---- вкладки ---- */
-  .tabs { display:flex; gap:8px; margin-bottom:12px; }
-  .tabs a { flex:1; text-align:center; text-decoration:none; padding:9px 10px;
-            font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+  .tabs { display:flex; gap:6px; margin-bottom:12px; }
+  .tabs a { flex:1; text-align:center; text-decoration:none; padding:9px 4px;
+            font-size:11.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;
             color:var(--mut); border:1px solid var(--line); background:rgba(10,7,20,.3); }
   .tabs a.on { color:var(--gold); border-color:rgba(255,201,77,.5);
                background:rgba(255,201,77,.08); }
@@ -210,7 +210,8 @@
 
 <div class="tabs">
   <a class="on" href="text.html">Табло</a>
-  <a href="wl.html">Загрузка купола</a>
+  <a href="wl.html">Купола</a>
+  <a href="log.html">Журнал</a>
 </div>
 
 <div class="bar-top">
@@ -242,6 +243,7 @@
 
 <div id="app"><div class="note">Загрузка…</div></div>
 <a class="switch" href="index.html">← показать экран</a>
+<script src="journal.js"></script>
 <div class="foot">Skydive Tanay · Drop Zone Board</div>
 <script>
   // через Worker, а не raw.githubusercontent: тот кэширует ответ на ~5 минут
@@ -610,6 +612,15 @@
     return s;
   }
 
+  // Журнал прыжков. Табло опрашивается постоянно, поэтому наблюдение живёт
+  // здесь: пока страница открыта, уход взлёта с вашей фамилией сразу
+  // превращается в запись. Вкладка журнала при открытии тоже сверяется
+  // с табло, так что пропущенное за закрытым приложением подхватится.
+  function watchJournal(d) {
+    if (!window.TanayLog) return;
+    try { TanayLog.observe(d); } catch (e) {}
+  }
+
   var lastData = null;
 
   function render(d) {
@@ -722,7 +733,7 @@
   function tick() {
     fetchJson(JSON_URL)
       .catch(function(){ return fetchJson(JSON_FALLBACK); })   // если воркер недоступен
-      .then(function(d){ render(d); checkNotifications(d); })
+      .then(function(d){ render(d); checkNotifications(d); watchJournal(d); })
       .catch(function(){
         if (lastData) return;
         app.innerHTML = '<div class="note">Текстовая версия ещё готовится — распознавание пока не запущено.<br><br>'
