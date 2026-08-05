@@ -43,7 +43,8 @@
   }
   * { box-sizing:border-box; }
   body { margin:0; color:var(--text); padding:14px 12px 4px; background:#0a0716;
-         font-family:'Manrope',-apple-system,"Segoe UI",Roboto,sans-serif; }
+         font-family:'Manrope',-apple-system,"Segoe UI",Roboto,sans-serif;
+         -webkit-text-size-adjust:100%; overflow-x:hidden; }
   /* закат приколочен к экрану: списки скроллятся, солнце остаётся у горизонта */
   body::before { content:''; position:fixed; inset:0; z-index:-1;
     background-image:
@@ -58,7 +59,7 @@
   }
 
   .brand { display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
-           margin-bottom:16px; }
+           margin-bottom:14px; }
   .brand img { height:58px; display:block; }
   .brand .word { font-family:'Russo One',sans-serif; font-size:20px; letter-spacing:.06em; }
   /* дата со временем подогнаны по ширине под надпись "борт-время" */
@@ -188,6 +189,7 @@
     .load h2 { cursor:default; min-height:58px; align-items:flex-start; }
     .load.closed .body, .load.closed .fill { display:block; }
     .brand img { height:64px; }
+    .tabs a { font-size:12px; padding:9px 10px; }
     /* строки одной высоты - тогда соседние взлёты идут строка в строку */
     .row { font-size:15px; height:30px; padding:0; align-items:center; }
     .row.empty .name, .row.empty .cat { color:transparent; }
