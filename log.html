@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Журнал прыжков — SKYDIVE TANAY</title>
+<title>Книжка — SKYDIVE TANAY</title>
 <meta name="theme-color" content="#0a0716">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v3.png">
 <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-v3.png">
@@ -142,10 +142,10 @@
 <div class="tabs">
   <a href="text.html">Табло</a>
   <a href="wl.html">Загрузка</a>
-  <a class="on" href="log.html">Журнал</a>
+  <a class="on" href="log.html">Книжка</a>
 </div>
 
-<h1>Журнал прыжков</h1>
+<h1>Книжка</h1>
 
 <div class="card">
   <div class="tot">
@@ -189,7 +189,7 @@
       <input type="text" id="ex" placeholder="—" autocomplete="off" spellcheck="false">
     </div>
     <div class="field">
-      <label for="base">Прыжков до журнала</label>
+      <label for="base">Прыжков до книжки</label>
       <input type="number" id="base" class="num" min="0" step="1">
     </div>
     <div class="field">
@@ -199,9 +199,9 @@
     <div class="ok" id="cfgOk"></div>
   </div>
 
-  <h2 class="sect">Копия журнала<span class="rest"></span></h2>
+  <h2 class="sect">Копия книжки<span class="rest"></span></h2>
   <div class="card">
-    <p class="note" style="margin-bottom:12px">Журнал хранится только в этом телефоне.
+    <p class="note" style="margin-bottom:12px">Книжка хранится только в этом телефоне.
     Переустановка приложения или очистка данных браузера его сотрут — держите копию.</p>
     <div class="row2">
       <button class="btn" id="expBtn">Сохранить копию</button>
@@ -214,7 +214,7 @@
 </div>
 
 <a class="switch" href="text.html">← к табло</a>
-<div class="foot">Skydive Tanay · Журнал прыжков</div>
+<div class="foot">Skydive Tanay · Книжка</div>
 
 <script src="journal.js"></script>
 <script>
@@ -251,8 +251,8 @@
     $('tYear').textContent = new Date().getFullYear() + ' году';
     var pend = TanayLog.pending();
     var h = t.logged + ' ' + plural(t.logged, 'прыжок', 'прыжка', 'прыжков')
-          + ' записал сам журнал, остальные ' + c.base + ' — введены как прошлые.';
-    if (!c.me) h = '<b>Укажите фамилию и имя в настройках</b> — без них журнал не сможет '
+          + ' записала сама книжка, остальные ' + c.base + ' — введены как прошлые.';
+    if (!c.me) h = '<b>Укажите фамилию и имя в настройках</b> — без них книжка не сможет '
                  + 'узнавать вас во взлёте и записывать прыжки.';
     else if (pend) h += ' Сейчас ждёт отправления ' + pend + ' '
                       + plural(pend, 'взлёт', 'взлёта', 'взлётов') + '.';
@@ -436,14 +436,14 @@
       try {
         var d = JSON.parse(rd.result);
         if (!d || !Array.isArray(d.jumps)) throw 0;
-        if (!confirm('Заменить текущий журнал на копию? Записей в файле: '
+        if (!confirm('Заменить текущую книжку на копию? Записей в файле: '
                      + d.jumps.length + '.')) return;
         TanayLog.setJumps(d.jumps);
         if (d.cfg) TanayLog.setCfg(d.cfg);
         loadCfg(); render();
-        $('ioOk').textContent = 'Журнал восстановлен';
+        $('ioOk').textContent = 'Книжка восстановлена';
       } catch (e) {
-        $('ioOk').textContent = 'Не похоже на копию журнала';
+        $('ioOk').textContent = 'Не похоже на копию книжки';
       }
       setTimeout(function () { $('ioOk').textContent = ''; }, 3000);
     };
