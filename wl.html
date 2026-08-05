@@ -77,10 +77,10 @@
   .big small { font-family:'Manrope',sans-serif; font-size:11px; font-weight:600;
                color:var(--mut); letter-spacing:.18em; text-transform:uppercase;
                display:block; margin-bottom:6px; }
-  /* рекомендация: первая строка - оценка купола, вторая - что открыто */
+  /* рекомендация: оценка выбранного купола одной строкой */
   .verdict { margin-top:14px; font-size:13.5px; line-height:1.5; padding:11px 12px;
-             border-left:3px solid var(--me); background:rgba(20,40,25,.35); }
-  .verdict b { display:block; font-weight:800; margin-bottom:5px; }
+             font-weight:800; border-left:3px solid var(--me);
+             background:rgba(20,40,25,.35); }
   .verdict.warn { border-left-color:var(--gold); background:rgba(60,40,8,.35); color:var(--gold); }
   .verdict.bad  { border-left-color:var(--red);  background:rgba(90,20,15,.35); color:#ffb3a6; }
 
@@ -292,8 +292,7 @@
     });
   }
 
-  // Рекомендация: оценка выбранного купола и что открыто по числу прыжков.
-  // Обе строки берут ступени из раскраски схемы, ничего не додумывая.
+  // Рекомендация: оценка выбранного купола. Ступень берётся из раскраски схемы.
   function verdict(kg, j, s, byJ, byS) {
     var box = $('verdict'), cls = 'verdict', first;
 
@@ -318,23 +317,8 @@
       cls += ' bad';
     }
 
-    // что открыто сейчас
-    var own = sizesFor(kg, byJ), second;
-    if (own.length) {
-      second = 'При ' + j + ' ' + jump(j) + ' открыт «' + STEPS[byJ].n + '» — '
-             + (own.length > 1 ? own[own.length - 1] + '–' + own[0] : own[0])
-             + ' фут². Меньше по схеме нельзя.';
-    } else {
-      second = 'При ' + j + ' ' + jump(j) + ' это «' + STEPS[byJ].n
-             + '», но при массе ' + kg + ' кг размеров этой ступени в таблице нет.';
-    }
-    if (byJ === 5 || byS === 5) {
-      second += ' Для Hyper Perfomance нужны ещё 500+ прыжков на High Perfomance '
-              + 'с загрузкой от 2,00.';
-    }
-
     box.className = cls;
-    box.innerHTML = '<b>' + esc(first) + '</b>' + esc(second);
+    box.textContent = first;
   }
 
   function render() {
