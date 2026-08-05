@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Загрузка купола — SKYDIVE TANAY</title>
+<meta name="theme-color" content="#0a0716">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v3.png">
+<link rel="apple-touch-icon-precomposed" href="apple-touch-icon-v3.png">
+<link rel="apple-touch-icon" href="apple-touch-icon-v3.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192-v3.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Танай">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<script>
+  // тихий режим установки - как на главной странице
+  (function () {
+    var APP_MODE = /[?&]app\b/.test(location.search)
+      || window.matchMedia('(display-mode: standalone)').matches
+      || window.navigator.standalone === true;
+    if (!APP_MODE) return;
+    var l = document.createElement('link');
+    l.rel = 'manifest'; l.href = 'manifest.webmanifest';
+    document.head.appendChild(l);
+    window.__TANAY_APP = true;
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Russo+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --line:rgba(255,255,255,.16); --line2:rgba(255,255,255,.12);
+    --card:rgba(10,7,20,.38); --text:#fdf6ef; --mut:rgba(255,255,255,.55);
+    --orange:#E8511A; --gold:#FFC94D; --blue:#bcd4ff; --green:#c9f08a; --me:#5CF08A;
+    --red:#FF8A80;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; color:var(--text); padding:14px 12px 4px; background:#0a0716;
+         font-family:'Manrope',-apple-system,"Segoe UI",Roboto,sans-serif; }
+  body::before { content:''; position:fixed; inset:0; z-index:-1;
+    background-image:linear-gradient(180deg,#0a0716 0%,#1b1433 34%,#3a1a3f 62%,#7a2b2a 86%,#c2511f 100%); }
+
+  .brand { display:flex; align-items:flex-end; justify-content:space-between; gap:10px;
+           margin-bottom:12px; }
+  .brand img { height:52px; display:block; }
+  .brand .word { font-family:'Russo One',sans-serif; font-size:18px; letter-spacing:.06em; }
+  h1 { font-family:'Russo One',sans-serif; font-weight:400; font-size:15px;
+       letter-spacing:.03em; margin:0 0 2px; }
+  .sub { color:var(--mut); font-size:12px; margin:0 0 14px; line-height:1.5; }
+
+  .tabs { display:flex; gap:8px; margin-bottom:14px; }
+  .tabs a { flex:1; text-align:center; text-decoration:none; padding:9px 10px;
+            font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+            color:var(--mut); border:1px solid var(--line); background:rgba(10,7,20,.3); }
+  .tabs a.on { color:var(--gold); border-color:rgba(255,201,77,.5);
+               background:rgba(255,201,77,.08); }
+
+  .card { background:var(--card); border:1px solid var(--line2); border-left:4px solid var(--gold);
+          padding:14px; margin-bottom:12px; backdrop-filter:blur(10px);
+          -webkit-backdrop-filter:blur(10px); }
+  .card h2 { font-family:'Russo One',sans-serif; font-weight:400; font-size:13px;
+             letter-spacing:.04em; margin:0 0 10px; color:#fff4e8; }
+
+  .field { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .field label { flex:1; font-size:14px; }
+  .field input[type=number] { width:92px; background:rgba(0,0,0,.35); border:1px solid var(--line);
+       color:var(--text); font-family:inherit; font-size:17px; font-weight:800;
+       padding:8px 10px; text-align:center; }
+  .field .unit { color:var(--mut); font-size:12px; width:38px; }
+  input[type=range] { width:100%; accent-color:#FFC94D; margin:2px 0 12px; }
+
+  .big { font-family:'Russo One',sans-serif; font-size:38px; line-height:1; letter-spacing:.02em; }
+  .big small { font-family:'Manrope',sans-serif; font-size:12px; font-weight:600;
+               color:var(--mut); letter-spacing:.18em; text-transform:uppercase;
+               display:block; margin-bottom:6px; }
+  .verdict { margin-top:10px; font-size:14px; line-height:1.5; padding:10px 12px;
+             border-left:3px solid var(--green); background:rgba(20,40,25,.35); }
+  .verdict.warn { border-left-color:var(--gold); background:rgba(60,40,8,.35); color:var(--gold); }
+  .verdict.bad  { border-left-color:var(--red);  background:rgba(90,20,15,.35); color:#ffb3a6; }
+
+  .ladder { margin-top:4px; }
+  .step { display:flex; align-items:baseline; gap:10px; padding:9px 10px;
+          border-bottom:1px solid var(--line2); font-size:13px; }
+  .step:last-child { border-bottom:none; }
+  .step.on { background:rgba(255,201,77,.12); border-left:3px solid var(--gold);
+             padding-left:7px; }
+  .step .nm { flex:1; }
+  .step .wl { color:var(--blue); font-size:12px; white-space:nowrap; }
+  .step .jm { color:var(--mut); font-size:11px; white-space:nowrap; }
+  .step .sz { color:var(--green); font-size:12px; white-space:nowrap; }
+
+  .models { margin-top:8px; font-size:13px; color:var(--mut); line-height:1.7; }
+  .models b { color:var(--text); font-weight:600; }
+  details { border-top:1px solid var(--line2); padding-top:8px; margin-top:8px; }
+  summary { cursor:pointer; font-size:12px; color:var(--mut); letter-spacing:.04em; }
+  .note { color:var(--mut); font-size:12px; line-height:1.6; }
+  .note b { color:var(--gold); font-weight:600; }
+  a.switch { display:block; text-align:center; color:rgba(255,255,255,.45); font-size:13px;
+             text-decoration:none; padding:14px; }
+  .foot { text-align:center; color:rgba(255,255,255,.35); font-family:'Russo One',sans-serif;
+          font-size:10px; letter-spacing:.3em; text-transform:uppercase; padding-bottom:14px; }
+
+  @media (min-width: 900px) {
+    body { padding:18px 20px 4px; }
+    .wrap { display:grid; gap:14px; grid-template-columns:1fr 1fr; align-items:start; }
+    .brand img { height:60px; }
+  }
+</style>
+</head>
+<body>
+<div class="brand">
+  <img src="logo.png" alt="Skydive Tanay"
+       onerror="this.outerHTML='&lt;div class=&quot;word&quot;&gt;SKYDIVE TANAY&lt;/div&gt;'">
+</div>
+
+<div class="tabs">
+  <a href="text.html">Табло</a>
+  <a class="on" href="wl.html">Загрузка купола</a>
+</div>
+
+<h1>Загрузка купола</h1>
+<p class="sub">Схема перехода на следующий тип парашюта с поэтапным увеличением
+загрузки, версия 2020. Загрузка считается как вес в снаряжении, делённый на 0,45
+и на площадь купола.</p>
+
+<div class="wrap">
+<div>
+  <div class="card">
+    <h2>Ваши данные</h2>
+    <div class="field">
+      <label for="w">Полётная масса</label>
+      <input type="number" id="w" min="40" max="160" step="1" value="85">
+      <span class="unit">кг</span>
+    </div>
+    <input type="range" id="wr" min="40" max="160" step="1" value="85">
+    <div class="field">
+      <label for="j">Прыжков выполнено</label>
+      <input type="number" id="j" min="0" max="5000" step="10" value="120">
+      <span class="unit">шт</span>
+    </div>
+    <div class="field">
+      <label for="s">Площадь купола</label>
+      <input type="number" id="s" min="60" max="300" step="1" value="170">
+      <span class="unit">фут²</span>
+    </div>
+    <input type="range" id="sr" min="60" max="300" step="1" value="170">
+  </div>
+
+  <div class="card" id="resCard">
+    <div class="big"><small>ваша загрузка</small><span id="wl">—</span></div>
+    <div class="verdict" id="verdict"></div>
+  </div>
+</div>
+
+<div>
+  <div class="card">
+    <h2>Ступени и подходящий размер</h2>
+    <div class="ladder" id="ladder"></div>
+    <p class="note" style="margin-top:10px">Зелёным показан размер купола, который
+    при вашей массе даёт загрузку этой ступени.</p>
+  </div>
+
+  <div class="card">
+    <h2>Правила перехода</h2>
+    <p class="note">
+      Переходить по классам только последовательно, не перепрыгивая ступень.<br>
+      Уменьшать площадь купола <b>не более чем на 20 фут²</b> за шаг.<br>
+      Для перехода на Hyper Performance нужно ещё и <b>500+ прыжков</b> на
+      High Performance с загрузкой 2,00 и выше.<br>
+      Членам спортивных команд по купольному пилотированию и купольной акробатике
+      последовательность перехода определяет инструктор.
+    </p>
+    <details>
+      <summary>Какие купола относятся к ступеням</summary>
+      <div class="models" id="models"></div>
+      <p class="note" style="margin-top:8px">Список из той же схемы. У производителя
+      свой допустимый диапазон загрузки для каждой модели — сверяйтесь с ним.</p>
+    </details>
+  </div>
+</div>
+</div>
+
+<a class="switch" href="text.html">← к табло</a>
+<div class="foot">Skydive Tanay · Wing Loading</div>
+
+<script>
+  // ступени: название, диапазон загрузки, прыжки, подпись категории
+  var STEPS = [
+    { name: 'Студенческий / классический', lo: 0.60, hi: 1.10, jmin: 1,    jmax: 50,   cat: 'A · Student–Novice' },
+    { name: 'Переходной',                  lo: 1.11, hi: 1.29, jmin: 51,   jmax: 100,  cat: 'B · Novice–Intermediate' },
+    { name: 'Среднескоростной',            lo: 1.30, hi: 1.49, jmin: 101,  jmax: 500,  cat: 'B–C · Intermediate–Advanced' },
+    { name: 'Скоростной / эллиптический',  lo: 1.50, hi: 2.00, jmin: 501,  jmax: 1000, cat: 'D · Expert' },
+    { name: 'Высокоскоростной / HP',       lo: 2.01, hi: 2.40, jmin: 1001, jmax: 1500, cat: 'D · Pro' },
+    { name: 'Косонервюрный / Hyper',       lo: 2.40, hi: 3.00, jmin: 1501, jmax: 99999, cat: 'D · Jedi' }
+  ];
+
+  var MODELS = {"Студенческий / классический":["Accurate","Commodore","Dolphin","Equinox","Falcon","Focus","Hit","Icarus Student","Insider","Navigator","Para-Foil","Solo","Zero","Арбалет","Мальва"],"Переходной":["Commodore","Dolphin","Equinox","Falcon","Flamingo","Fusion","Horizon","Joker","Kraken","Magellan","Magellan EVO","Magic","Nexus","Omega","Omni","Pilot","Prime","Pulse","S Fire","Sabre","Safire","Shiluette","Skipper","Skipper EVO","Spectre","Storm","Synergy","Triathlon","Ultimate"],"Среднескоростной":["Dolphin","Dolphin2","Echo","Flamingo","Fusion","Horizon","Joker","Kraken","Magellan","Magellan EVO","Magic","Nexus","Omega","Omni","Pilot","Prime","Pulse","S Fire","Sabre2","Safire2","Safire3","Shiluette","Skipper","Skipper EVO","Spectre","Storm","Synergy","Triathlon","Ultimate"],"Скоростной / эллиптический":["Crossfire2","Crossfire3","Echo","Flamingo","Flash","Fusion","Gangster","Joker","Katana","Kraken","Magellan","Magellan EVO","Magic","Mamba","Neos","Nexus","Nitron","Odyssey","Odyssey EVO","Pilot","Prime","Pulse","Rave","S Fire","Sabre2","Safire2","Safire3","Shark","Skipper EVO","Spectre","Stiletto","Storm","Triathlon","Ultimate","X Fire","Zulu"],"Высокоскоростной / HP":["Crossfire2","Echo","Gangster","Helix","JFX","JFX2","JVX","Magellan EVO","Neos","Odyssey EVO","Scirocco","Sensei","Triathlon","Velocity","Velocity Compitition","X Fire","Xaos","Zulu"],"Косонервюрный / Hyper":["Air Wolf","Leia","Valkyrie"]};
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  // формула из схемы: WL = масса / 0,45 / площадь
+  function wingLoad(kg, sqft) { return kg / 0.45 / sqft; }
+  function areaFor(kg, wl) { return kg / 0.45 / wl; }
+
+  function stepByJumps(j) {
+    for (var i = 0; i < STEPS.length; i++) if (j <= STEPS[i].jmax) return i;
+    return STEPS.length - 1;
+  }
+  function stepByWl(wl) {
+    for (var i = 0; i < STEPS.length; i++) if (wl <= STEPS[i].hi) return i;
+    return STEPS.length - 1;
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function render() {
+    var kg = +$('w').value || 0, j = +$('j').value || 0, s = +$('s').value || 0;
+    if (!kg || !s) return;
+    var wl = wingLoad(kg, s);
+    var byJ = stepByJumps(j), byW = stepByWl(wl);
+
+    $('wl').textContent = wl.toFixed(2);
+
+    var v = $('verdict'), txt, cls = 'verdict';
+    if (wl < STEPS[0].lo) {
+      txt = 'Загрузка ниже 0,60 — такой купол в схеме не рассматривается.';
+      cls += ' warn';
+    } else if (byW <= byJ) {
+      txt = 'Купол ' + s + ' фут² при массе ' + kg + ' кг — это ступень «'
+          + STEPS[byW].name + '». Для вашего опыта (' + j + ' прыжков) допустимо.';
+    } else if (byW === byJ + 1) {
+      txt = 'Это уже следующая ступень — «' + STEPS[byW].name + '». По схеме она '
+          + 'открывается с ' + STEPS[byW].jmin + ' прыжков, у вас ' + j + '.';
+      cls += ' warn';
+    } else {
+      txt = 'Это ступень «' + STEPS[byW].name + '», а по опыту вам соответствует «'
+          + STEPS[byJ].name + '». Перепрыгивать ступени схема запрещает.';
+      cls += ' bad';
+    }
+    v.className = cls;
+    v.innerHTML = esc(txt);
+
+    // ступени с подходящим размером купола для текущей массы
+    var html = '';
+    for (var i = 0; i < STEPS.length; i++) {
+      var st = STEPS[i];
+      var aMax = Math.floor(areaFor(kg, st.lo));   // большая площадь = меньше загрузка
+      var aMin = Math.ceil(areaFor(kg, st.hi));
+      html += '<div class="step' + (i === byJ ? ' on' : '') + '">'
+           +  '<span class="nm">' + esc(st.name) + '<br><span class="jm">'
+           +  st.jmin + (st.jmax > 9000 ? '+' : '–' + st.jmax) + ' прыжков · ' + esc(st.cat)
+           +  '</span></span>'
+           +  '<span class="wl">' + st.lo.toFixed(2) + '–' + st.hi.toFixed(2) + '</span>'
+           +  '<span class="sz">' + aMin + '–' + aMax + ' фут²</span></div>';
+    }
+    $('ladder').innerHTML = html;
+
+    var mh = '';
+    for (var k = 0; k < STEPS.length; k++) {
+      var list = MODELS[STEPS[k].name] || [];
+      if (!list.length) continue;
+      mh += '<div style="margin-bottom:8px"><b>' + esc(STEPS[k].name) + '</b><br>'
+          + esc(list.join(', ')) + '</div>';
+    }
+    $('models').innerHTML = mh;
+  }
+
+  // связываем поля и ползунки
+  function link(numId, rangeId) {
+    var n = $(numId), r = $(rangeId);
+    if (!r) { n.addEventListener('input', render); return; }
+    n.addEventListener('input', function () { r.value = n.value; render(); });
+    r.addEventListener('input', function () { n.value = r.value; render(); });
+  }
+  link('w', 'wr'); link('s', 'sr'); link('j', null);
+
+  // запоминаем введённое, чтобы не набирать заново
+  try {
+    var saved = JSON.parse(localStorage.getItem('tanay_wl') || 'null');
+    if (saved) {
+      $('w').value = saved.w; $('wr').value = saved.w;
+      $('j').value = saved.j;
+      $('s').value = saved.s; $('sr').value = saved.s;
+    }
+  } catch (e) {}
+  ['w', 'j', 's'].forEach(function (id) {
+    $(id).addEventListener('change', function () {
+      try {
+        localStorage.setItem('tanay_wl', JSON.stringify({
+          w: +$('w').value, j: +$('j').value, s: +$('s').value
+        }));
+      } catch (e) {}
+    });
+  });
+
+  render();
+
+  if (window.__TANAY_APP && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  }
+</script>
+</body>
+</html>

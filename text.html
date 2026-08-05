@@ -73,6 +73,14 @@
   .gear:active { background:rgba(255,255,255,.08); }
   .gear.on { border-color:rgba(92,240,138,.6); color:var(--me); }
 
+  /* ---- вкладки ---- */
+  .tabs { display:flex; gap:8px; margin-bottom:12px; }
+  .tabs a { flex:1; text-align:center; text-decoration:none; padding:9px 10px;
+            font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+            color:var(--mut); border:1px solid var(--line); background:rgba(10,7,20,.3); }
+  .tabs a.on { color:var(--gold); border-color:rgba(255,201,77,.5);
+               background:rgba(255,201,77,.08); }
+
   .bar-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
   .until { font-family:'Russo One',sans-serif; font-size:12px; letter-spacing:.08em;
            color:var(--gold); border:1px solid rgba(255,201,77,.4);
@@ -198,6 +206,11 @@
   <img src="logo.png" alt="Skydive Tanay"
        onerror="this.outerHTML='&lt;div class=&quot;word&quot;&gt;SKYDIVE TANAY&lt;/div&gt;'">
   <div class="clock" id="clock"><small>борт-время</small>—</div>
+</div>
+
+<div class="tabs">
+  <a class="on" href="text.html">Табло</a>
+  <a href="wl.html">Загрузка купола</a>
 </div>
 
 <div class="bar-top">
