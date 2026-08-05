@@ -62,6 +62,8 @@
           -webkit-backdrop-filter:blur(10px); }
   .card h2 { font-family:'Russo One',sans-serif; font-weight:400; font-size:13px;
              letter-spacing:.04em; margin:0 0 10px; color:#fff4e8; }
+  h2.sect { font-family:'Russo One',sans-serif; font-weight:400; font-size:13px;
+            letter-spacing:.04em; margin:0 0 10px; color:#fff4e8; }
 
   .field { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
   .field label { flex:1; font-size:14px; min-width:0; }
@@ -80,25 +82,35 @@
   .verdict.warn { border-left-color:var(--gold); background:rgba(60,40,8,.35); color:var(--gold); }
   .verdict.bad  { border-left-color:var(--red);  background:rgba(90,20,15,.35); color:#ffb3a6; }
 
-  /* ---- ступени ---- */
-  .step { border-bottom:1px solid var(--line2); }
-  .step:last-child { border-bottom:none; }
-  .head { display:block; width:100%; text-align:left; cursor:pointer; padding:11px 2px;
-          background:none; border:none; color:inherit; font:inherit; }
-  .step.on .head { background:rgba(255,201,77,.10); border-left:3px solid var(--gold);
-                   padding-left:9px; }
-  .ln1 { display:flex; align-items:baseline; gap:8px; }
-  .ln1 .nm { flex:1; min-width:0; font-size:13.5px; font-weight:600;
+  /* ---- ступени: оформлены как взлёты на табло ---- */
+  .step { background:var(--card); border:1px solid var(--line2);
+          border-left:4px solid var(--gold); margin-bottom:12px; overflow:hidden;
+          backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+  .step.on { border-left-color:var(--me); }
+  /* шапка ступени - та же тёплая закатная полоса, что у взлёта */
+  .head { display:block; width:100%; text-align:left; margin:0;
+          padding:12px 13px 10px; background:none; border:none; color:inherit;
+          font:inherit; cursor:pointer; user-select:none;
+          -webkit-tap-highlight-color:transparent;
+          background-image:linear-gradient(180deg,rgba(232,81,26,.42) 0%,rgba(150,40,30,.34) 100%);
+          border-bottom:1px solid rgba(255,201,77,.28); }
+  .ln1 { display:flex; align-items:center; gap:10px; }
+  .ln1 .nm { flex:1; min-width:0; font-family:'Russo One',sans-serif; font-weight:400;
+             font-size:15px; letter-spacing:.03em; color:#fff4e8; line-height:1.3;
              overflow-wrap:anywhere; }
-  .ln1 .wl { flex:none; color:var(--blue); font-size:12px; font-variant-numeric:tabular-nums; }
-  .ln1 .ar { flex:none; color:var(--mut); font-size:13px; width:12px; text-align:center;
-             transition:transform .15s; }
+  .ln1 .wl { flex:none; font-size:11px; font-weight:800; color:rgba(255,255,255,.8);
+             letter-spacing:.05em; border:1px solid rgba(255,255,255,.28);
+             background:rgba(10,7,20,.3); padding:4px 9px;
+             font-variant-numeric:tabular-nums; }
+  .ln1 .ar { flex:none; color:rgba(255,255,255,.55); font-size:13px; width:12px;
+             text-align:center; transition:transform .15s; }
   .step.open .ln1 .ar { transform:rotate(90deg); display:inline-block; }
-  .ln2 { color:var(--mut); font-size:11px; margin-top:3px; line-height:1.45; }
-  .ln3 { font-size:12px; margin-top:4px; color:var(--green); }
-  .ln3.none { color:rgba(255,255,255,.4); }
+  .ln2 { color:rgba(255,255,255,.6); font-size:11px; margin-top:5px; line-height:1.45; }
+  .ln3 { display:block; color:var(--green); font-size:13px; margin-top:4px;
+         letter-spacing:.02em; }
+  .ln3.none { color:rgba(255,255,255,.45); }
 
-  .body { display:none; padding:2px 2px 14px; }
+  .body { display:none; padding:10px 13px 13px; background:rgba(6,4,14,.34); }
   .step.open .body { display:block; }
   .lbl { font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
          color:var(--mut); margin:8px 0 6px; }
@@ -179,13 +191,11 @@
 </div>
 
 <div>
-  <div class="card">
-    <h2>Ступени</h2>
-    <div id="ladder"></div>
-    <p class="note" style="margin-top:10px">Нажмите на ступень — покажет размеры
-    куполов, которые дают такую загрузку при вашей массе, и модели этого класса
-    с диапазоном загрузки от производителя.</p>
-  </div>
+  <h2 class="sect">Ступени</h2>
+  <div id="ladder"></div>
+  <p class="note" style="margin:-2px 0 12px">Нажмите на ступень — покажет размеры
+  куполов, которые дают такую загрузку при вашей массе, и модели этого класса
+  с диапазоном загрузки от производителя.</p>
 
   <div class="card">
     <h2>Правила перехода</h2>
@@ -221,7 +231,7 @@
                140,139,135,130,129,124,120,119,114,110,109,107,104,99,96,90,84,79,72,68];
 
   // модели по ступеням: [название, "WL min-max" от производителя]
-  var MODELS = [[["Accurate","0.60-0.90"],["Commodore","0.60-1.25"],["Dolphin","0.65-1.35"],["Dolphin 2","0.65-1.35"],["Equinox","0.60-1.20"],["Falcon","0.60-1.20"],["Focus","0.60-0.90"],["Hit","0.60-0.90"],["Icarus Student","0.60-1.30"],["Insider","0.70-1.40"],["Navigator","0.70-1.20"],["Para-Foil","0.60-0.90"],["Solo","1.00-1.10"],["Zero","0.60-0.90"],["Арбалет","0.60-1.10"],["Мальва","0.60-0.90"]],[["Commodore","0.60-1.25"],["Dolphin","0.65-1.35"],["Dolphin 2","0.65-1.35"],["Equinox","0.60-1.20"],["Falcon","0.60-1.20"],["Flamingo","0.75-1.60"],["Fusion","0.80-1.50"],["Horizon","0.90-1.40"],["Joker","0.85-1.70"],["Kraken","1.20-2.00"],["Magellan","0.95-1.85"],["Magellan EVO","1.00-2.30"],["Magic","1.00-1.50"],["Nexus","0.80-2.00"],["Om 7","0.75-1.50"],["Omega","0.90-1.50"],["Omni","0.75-1.50"],["Pilot","1.00-1.80"],["Pilot 7","1.00-1.60"],["Prime","0.70-1.70"],["Pulse","0.75-1.55"],["S Fire","0.75-1.90"],["Sabre 2","0.95-1.85"],["Safire 2","0.75-1.90"],["Safire 3","0.80-2.00"],["Shiluette","0.70-1.35"],["Skipper","1.10-1.70"],["Skipper EVO","1.00-2.00"],["Sonic",null],["Spectre","0.85-1.65"],["Storm","0.70-1.80"],["Synergy","0.80-1.50"],["Triathlon","1.40-2.20"],["Ultimate","1.00-1.80"]],[["Dolphin","0.65-1.35"],["Dolphin 2","0.65-1.35"],["Echo","1.00-2.20"],["Flamingo","1.00-2.20"],["Fusion","0.80-1.50"],["Horizon","0.90-1.40"],["Joker","0.85-1.70"],["Kraken","1.20-2.00"],["Magellan","0.95-1.85"],["Magellan EVO","1.00-2.30"],["Magic","1.00-1.50"],["Nexus","0.80-2.00"],["Om 7","0.75-1.50"],["Omega","0.90-1.50"],["Omni","0.75-1.50"],["Pilot","1.00-1.80"],["Pilot 7","1.00-1.60"],["Prime","0.70-1.70"],["Pulse","0.75-1.55"],["S Fire","0.75-1.90"],["Sabre 2","0.95-1.85"],["Safire 2","0.75-1.90"],["Safire 3","0.80-2.00"],["Shiluette","0.70-1.35"],["Skipper","1.10-1.70"],["Skipper EVO","1.00-2.00"],["Sonic",null],["Spectre","0.85-1.65"],["Storm","0.70-1.80"],["Synergy","0.80-1.50"],["Triathlon","1.40-2.20"],["Ultimate","1.00-1.80"]],[["Crossfire2","1.40-2.10"],["Crossfire3","1.20-2.00"],["Echo","1.00-2.20"],["Flamingo","0.75-1.60"],["Flash","1.30-1.90"],["Fusion","0.80-1.50"],["Gangster","1.50-2.50"],["Joker","0.85-1.70"],["Katana","1.30-2.00"],["Kraken","1.20-2.00"],["Magellan","0.95-1.85"],["Magellan EVO","1.00-2.30"],["Magic","1.00-1.50"],["Mamba","1.80-2.00"],["Neos","1.80-2.40"],["Nexus","0.80-2.00"],["Nitron","1.30-1.80"],["Odyssey","1.30-2.00"],["Odyssey EVO","1.50-2.40"],["Pilot","1.00-1.80"],["Pilot 7","1.00-1.60"],["Prime","0.70-1.70"],["Pulse","0.75-1.55"],["Raptor",null],["Rave","1.00-2.00"],["S Fire","0.75-1.90"],["Sabre 2","0.95-1.85"],["Safire 2","0.75-1.90"],["Safire 3","0.80-2.00"],["Shark","1.30-2.00"],["Skipper EVO","1.00-2.00"],["Spectre","0.85-1.65"],["Stiletto","0.95-1.85"],["Storm","0.70-1.80"],["Triathlon","1.40-2.20"],["Ultimate","1.00-1.80"],["X Fire","1.40-2.40"],["Zulu","1.40-2.20"]],[["Crossfire2","1.00-2.20"],["Echo","1.00-2.20"],["Gangster","1.50-2.50"],["Helix","1.70-2.70"],["JFX","1.80-2.40"],["JFX2","1.80-2.40"],["JVX","1.80-2.80"],["Magellan EVO","1.00-2.30"],["Neos","1.80-2.40"],["Odyssey EVO","1.50-2.40"],["Scirocco","1.90-2.80"],["Sensei","1.60-2.40"],["Triathlon","1.40-2.20"],["Velocity","1.35-2.22"],["Velocity Competition","1.35-2.42"],["X Fire","1.40-2.40"],["Xaos","1.80-2.20"],["XF-15",null],["Zulu","1.30-2.20"]],[["Air Wolf","1.80-2.80"],["Leia","1.80-2.80"],["Valkyrie","1.80-2.80"]]];
+  var MODELS = [[["Accurate","0.60-0.90"],["Commodore","0.60-1.25"],["Dolphin","0.65-1.35"],["Dolphin 2","0.65-1.35"],["Equinox","0.60-1.20"],["Falcon","0.60-1.20"],["Focus","0.60-0.90"],["Hit","0.60-0.90"],["Icarus Student","0.60-1.30"],["Insider","0.70-1.40"],["Navigator","0.70-1.20"],["Para-Foil","0.60-0.90"],["Solo","1.00-1.10"],["Zero","0.60-0.90"],["Арбалет","0.60-1.10"],["Мальва","0.60-0.90"]],[["Commodore","0.60-1.25"],["Dolphin","0.65-1.35"],["Dolphin 2","0.65-1.35"],["Equinox","0.60-1.20"],["Falcon","0.60-1.20"],["Flamingo","0.75-1.60"],["Fusion","0.80-1.50"],["Horizon","0.90-1.40"],["Joker","0.85-1.70"],["Kraken","1.20-2.00"],["Magellan","0.95-1.85"],["Magellan EVO","1.00-2.30"],["Magic","1.00-1.50"],["Nexus","0.80-2.00"],["Om 7","0.75-1.50"],["Omega","0.90-1.50"],["Omni","0.75-1.50"],["Pilot","1.00-1.80"],["Pilot 7","1.00-1.60"],["Prime","0.70-1.70"],["Pulse","0.75-1.55"],["S Fire","0.75-1.90"],["Sabre 2","0.95-1.85"],["Safire 2","0.75-1.90"],["Safire 3","0.80-2.00"],["Shiluette","0.70-1.35"],["Skipper","1.10-1.70"],["Skipper EVO","1.00-2.00"],["Sonic",null],["Spectre","0.85-1.65"],["Storm","0.70-1.80"],["Synergy","0.80-1.50"],["Triathlon","1.40-2.20"],["Ultimate","1.00-1.80"]],[["Dolphin","0.65-1.35"],["Dolphin 2","0.65-1.35"],["Echo","1.00-2.20"],["Flamingo","1.00-2.20"],["Fusion","0.80-1.50"],["Horizon","0.90-1.40"],["Joker","0.85-1.70"],["Kraken","1.20-2.00"],["Magellan","0.95-1.85"],["Magellan EVO","1.00-2.30"],["Magic","1.00-1.50"],["Nexus","0.80-2.00"],["Om 7","0.75-1.50"],["Omega","0.90-1.50"],["Omni","0.75-1.50"],["Pilot","1.00-1.80"],["Pilot 7","1.00-1.60"],["Prime","0.70-1.70"],["Pulse","0.75-1.55"],["S Fire","0.75-1.90"],["Sabre 2","0.95-1.85"],["Safire 2","0.75-1.90"],["Safire 3","0.80-2.00"],["Shiluette","0.70-1.35"],["Skipper","1.10-1.70"],["Skipper EVO","1.00-2.00"],["Sonic",null],["Spectre","0.85-1.65"],["Storm","0.70-1.80"],["Synergy","0.80-1.50"],["Triathlon","1.40-2.20"],["Ultimate","1.00-1.80"]],[["Crossfire2","1.40-2.10"],["Crossfire3","1.20-2.00"],["Echo","1.00-2.20"],["Flamingo","0.75-1.60"],["Flash","1.30-1.90"],["Fusion","0.80-1.50"],["Gangster","1.50-2.50"],["Joker","0.85-1.70"],["Katana","1.30-2.00"],["Kraken","1.20-2.00"],["Magellan","0.95-1.85"],["Magellan EVO","1.00-2.30"],["Magic","1.00-1.50"],["Mamba","1.80-2.00"],["Neos","1.80-2.40"],["Nexus","0.80-2.00"],["Nitron","1.30-1.80"],["Odyssey","1.30-2.00"],["Odyssey EVO","1.50-2.40"],["Pilot","1.00-1.80"],["Pilot 7","1.00-1.60"],["Prime","0.70-1.70"],["Pulse","0.75-1.55"],["Raptor",null],["Rave","1.00-2.00"],["S Fire","0.75-1.90"],["Sabre 2","0.95-1.85"],["Safire 2","0.75-1.90"],["Safire 3","0.80-2.00"],["Shark","1.30-2.00"],["Skipper EVO","1.00-2.00"],["Spectre","0.85-1.65"],["Stiletto","0.95-1.85"],["Storm","0.70-1.80"],["Triathlon","1.40-2.20"],["Ultimate","1.00-1.80"],["X Fire","1.40-2.40"],["Zulu","1.40-2.20"]],[["Crossfire2","1.00-2.20"],["Echo","1.00-2.20"],["Gangster","1.50-2.50"],["Helix","1.70-2.70"],["JFX","1.80-2.40"],["JFX2","1.80-2.40"],["JVX","1.80-2.80"],["Magellan EVO","1.00-2.30"],["Neos","1.80-2.40"],["Odyssey EVO","1.50-2.40"],["Scirocco","1.90-2.80"],["Sensei","1.60-2.40"],["Triathlon","1.40-2.20"],["Velocity","1.35-2.22"],["Velocity Competition","1.35-2.42"],["X Fire","1.40-2.40"],["Xaos","1.80-2.20"],["XF-15",null],["Zulu","1.30-2.20"]],[["Air Wolf","1.80-2.80"],["Leia","1.80-2.80"],["Valkyrie","1.80-2.80"],["Wair Wolf","1.80-3.00"]]];
 
   var $ = function (id) { return document.getElementById(id); };
   var open = {};          // какие ступени развёрнуты
