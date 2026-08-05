@@ -108,8 +108,8 @@
            background-image:linear-gradient(180deg,rgba(232,81,26,.34) 0%,rgba(150,40,30,.28) 100%); }
   .jhead .no { flex:none; font-family:'Russo One',sans-serif; font-size:17px;
                letter-spacing:.02em; color:#fff4e8; }
-  .jhead .no i { font-style:normal; font-size:11px; color:var(--gold);
-                 font-family:'Manrope',sans-serif; font-weight:800; margin-left:5px; }
+  /* второй номер - в своём году, тот же размер, отличается цветом */
+  .jhead .no i { font-style:normal; color:var(--gold); margin-left:7px; }
   .jhead .mid { flex:1; min-width:0; font-size:12.5px; line-height:1.45;
                 color:rgba(255,255,255,.82); }
   .jhead .mid span { color:var(--mut); }
@@ -183,6 +183,10 @@
     <div class="field">
       <label for="alt">Высота отделения по умолчанию, м</label>
       <input type="number" id="alt" class="num" placeholder="4000" step="100">
+    </div>
+    <div class="field">
+      <label for="ex">№ упражнения по умолчанию</label>
+      <input type="text" id="ex" placeholder="—" autocomplete="off" spellcheck="false">
     </div>
     <div class="field">
       <label for="base">Прыжков до журнала</label>
@@ -368,8 +372,8 @@
       + fld('Самолёт', sel('nCraft', CRAFTS[0]).replace('data-f="nCraft"', 'id="nCraft"'))
       + fld('Высота, м', '<input type="number" class="num" id="nAlt" step="100" value="'
             + (c.alt === '' ? '' : c.alt) + '">')
-      + fld('№ упражнения', '<input type="text" id="nEx">')
-      + fld('Задание', '<input type="text" id="nTask">')
+      + fld('№ упражнения', '<input type="text" id="nEx" value="' + esc(c.ex) + '">')
+      + fld('Задание', '<input type="text" id="nTask" placeholder="ФВ">')
       + '<div class="row2" style="margin-top:12px">'
       + '<button class="btn go" id="nSave">Записать</button></div></div>';
     box.style.display = 'block';
@@ -390,13 +394,14 @@
   // ---------- настройки ----------
   function loadCfg() {
     var c = TanayLog.cfg();
-    $('me').value = c.me; $('canopy').value = c.canopy;
+    $('me').value = c.me; $('canopy').value = c.canopy; $('ex').value = c.ex;
     $('alt').value = c.alt; $('base').value = c.base; $('baseYear').value = c.baseYear;
   }
   function saveCfg() {
     TanayLog.setCfg({
       me: $('me').value.trim(), canopy: $('canopy').value.trim(),
       alt: $('alt').value === '' ? '' : +$('alt').value,
+      ex: $('ex').value.trim(),
       base: +$('base').value || 0,
       baseY: new Date().getFullYear(),
       baseYear: +$('baseYear').value || 0
@@ -405,7 +410,7 @@
     setTimeout(function () { $('cfgOk').textContent = ''; }, 1500);
     render();
   }
-  ['me', 'canopy', 'alt', 'base', 'baseYear'].forEach(function (id) {
+  ['me', 'canopy', 'alt', 'ex', 'base', 'baseYear'].forEach(function (id) {
     $(id).addEventListener('change', saveCfg);
   });
 

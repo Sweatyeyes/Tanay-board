@@ -32,6 +32,7 @@
   // me      - "Фамилия" или "Фамилия Имя", по ним ищем себя во взлёте
   // canopy  - парашют по умолчанию ("JFX 84"), подставляется в новую запись
   // alt     - высота отделения по умолчанию, метры
+  // ex      - номер упражнения по умолчанию (задание берётся с табло)
   // base    - сколько прыжков было до того, как завели журнал
   // baseY   - год, к которому относится baseYear
   // baseYear- сколько из них выполнено в этом году
@@ -41,6 +42,7 @@
       me: c.me || '',
       canopy: c.canopy || '',
       alt: c.alt == null ? '' : c.alt,
+      ex: c.ex || '',
       base: +c.base || 0,
       baseY: +c.baseY || new Date().getFullYear(),
       baseYear: +c.baseYear || 0
@@ -50,7 +52,9 @@
 
   // ---------- записи ----------
   // {id, date:'2026-08-05', time:'11:22', load:'7', craft:'Л-410',
-  //  canopy:'JFX 84', alt:4000, ex:'ФВ', task:'', auto:1}
+  //  canopy:'JFX 84', alt:4000, ex:'', task:'ФВ', auto:1}
+  // ex   - номер упражнения, подставляется из настроек
+  // task - задание, приходит из колонки категории на табло ("ФВ", "AFF 4")
   // load хранится, но на экране не показывается: он нужен только чтобы
   // не записать один и тот же взлёт дважды.
   function jumps() {
@@ -187,7 +191,7 @@
       if (!mine) continue;
       k = date + '|' + num;
       pend[k] = { date: date, load: num, craft: L.aircraft || '',
-                  ex: mine.cat || '', time: time || (pend[k] && pend[k].time) || '' };
+                  task: mine.cat || '', time: time || (pend[k] && pend[k].time) || '' };
     }
 
     // взлёт, который был в ожидании, пропал с табло - значит ушёл
@@ -200,7 +204,7 @@
           id: Date.now() + Math.floor(Math.random() * 1000),
           date: p.date, time: p.time || '', load: p.load,
           canopy: c.canopy || '', craft: p.craft || '',
-          alt: c.alt === '' ? '' : +c.alt, ex: p.ex || '', task: '', auto: 1
+          alt: c.alt === '' ? '' : +c.alt, ex: c.ex || '', task: p.task || '', auto: 1
         });
         added++; changed = true;
       }
