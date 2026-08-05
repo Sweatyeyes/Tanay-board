@@ -29,7 +29,7 @@
   }
 
   // ---------- настройки ----------
-  // me      - своя фамилия, по ней ищем себя во взлёте
+  // me      - "Фамилия" или "Фамилия Имя", по ним ищем себя во взлёте
   // canopy  - парашют по умолчанию ("JFX 84"), подставляется в новую запись
   // alt     - высота отделения по умолчанию, метры
   // base    - сколько прыжков было до того, как завели журнал
@@ -50,7 +50,9 @@
 
   // ---------- записи ----------
   // {id, date:'2026-08-05', time:'11:22', load:'7', craft:'Л-410',
-  //  type:'ФВ', canopy:'JFX 84', alt:4000, auto:1}
+  //  canopy:'JFX 84', alt:4000, ex:'ФВ', task:'', auto:1}
+  // load хранится, но на экране не показывается: он нужен только чтобы
+  // не записать один и тот же взлёт дважды.
   function jumps() {
     var a = read(K_JUMPS, []);
     return Array.isArray(a) ? a : [];
@@ -122,6 +124,15 @@
     if (Math.abs(a.length - b.length) > 2) return false;
     return dist(a, b) <= (a.length <= 5 ? 1 : 2);
   }
+  // "Мышкевич" сверяем только по фамилии, "Мышкевич Сергей" - и по имени
+  function isMe(rowName, me) {
+    var p = String(rowName || '').trim().split(/\s+/);
+    var w = String(me || '').trim().split(/\s+/);
+    if (!w[0]) return false;
+    if (!looksSame(p[0], w[0])) return false;
+    if (w.length > 1 && !looksSame(p[1] || '', w[1])) return false;
+    return true;
+  }
   function isService(r) {
     var n = String((r && r.name) || '');
     return n.indexOf('КВОРУМ') === 0 || n === '(Вып.)';
@@ -171,15 +182,12 @@
 
       var rows = L.rows || [], mine = null;
       for (var r = 0; r < rows.length; r++) {
-        if (!isService(rows[r]) &&
-            looksSame(String(rows[r].name || '').split(' ')[0], c.me)) {
-          mine = rows[r]; break;
-        }
+        if (!isService(rows[r]) && isMe(rows[r].name, c.me)) { mine = rows[r]; break; }
       }
       if (!mine) continue;
       k = date + '|' + num;
       pend[k] = { date: date, load: num, craft: L.aircraft || '',
-                  type: mine.cat || '', time: time || (pend[k] && pend[k].time) || '' };
+                  ex: mine.cat || '', time: time || (pend[k] && pend[k].time) || '' };
     }
 
     // взлёт, который был в ожидании, пропал с табло - значит ушёл
@@ -191,8 +199,8 @@
         list.push({
           id: Date.now() + Math.floor(Math.random() * 1000),
           date: p.date, time: p.time || '', load: p.load,
-          craft: p.craft || '', type: p.type || '',
-          canopy: c.canopy || '', alt: c.alt === '' ? '' : +c.alt, auto: 1
+          canopy: c.canopy || '', craft: p.craft || '',
+          alt: c.alt === '' ? '' : +c.alt, ex: p.ex || '', task: '', auto: 1
         });
         added++; changed = true;
       }
@@ -223,6 +231,6 @@
     numbered: numbered, totals: totals,
     observe: observe, pending: pending,
     hasJump: hasJump, iso: iso, boardDate: boardDate, boardTime: boardTime,
-    looksSame: looksSame, loadNumber: loadNumber
+    looksSame: looksSame, isMe: isMe, loadNumber: loadNumber
   };
 })(window);
