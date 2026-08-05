@@ -69,9 +69,9 @@
   /* главные цифры */
   .tot { display:flex; gap:12px; }
   .tot div { flex:1; }
-  .tot .v { font-family:'Russo One',sans-serif; font-size:36px; line-height:1;
+  .tot .v { font-family:'Russo One',sans-serif; font-size:34px; line-height:1;
             letter-spacing:.02em; }
-  .tot .v.sm { font-size:26px; color:var(--gold); }
+  .tot .v.sm { color:var(--gold); }
   .tot small { font-family:'Manrope',sans-serif; font-size:10.5px; font-weight:600;
                color:var(--mut); letter-spacing:.16em; text-transform:uppercase;
                display:block; margin-bottom:7px; }
@@ -141,7 +141,7 @@
 
 <div class="tabs">
   <a href="text.html">Табло</a>
-  <a href="wl.html">Купола</a>
+  <a href="wl.html">Загрузка</a>
   <a class="on" href="log.html">Журнал</a>
 </div>
 
@@ -169,18 +169,19 @@
   <h2 class="sect">Настройки<span class="rest"></span></h2>
   <div class="card">
     <div class="field">
-      <label for="me">Моя фамилия</label>
-      <input type="text" id="me" placeholder="Мышкевич" autocomplete="off"
+      <label for="me">Фамилия и имя</label>
+      <input type="text" id="me" placeholder="Мышкевич Сергей" autocomplete="off"
              autocapitalize="words" spellcheck="false">
     </div>
-    <p class="note" style="margin-bottom:12px">По ней приложение находит вас во взлёте.
-    Прыжок записывается сам, когда взлёт с вашей фамилией уходит с табло.</p>
+    <p class="note" style="margin-bottom:12px">По ним приложение находит вас во взлёте.
+    Можно оставить одну фамилию — тогда поиск идёт только по ней. Прыжок
+    записывается сам, когда ваш взлёт уходит с табло.</p>
     <div class="field">
       <label for="canopy">Парашют по умолчанию</label>
       <input type="text" id="canopy" placeholder="JFX 84" autocomplete="off" spellcheck="false">
     </div>
     <div class="field">
-      <label for="alt">Высота отделения, м</label>
+      <label for="alt">Высота отделения по умолчанию, м</label>
       <input type="number" id="alt" class="num" placeholder="4000" step="100">
     </div>
     <div class="field">
@@ -247,7 +248,7 @@
     var pend = TanayLog.pending();
     var h = t.logged + ' ' + plural(t.logged, 'прыжок', 'прыжка', 'прыжков')
           + ' записал сам журнал, остальные ' + c.base + ' — введены как прошлые.';
-    if (!c.me) h = '<b>Укажите свою фамилию в настройках</b> — без неё журнал не сможет '
+    if (!c.me) h = '<b>Укажите фамилию и имя в настройках</b> — без них журнал не сможет '
                  + 'узнавать вас во взлёте и записывать прыжки.';
     else if (pend) h += ' Сейчас ждёт отправления ' + pend + ' '
                       + plural(pend, 'взлёт', 'взлёта', 'взлётов') + '.';
@@ -270,13 +271,13 @@
         lastDay = j.date;
       }
       var mid = [];
-      if (j.load) mid.push(j.load + ' взлёт');
-      if (j.craft) mid.push(esc(j.craft));
       if (j.time) mid.push(j.time);
+      if (j.canopy) mid.push(esc(j.canopy));
+      if (j.craft) mid.push(esc(j.craft));
+      if (j.alt !== '' && j.alt != null && j.alt !== 0) mid.push(j.alt + ' м');
       var mid2 = [];
-      if (j.type) mid2.push(esc(j.type));
-      if (j.alt !== '' && j.alt != null) mid2.push(j.alt + ' м');
-      if (j.canopy) mid2.push(esc(j.canopy));
+      if (j.ex) mid2.push(esc(j.ex));
+      if (j.task) mid2.push(esc(j.task));
 
       h += '<div class="jump' + (j.auto ? '' : ' man') + (open[j.id] ? ' open' : '')
         +  '" data-id="' + j.id + '">'
@@ -292,12 +293,12 @@
   function editor(j) {
     return ''
       + fld('Дата', '<input type="date" data-f="date" value="' + esc(j.date) + '">')
-      + fld('Взлёт', '<input type="text" class="num" data-f="load" value="' + esc(j.load) + '">')
+      + fld('Парашют', '<input type="text" data-f="canopy" value="' + esc(j.canopy) + '">')
       + fld('Самолёт', sel('craft', j.craft))
-      + fld('Тип прыжка', '<input type="text" data-f="type" value="' + esc(j.type) + '">')
       + fld('Высота, м', '<input type="number" class="num" step="100" data-f="alt" value="'
             + (j.alt == null ? '' : esc(j.alt)) + '">')
-      + fld('Парашют', '<input type="text" data-f="canopy" value="' + esc(j.canopy) + '">')
+      + fld('№ упражнения', '<input type="text" data-f="ex" value="' + esc(j.ex) + '">')
+      + fld('Задание', '<input type="text" data-f="task" value="' + esc(j.task) + '">')
       + '<div class="row2" style="margin-top:12px">'
       + '<button class="btn go" data-act="save">Сохранить</button>'
       + '<button class="btn del" data-act="del">Удалить</button></div>';
@@ -363,12 +364,12 @@
     var c = TanayLog.cfg();
     box.innerHTML = '<div class="card">'
       + fld('Дата', '<input type="date" id="nDate" value="' + TanayLog.iso(new Date()) + '">')
-      + fld('Взлёт', '<input type="text" class="num" id="nLoad" placeholder="7">')
+      + fld('Парашют', '<input type="text" id="nCanopy" value="' + esc(c.canopy) + '">')
       + fld('Самолёт', sel('nCraft', CRAFTS[0]).replace('data-f="nCraft"', 'id="nCraft"'))
-      + fld('Тип прыжка', '<input type="text" id="nType" placeholder="ФВ">')
       + fld('Высота, м', '<input type="number" class="num" id="nAlt" step="100" value="'
             + (c.alt === '' ? '' : c.alt) + '">')
-      + fld('Парашют', '<input type="text" id="nCanopy" value="' + esc(c.canopy) + '">')
+      + fld('№ упражнения', '<input type="text" id="nEx">')
+      + fld('Задание', '<input type="text" id="nTask">')
       + '<div class="row2" style="margin-top:12px">'
       + '<button class="btn go" id="nSave">Записать</button></div></div>';
     box.style.display = 'block';
@@ -376,9 +377,9 @@
       var list = TanayLog.jumps();
       list.push({
         id: Date.now(), date: $('nDate').value || TanayLog.iso(new Date()),
-        time: '', load: $('nLoad').value.trim(), craft: $('nCraft').value,
-        type: $('nType').value.trim(), canopy: $('nCanopy').value.trim(),
-        alt: $('nAlt').value === '' ? '' : +$('nAlt').value, auto: 0
+        time: '', load: '', canopy: $('nCanopy').value.trim(), craft: $('nCraft').value,
+        alt: $('nAlt').value === '' ? '' : +$('nAlt').value,
+        ex: $('nEx').value.trim(), task: $('nTask').value.trim(), auto: 0
       });
       TanayLog.setJumps(list);
       box.style.display = 'none';

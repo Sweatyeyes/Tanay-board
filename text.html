@@ -210,7 +210,7 @@
 
 <div class="tabs">
   <a class="on" href="text.html">Табло</a>
-  <a href="wl.html">Купола</a>
+  <a href="wl.html">Загрузка</a>
   <a href="log.html">Журнал</a>
 </div>
 
@@ -221,9 +221,11 @@
 
 <div class="settings" id="settings">
   <h3>Слежу за фамилиями</h3>
-  <p>Строка с этой фамилией подсветится зелёным, и придёт уведомление, когда человек появится во взлёте.</p>
+  <p>Строка подсветится зелёным, и придёт уведомление, когда человек появится
+  во взлёте. Можно указать одну фамилию, а можно фамилию с именем — тогда
+  однофамилец не сработает.</p>
   <div class="addrow">
-    <input id="watchInput" type="text" placeholder="Мышкевич" autocomplete="off"
+    <input id="watchInput" type="text" placeholder="Мышкевич Сергей" autocomplete="off"
            autocapitalize="words" spellcheck="false">
     <button id="watchAdd">Добавить</button>
   </div>
@@ -337,10 +339,15 @@
   // возвращает фамилию из настроек (она постоянна), а не распознанную:
   // иначе "Мышкевич" и "Мышквич" в разных прогонах дадут разные ключи
   // уведомлений, и одно и то же придёт дважды
+  // В списке можно держать как одну фамилию, так и "Фамилия Имя".
+  // Если имя указано - сверяем и его: на аэродроме бывают однофамильцы.
   function matchedWatch(rowName) {
-    var surname = String(rowName || '').split(' ')[0];
+    var p = String(rowName || '').trim().split(/\s+/);
     for (var i = 0; i < watch.length; i++) {
-      if (looksSame(surname, watch[i])) return watch[i];
+      var w = String(watch[i]).trim().split(/\s+/);
+      if (!looksSame(p[0], w[0])) continue;
+      if (w.length > 1 && !looksSame(p[1] || '', w[1])) continue;
+      return watch[i];
     }
     return null;
   }
