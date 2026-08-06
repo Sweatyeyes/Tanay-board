@@ -88,7 +88,7 @@
   .step { background:var(--card); border:1px solid var(--line2);
           border-left:4px solid var(--gold); margin-bottom:12px; overflow:hidden;
           backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
-  /* зелёная полоса - ступени, открытые при вашем количестве прыжков */
+  /* зелёная полоса - ступень, которая соответствует вашим прыжкам */
   .step.ok { border-left-color:var(--me); }
   .step.ok .ln1 .nm { color:var(--me); }
   /* шапка ступени - та же тёплая закатная полоса, что у взлёта */
@@ -198,8 +198,8 @@
 <div>
   <h2 class="sect">Ступени</h2>
   <div id="ladder"></div>
-  <p class="note" style="margin:-2px 0 12px">Зелёным — ступени, открытые при вашем
-  количестве прыжков. Нажмите на ступень: покажет размеры куполов, отнесённые
+  <p class="note" style="margin:-2px 0 12px">Зелёным — ступень, которая соответствует
+  вашему количеству прыжков. Нажмите на ступень: покажет размеры куполов, отнесённые
   к ней в таблице при вашей массе, и модели этого класса с диапазоном загрузки
   от производителя.</p>
 
@@ -341,7 +341,7 @@
               ? ' размера' : ' размеров')) + '</div>'
         : '<div class="ln3 none">при ' + kg + ' кг подходящего размера в таблице нет</div>';
 
-      html += '<div class="step' + (i <= byJ ? ' ok' : '') + (isOpen ? ' open' : '')
+      html += '<div class="step' + (i === byJ ? ' ok' : '') + (isOpen ? ' open' : '')
            +  '" data-i="' + i + '">'
            +  '<button class="head" type="button">'
            +  '<div class="ln1">'

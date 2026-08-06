@@ -38,7 +38,10 @@
   #offline .msg { color:#ddd; font-size:6vw; }
   #offline img { max-width:90vw; max-height:70vh; border-radius:10px; }
   a.switch { color:#888; font-size:13px; line-height:1.5; text-decoration:none;
-             padding:12px 16px 16px; text-align:center; max-width:420px; }
+             padding:12px 16px 6px; text-align:center; max-width:420px; }
+  .how { color:#5c5c5c; font-size:11.5px; line-height:1.7; text-align:center;
+         max-width:420px; padding:0 16px 18px; }
+  .how b { color:#7a7a7a; font-weight:600; }
 </style>
 </head>
 <body>
@@ -47,6 +50,11 @@
 <!-- метка ?app включает манифест: без неё Chrome на Android не предложит установку -->
 <a class="switch" href="text.html?app">приложение для телефона — ещё в работе,
   можно посмотреть и поставить →</a>
+<div class="how">
+  <b>iPhone:</b> открыть ссылку в Safari, нажать «Поделиться» и выбрать
+  «На экран „Домой"».<br>
+  <b>Android:</b> открыть в Chrome, меню из трёх точек — «Установить приложение».
+</div>
 <script>
   var IMAGE_URL  = "https://tanay-board.myshkevich.workers.dev/";
   var STATUS_URL = "https://raw.githubusercontent.com/Sweatyeyes/Tanay-board/data/last_update.txt";

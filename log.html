@@ -79,14 +79,28 @@
           border-top:1px solid var(--line2); padding-top:10px; }
   .hint b { color:var(--gold); font-weight:600; }
 
-  /* поля */
+  /* Поля. Все ячейки одного размера и с одинаковым выравниванием -
+     иначе колонка значений в записи выглядит рваной. */
   .field { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
   .field label { flex:1; font-size:14px; min-width:0; }
-  .field input, .field select { width:130px; background:rgba(0,0,0,.35);
+  .field input, .field select { width:136px; flex:none; background:rgba(0,0,0,.35);
        border:1px solid var(--line); color:var(--text); font-family:inherit;
-       font-size:15px; font-weight:600; padding:8px 9px; }
-  .field input.num { width:92px; text-align:center; font-weight:800; }
+       font-size:15px; font-weight:600; padding:8px 9px; text-align:left;
+       height:38px; border-radius:0; -webkit-appearance:none; appearance:none; }
+  .field select { padding-right:9px; }
   .field input::placeholder { color:rgba(255,255,255,.3); }
+
+  /* сворачиваемый блок - без карточки, в цвет фона */
+  .fold { border-top:1px solid var(--line2); margin-top:4px; padding-top:2px; }
+  .fold > button { display:flex; align-items:center; gap:8px; width:100%;
+        background:none; border:none; color:var(--mut); font:inherit; font-size:13px;
+        padding:11px 0; cursor:pointer; text-align:left;
+        -webkit-tap-highlight-color:transparent; }
+  .fold > button .ar { color:rgba(255,255,255,.4); font-size:11px;
+        transition:transform .15s; display:inline-block; }
+  .fold.open > button .ar { transform:rotate(90deg); }
+  .fold > div { display:none; padding-bottom:4px; }
+  .fold.open > div { display:block; }
   .btn { background:rgba(10,7,20,.3); color:var(--text); border:1px solid var(--line);
          padding:9px 14px; font-family:inherit; font-size:12px; font-weight:800;
          letter-spacing:.05em; text-transform:uppercase; cursor:pointer; }
@@ -182,19 +196,29 @@
     </div>
     <div class="field">
       <label for="alt">Высота отделения по умолчанию, м</label>
-      <input type="number" id="alt" class="num" placeholder="4000" step="100">
+      <input type="number" id="alt" placeholder="4000" step="100">
+    </div>
+    <div class="field">
+      <label for="ff">Время св. падения по умолчанию, с</label>
+      <input type="number" id="ff" placeholder="50" min="0" step="1">
     </div>
     <div class="field">
       <label for="ex">№ упражнения по умолчанию</label>
       <input type="text" id="ex" placeholder="—" autocomplete="off" spellcheck="false">
     </div>
-    <div class="field">
-      <label for="base">Прыжков до книжки</label>
-      <input type="number" id="base" class="num" min="0" step="1">
-    </div>
-    <div class="field">
-      <label for="baseYear">Из них в этом году</label>
-      <input type="number" id="baseYear" class="num" min="0" step="1">
+
+    <div class="fold" id="foldBase">
+      <button type="button"><span class="ar">&#9656;</span>Прыжков до книжки</button>
+      <div>
+        <div class="field">
+          <label for="base">Всего прыжков</label>
+          <input type="number" id="base" min="0" step="1">
+        </div>
+        <div class="field">
+          <label for="baseYear">В этом году</label>
+          <input type="number" id="baseYear" min="0" step="1">
+        </div>
+      </div>
     </div>
     <div class="ok" id="cfgOk"></div>
   </div>
@@ -279,6 +303,7 @@
       if (j.canopy) mid.push(esc(j.canopy));
       if (j.craft) mid.push(esc(j.craft));
       if (j.alt !== '' && j.alt != null && j.alt !== 0) mid.push(j.alt + ' м');
+      if (j.ff !== '' && j.ff != null && j.ff !== 0) mid.push(j.ff + ' с');
       var mid2 = [];
       if (j.ex) mid2.push(esc(j.ex));
       if (j.task) mid2.push(esc(j.task));
@@ -299,8 +324,10 @@
       + fld('Дата', '<input type="date" data-f="date" value="' + esc(j.date) + '">')
       + fld('Парашют', '<input type="text" data-f="canopy" value="' + esc(j.canopy) + '">')
       + fld('Самолёт', sel('craft', j.craft))
-      + fld('Высота, м', '<input type="number" class="num" step="100" data-f="alt" value="'
+      + fld('Высота, м', '<input type="number" step="100" data-f="alt" value="'
             + (j.alt == null ? '' : esc(j.alt)) + '">')
+      + fld('Время св. падения, с', '<input type="number" step="1" data-f="ff" value="'
+            + (j.ff == null ? '' : esc(j.ff)) + '">')
       + fld('№ упражнения', '<input type="text" data-f="ex" value="' + esc(j.ex) + '">')
       + fld('Задание', '<input type="text" data-f="task" value="' + esc(j.task) + '">')
       + '<div class="row2" style="margin-top:12px">'
@@ -345,7 +372,8 @@
         var f = box.querySelectorAll('[data-f]');
         for (var k = 0; k < f.length; k++) {
           var name = f[k].getAttribute('data-f'), v = f[k].value;
-          list[i][name] = (name === 'alt') ? (v === '' ? '' : +v) : v;
+          list[i][name] = (name === 'alt' || name === 'ff')
+                        ? (v === '' ? '' : +v) : v;
         }
         list[i].auto = 0;                 // правил руками - помечаем
         break;
@@ -370,8 +398,10 @@
       + fld('Дата', '<input type="date" id="nDate" value="' + TanayLog.iso(new Date()) + '">')
       + fld('Парашют', '<input type="text" id="nCanopy" value="' + esc(c.canopy) + '">')
       + fld('Самолёт', sel('nCraft', CRAFTS[0]).replace('data-f="nCraft"', 'id="nCraft"'))
-      + fld('Высота, м', '<input type="number" class="num" id="nAlt" step="100" value="'
+      + fld('Высота, м', '<input type="number" id="nAlt" step="100" value="'
             + (c.alt === '' ? '' : c.alt) + '">')
+      + fld('Время св. падения, с', '<input type="number" id="nFf" step="1" value="'
+            + (c.ff === '' ? '' : c.ff) + '">')
       + fld('№ упражнения', '<input type="text" id="nEx" value="' + esc(c.ex) + '">')
       + fld('Задание', '<input type="text" id="nTask" placeholder="ФВ">')
       + '<div class="row2" style="margin-top:12px">'
@@ -383,6 +413,7 @@
         id: Date.now(), date: $('nDate').value || TanayLog.iso(new Date()),
         time: '', load: '', canopy: $('nCanopy').value.trim(), craft: $('nCraft').value,
         alt: $('nAlt').value === '' ? '' : +$('nAlt').value,
+        ff: $('nFf').value === '' ? '' : +$('nFf').value,
         ex: $('nEx').value.trim(), task: $('nTask').value.trim(), auto: 0
       });
       TanayLog.setJumps(list);
@@ -395,12 +426,14 @@
   function loadCfg() {
     var c = TanayLog.cfg();
     $('me').value = c.me; $('canopy').value = c.canopy; $('ex').value = c.ex;
-    $('alt').value = c.alt; $('base').value = c.base; $('baseYear').value = c.baseYear;
+    $('alt').value = c.alt; $('ff').value = c.ff;
+    $('base').value = c.base; $('baseYear').value = c.baseYear;
   }
   function saveCfg() {
     TanayLog.setCfg({
       me: $('me').value.trim(), canopy: $('canopy').value.trim(),
       alt: $('alt').value === '' ? '' : +$('alt').value,
+      ff: $('ff').value === '' ? '' : +$('ff').value,
       ex: $('ex').value.trim(),
       base: +$('base').value || 0,
       baseY: new Date().getFullYear(),
@@ -410,8 +443,14 @@
     setTimeout(function () { $('cfgOk').textContent = ''; }, 1500);
     render();
   }
-  ['me', 'canopy', 'alt', 'ex', 'base', 'baseYear'].forEach(function (id) {
+  ['me', 'canopy', 'alt', 'ff', 'ex', 'base', 'baseYear'].forEach(function (id) {
     $(id).addEventListener('change', saveCfg);
+  });
+
+  // блок прошлых прыжков свёрнут: его заполняют один раз
+  $('foldBase').querySelector('button').addEventListener('click', function () {
+    var f = $('foldBase');
+    f.className = /open/.test(f.className) ? 'fold' : 'fold open';
   });
 
   // ---------- копия ----------

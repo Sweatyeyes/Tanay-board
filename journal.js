@@ -32,6 +32,7 @@
   // me      - "Фамилия" или "Фамилия Имя", по ним ищем себя во взлёте
   // canopy  - парашют по умолчанию ("JFX 84"), подставляется в новую запись
   // alt     - высота отделения по умолчанию, метры
+  // ff      - время свободного падения по умолчанию, секунды
   // ex      - номер упражнения по умолчанию (задание берётся с табло)
   // base    - сколько прыжков было до того, как завели журнал
   // baseY   - год, к которому относится baseYear
@@ -42,6 +43,7 @@
       me: c.me || '',
       canopy: c.canopy || '',
       alt: c.alt == null ? '' : c.alt,
+      ff: c.ff == null ? '' : c.ff,
       ex: c.ex || '',
       base: +c.base || 0,
       baseY: +c.baseY || new Date().getFullYear(),
@@ -204,7 +206,8 @@
           id: Date.now() + Math.floor(Math.random() * 1000),
           date: p.date, time: p.time || '', load: p.load,
           canopy: c.canopy || '', craft: p.craft || '',
-          alt: c.alt === '' ? '' : +c.alt, ex: c.ex || '', task: p.task || '', auto: 1
+          alt: c.alt === '' ? '' : +c.alt, ff: c.ff === '' ? '' : +c.ff,
+          ex: c.ex || '', task: p.task || '', auto: 1
         });
         added++; changed = true;
       }
