@@ -107,6 +107,10 @@
   .grp .ln2 { color:rgba(255,255,255,.6); font-size:11px; margin-top:5px; line-height:1.45; }
   .gbody { display:none; padding:12px 13px 13px; background:rgba(6,4,14,.34); }
   .grp.open .gbody { display:block; }
+  /* разделитель внутри настроек */
+  .gbody .sub { font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+        color:var(--mut); margin:18px 0 8px; padding-top:12px;
+        border-top:1px solid var(--line2); }
   .btn { background:rgba(10,7,20,.3); color:var(--text); border:1px solid var(--line);
          padding:9px 14px; font-family:inherit; font-size:12px; font-weight:800;
          letter-spacing:.05em; text-transform:uppercase; cursor:pointer; }
@@ -189,7 +193,7 @@
   <div class="grp" id="cfgBox">
     <button class="head" type="button">
       <div class="ln1"><span class="nm">Настройки</span></div>
-      <div class="ln2">фамилия, значения по умолчанию, прошлые прыжки</div>
+      <div class="ln2">фамилия, значения по умолчанию, прошлые прыжки, копия книжки</div>
     </button>
     <div class="gbody">
     <div class="field">
@@ -216,6 +220,10 @@
       <label for="ex">№ упражнения по умолчанию</label>
       <input type="text" id="ex" placeholder="—" autocomplete="off" spellcheck="false">
     </div>
+    <div class="field">
+      <label for="dz">Аэродром по умолчанию</label>
+      <input type="text" id="dz" placeholder="DZ Tanay" autocomplete="off" spellcheck="false">
+    </div>
 
     <div class="field">
       <label for="base">Всего прыжков до книжки</label>
@@ -226,19 +234,17 @@
       <input type="number" id="baseYear" min="0" step="1">
     </div>
     <div class="ok" id="cfgOk"></div>
-    </div>
-  </div>
 
-  <h2 class="sect">Копия книжки<span class="rest"></span></h2>
-  <div class="card">
+    <div class="sub">Копия книжки</div>
     <p class="note" style="margin-bottom:12px">Книжка хранится только в этом телефоне.
-    Переустановка приложения или очистка данных браузера его сотрут — держите копию.</p>
+    Переустановка приложения или очистка данных браузера её сотрут — держите копию.</p>
     <div class="row2">
       <button class="btn" id="expBtn">Сохранить копию</button>
       <button class="btn" id="impBtn">Загрузить копию</button>
     </div>
     <input type="file" id="impFile" accept="application/json,.json" style="display:none">
     <div class="ok" id="ioOk"></div>
+    </div>
   </div>
 </div>
 </div>
@@ -313,6 +319,7 @@
       var mid2 = [];
       if (j.ex) mid2.push(esc(j.ex));
       if (j.task) mid2.push(esc(j.task));
+      if (j.dz) mid2.push(esc(j.dz));
 
       h += '<div class="jump' + (j.auto ? '' : ' man') + (open[j.id] ? ' open' : '')
         +  '" data-id="' + j.id + '">'
@@ -336,6 +343,7 @@
             + (j.ff == null ? '' : esc(j.ff)) + '">')
       + fld('№ упражнения', '<input type="text" data-f="ex" value="' + esc(j.ex) + '">')
       + fld('Задание', '<input type="text" data-f="task" value="' + esc(j.task) + '">')
+      + fld('Аэродром', '<input type="text" data-f="dz" value="' + esc(j.dz) + '">')
       + '<div class="row2" style="margin-top:12px">'
       + '<button class="btn go" data-act="save">Сохранить</button>'
       + '<button class="btn del" data-act="del">Удалить</button></div>';
@@ -410,6 +418,7 @@
             + (c.ff === '' ? '' : c.ff) + '">')
       + fld('№ упражнения', '<input type="text" id="nEx" value="' + esc(c.ex) + '">')
       + fld('Задание', '<input type="text" id="nTask" placeholder="ФВ">')
+      + fld('Аэродром', '<input type="text" id="nDz" value="' + esc(c.dz) + '">')
       + '<div class="row2" style="margin-top:12px">'
       + '<button class="btn go" id="nSave">Записать</button></div></div>';
     box.style.display = 'block';
@@ -420,7 +429,8 @@
         time: '', load: '', canopy: $('nCanopy').value.trim(), craft: $('nCraft').value,
         alt: $('nAlt').value === '' ? '' : +$('nAlt').value,
         ff: $('nFf').value === '' ? '' : +$('nFf').value,
-        ex: $('nEx').value.trim(), task: $('nTask').value.trim(), auto: 0
+        ex: $('nEx').value.trim(), task: $('nTask').value.trim(),
+        dz: $('nDz').value.trim(), auto: 0
       });
       TanayLog.setJumps(list);
       box.style.display = 'none';
@@ -432,7 +442,7 @@
   function loadCfg() {
     var c = TanayLog.cfg();
     $('me').value = c.me; $('canopy').value = c.canopy; $('ex').value = c.ex;
-    $('alt').value = c.alt; $('ff').value = c.ff;
+    $('alt').value = c.alt; $('ff').value = c.ff; $('dz').value = c.dz;
     $('base').value = c.base; $('baseYear').value = c.baseYear;
   }
   function saveCfg() {
@@ -440,7 +450,7 @@
       me: $('me').value.trim(), canopy: $('canopy').value.trim(),
       alt: $('alt').value === '' ? '' : +$('alt').value,
       ff: $('ff').value === '' ? '' : +$('ff').value,
-      ex: $('ex').value.trim(),
+      ex: $('ex').value.trim(), dz: $('dz').value.trim(),
       base: +$('base').value || 0,
       baseY: new Date().getFullYear(),
       baseYear: +$('baseYear').value || 0
@@ -449,7 +459,7 @@
     setTimeout(function () { $('cfgOk').textContent = ''; }, 1500);
     render();
   }
-  ['me', 'canopy', 'alt', 'ff', 'ex', 'base', 'baseYear'].forEach(function (id) {
+  ['me', 'canopy', 'alt', 'ff', 'ex', 'dz', 'base', 'baseYear'].forEach(function (id) {
     $(id).addEventListener('change', saveCfg);
   });
 
