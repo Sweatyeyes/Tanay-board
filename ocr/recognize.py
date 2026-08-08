@@ -555,13 +555,18 @@ def normalize_spl(text):
     if not m:
         return None
     tail = m.group(1).strip()
-    if "-" in tail:
-        d = re.search(r"([1-9][0-9]?)", tail)
-        return "SPL %s-way" % (d.group(1) if d else "7")
-    if re.match(r"^[TТ]", tail):
-        return "SPL Tanay"
+    # цифра в хвосте - это размер группы и есть
     d = re.search(r"([1-9][0-9]?)", tail)
-    return "SPL %s-way" % (d.group(1) if d else "7")
+    if d and 1 <= int(d.group(1)) <= 20:
+        return "SPL %s-way" % d.group(1)
+    if "-" in tail:                      # "T-way", "f-way" - тоже группа
+        return "SPL 7-way"
+    # Tanay читается длинным словом на Т ("Тамау", "Tanay"), а короткие
+    # "Тау", "Рау", "нау" - это искажённое "way"
+    letters = re.sub(r"[^A-Za-zА-Яа-яЁё]", "", tail)
+    if len(letters) >= 4 and letters[0] in "TТtт":
+        return "SPL Tanay"
+    return "SPL 7-way"
 
 
 def detect_aircraft(title):
@@ -700,7 +705,15 @@ def normalize_category(text):
         cutoff = 0.55 if len(c) >= 6 else 0.75
         m = difflib.get_close_matches(c, list(CAT_CANON), n=1, cutoff=cutoff)
         if m:
-            return CAT_CANON[m[0]]
+            hit = CAT_CANON[m[0]]
+            # у сильно испорченных "SPL" нечёткий поиск может выдумать размер
+            # группы ("ЗРЕРмау" -> "SPL 9-way"). Цифру берём только если она
+            # действительно есть в строке.
+            if hit.startswith("SPL ") and not re.search(r"[1-9]", t):
+                letters = re.sub(r"[^A-Za-zА-Яа-яЁё]", "", t)[3:]
+                return ("SPL Tanay" if len(letters) >= 4 and letters[0] in "TТtт"
+                        else "SPL 7-way")
+            return hit
     return t
 
 
