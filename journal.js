@@ -125,13 +125,17 @@
     }
     return prev[n];
   }
-  // допуск на ошибку распознавания - как в уведомлениях на табло
+  // Допуск на ошибку распознавания - тот же, что в уведомлениях на табло.
+  // Первая буква должна совпасть, ни одно имя не может быть началом другого
+  // (Павлов и Павлова - разные люди), длина отличается не больше чем на букву.
   function looksSame(a, b) {
     a = norm(a); b = norm(b);
     if (!a || !b) return false;
     if (a === b) return true;
-    if (Math.abs(a.length - b.length) > 2) return false;
-    return dist(a, b) <= (a.length <= 5 ? 1 : 2);
+    if (a.charAt(0) !== b.charAt(0)) return false;
+    if (a.indexOf(b) === 0 || b.indexOf(a) === 0) return false;
+    if (Math.abs(a.length - b.length) > 1) return false;
+    return dist(a, b) <= (a.length >= 5 ? 1 : 0);
   }
   // "Мышкевич" сверяем только по фамилии, "Мышкевич Сергей" - и по имени
   function isMe(rowName, me) {
