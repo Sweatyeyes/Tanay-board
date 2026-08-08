@@ -8,6 +8,7 @@
     python recognize.py board.png out/board.json out/debug.png
 """
 
+import hashlib
 import json
 import os
 import re
@@ -31,6 +32,10 @@ COL_CAT  = (0.762, 0.991)
 # AFF бывает уровней 1-7 плюс дефисные "AFF 8-1" и "AFF 8-2".
 KNOWN_CATS = [
     "Спортивный", "ФВ", "Совершенствование", "RW", "CP",
+    # групповые прыжки: на табло пишут "SPL 7-way" и "SPL Tanay".
+    # Без них строки уходили в сырой текст и один и тот же прыжок
+    # показывался то как "SPL T-way", то как "SPL нау:".
+    "SPL Tanay",
     "AFF 1", "AFF 2", "AFF 3", "AFF 4", "AFF 5", "AFF 6", "AFF 7",
     "AFF 8-1", "AFF 8-2",
 ]
@@ -41,6 +46,9 @@ for _mark in ("ТМ3000", "ТМ4000"):
 for _mark in ("ХК ТМ3", "ХК ТМ4"):
     for _w in ("90", "100", "110", "120"):
         KNOWN_CATS.append("%s %s" % (_mark, _w))
+# групповая акробатика: размер группы бывает разный
+for _n in (2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 16, 20):
+    KNOWN_CATS.append("SPL %d-way" % _n)
 
 # латинские двойники кириллицы + частые ошибки распознавания цифр:
 # S - это криво прочитанная 3, $ - это 9
@@ -534,14 +542,74 @@ def update_stats(path, entry, keep=400):
     return data["summary"]
 
 
+# "SPL 7-way" и "SPL Tanay" отличаются одним слогом, и общий нечёткий поиск
+# их путает: "T-way" ближе к "Tanay", чем к "7-way". Поэтому разбираем хвост
+# после SPL руками. Дефис есть только у групповых ("7-way", "T-way", "f-way"),
+# а "Tanay" начинается с Т - этого хватает, чтобы развести все прочтения.
+SPL_HEAD = re.compile(r"^\s*[S3$5ЅЗ]\s*[PР]\s*[LI1|]\s*(.*)$", re.I | re.S)
+
+
+def normalize_spl(text):
+    """Приводит строку вида "SPL ..." к канону. Не SPL - возвращает None."""
+    m = SPL_HEAD.match(text or "")
+    if not m:
+        return None
+    tail = m.group(1).strip()
+    if "-" in tail:
+        d = re.search(r"([1-9][0-9]?)", tail)
+        return "SPL %s-way" % (d.group(1) if d else "7")
+    if re.match(r"^[TТ]", tail):
+        return "SPL Tanay"
+    d = re.search(r"([1-9][0-9]?)", tail)
+    return "SPL %s-way" % (d.group(1) if d else "7")
+
+
 def detect_aircraft(title):
-    """Определяет борт по заголовку взлёта. Возвращает (имя, число мест)."""
+    """Определяет борт по заголовку взлёта. Возвращает (имя, число мест).
+
+    Точного вхождения мало: распознавание вставляет лишние цифры
+    ("Л-4710" вместо "Л-410") и путает похожие знаки ("Л-4l0", "Л-41О").
+    Поэтому после точной проверки идёт сравнение с допуском по каждому
+    слову заголовка.
+    """
     t = re.sub(r"[\s.]", "", (title or "").upper()).replace("O", "О")
     for name, variants, seats in AIRCRAFT:
         for v in variants:
             if re.sub(r"[\s.]", "", v.upper()) in t:
                 return name, seats
-    return "", None
+
+    def canon(s):
+        s = (s or "").upper().translate(LAT2CYR).translate(CYR2DIGIT)
+        return re.sub(r"[^А-ЯЁ0-9]", "", s)
+
+    best, best_r, best_seats = "", 0.0, None
+    for word in re.split(r"[\s.]+", (title or "")):
+        cw = canon(word)
+        if len(cw) < 3:
+            continue
+        for name, variants, seats in AIRCRAFT:
+            for v in variants:
+                r = difflib.SequenceMatcher(None, cw, canon(v)).ratio()
+                if r > best_r:
+                    best, best_r, best_seats = name, r, seats
+    return (best, best_seats) if best_r >= 0.7 else ("", None)
+
+
+# Постоянная подпись внизу табло - это не сообщение диспетчера, а легенда.
+# Без этой проверки она вылезала в приложении красной плашкой.
+STATIC_MSG = re.compile(r"^\s*КАТЕГОРИ", re.I)
+
+
+def clean_message(text):
+    """Отсеивает статичную легенду и обрывки без смысла."""
+    t = (text or "").strip()
+    if not t or STATIC_MSG.match(t):
+        return ""
+    letters = sum(1 for c in t if c.isalpha())
+    # у настоящего объявления букв заметно больше, чем мусорных знаков
+    if letters < 6 or letters < len(t) * 0.6:
+        return ""
+    return t
 
 
 def normalize_name(name):
@@ -620,6 +688,9 @@ def normalize_category(text):
         if "-" in digits:
             digits = "8-" + digits.split("-")[-1]
         return "AFF " + digits if digits else "AFF"
+    spl = normalize_spl(t)
+    if spl:
+        return spl
     c = canon_cat(t)
     if c in CAT_CANON:
         return CAT_CANON[c]
@@ -885,6 +956,42 @@ def classify_row(cell):
     return "empty"
 
 
+# Кэш распознанных ячеек.
+#
+# Между соседними кадрами табло меняется на одну-две строки, а шрифт на нём
+# пиксель в пиксель одинаковый. Значит одну и ту же строку незачем распознавать
+# заново: ключ - хэш самих пикселей, значение - что из них вышло. Дороже всего
+# именно tesseract, поэтому кэшируется только он; сверка фамилий по истории
+# и отсев шума считаются каждый раз заново.
+#
+# Версию нужно поднимать при любой правке разбора - иначе старые записи
+# продолжат отдавать результат по прежним правилам.
+CACHE_VER = 1
+# Ветка ocr каждый раз пересоздаётся и уходит force-push'ем, истории коммитов
+# у неё нет - но файл летит по сети на каждом прогоне, поэтому держим его
+# небольшим: полутора тысяч строк хватает на несколько прыжковых дней.
+CACHE_LIMIT = 1500
+CELL_CACHE = {}
+
+
+def cell_key(name_cell, cat_cell):
+    h = hashlib.blake2b(digest_size=10)
+    h.update(b"v%d|" % CACHE_VER)
+    h.update(b"%dx%d|" % name_cell.size)
+    h.update(name_cell.tobytes())
+    h.update(b"|")
+    h.update(cat_cell.tobytes())
+    return h.hexdigest()
+
+
+def cacheable(res):
+    """В кэш идёт только уверенный разбор - сомнительный лучше пересчитать."""
+    if res.get("service"):
+        return True
+    letters = re.sub(r"[^А-Яа-яЁёA-Za-z]", "", res.get("name") or "")
+    return len(letters) >= 4 and res.get("cat_full") in KNOWN_CATS
+
+
 def recognize_row(job):
     """Распознаёт одну строку: имя и категорию. Вызывается из нескольких потоков.
 
@@ -892,6 +999,15 @@ def recognize_row(job):
     ускорение - на четырёх ядрах раннера примерно вчетверо.
     """
     name_cell, cat_cell = job["name_cell"], job["cat_cell"]
+
+    hit = CELL_CACHE.get(job.get("key"))
+    if hit:
+        job["result"] = {"n": job["n"], "name": hit[0], "staff": bool(hit[1]),
+                         "cat": short_category(hit[2]), "cat_full": hit[2],
+                         "cat_raw": hit[3], "_conf": hit[4],
+                         "service": bool(hit[5])}
+        job["cached"] = True
+        return job
 
     name_txt, name_conf = ocr_best(name_cell)
     name = normalize_name(name_txt.replace("|", "").strip())
@@ -932,11 +1048,18 @@ def main():
     hist_path = sys.argv[4] if len(sys.argv) > 4 else None
     stats_path = sys.argv[5] if len(sys.argv) > 5 else None
 
+    # В history.json теперь два раздела: счётчики фамилий и кэш ячеек.
+    # Старый формат (просто счётчики) читается как раньше.
     history = {}
     if hist_path and os.path.exists(hist_path):
         try:
             with open(hist_path, encoding="utf-8") as f:
-                history = {str(k): float(v) for k, v in json.load(f).items()}
+                raw = json.load(f)
+            names = raw.get("names") if isinstance(raw.get("names"), dict) else raw
+            history = {str(k): float(v) for k, v in names.items()}
+            cached = raw.get("cells") if isinstance(raw, dict) else None
+            if isinstance(cached, dict) and raw.get("cache_ver") == CACHE_VER:
+                CELL_CACHE.update(cached)
         except Exception as e:
             sys.stderr.write("history load error: %s\n" % e)
 
@@ -981,7 +1104,8 @@ def main():
     msg_crop = im.crop((0, min(H - 1, bottom_last + 90), W, min(H, bottom_last + 190)))
     msg_arr = np.array(msg_crop).astype(int)
     if (msg_arr.sum(axis=2) < 200).mean() > 0.002:
-        result["message"] = ocr(msg_crop, cfg=TESS_RU, invert=False, scale=2)
+        result["message"] = clean_message(
+            ocr(msg_crop, cfg=TESS_RU, invert=False, scale=2))
 
     draw = ImageDraw.Draw(im) if dbg else None
     jobs = []          # что распознавать; сами прогоны идут ниже, параллельно
@@ -1048,7 +1172,8 @@ def main():
             cat_cell = im.crop((cx0, ty0, cx1, ty1))
             # сами прогоны распознавания делаются позже и параллельно
             jobs.append({"load": load, "n": r + 1,
-                         "name_cell": name_cell, "cat_cell": cat_cell})
+                         "name_cell": name_cell, "cat_cell": cat_cell,
+                         "key": cell_key(name_cell, cat_cell)})
 
         # мест на борту: меряем по табло, но у отправленного взлёта зелёных
         # строк уже нет - тогда берём из таблицы бортов
@@ -1060,6 +1185,7 @@ def main():
             result["loads"].append(load)
 
     # ---- само распознавание: параллельно по числу ядер ----
+    fresh = {}
     if jobs:
         workers = min(8, max(2, (os.cpu_count() or 2)))
         try:
@@ -1070,6 +1196,16 @@ def main():
             sys.stderr.write("параллельный режим не вышел (%s), считаю по очереди\n" % e)
             for job in jobs:
                 recognize_row(job)
+
+        # снимок для кэша - пока в строках ещё есть служебные поля
+        for job in jobs:
+            res = job.get("result")
+            if res and job.get("key") and cacheable(res):
+                fresh[job["key"]] = [res["name"], 1 if res.get("staff") else 0,
+                                     res.get("cat_full", ""), res.get("cat_raw", ""),
+                                     res.get("_conf", 0), 1 if res.get("service") else 0]
+        reused = sum(1 for j in jobs if j.get("cached"))
+        sys.stderr.write("строк: %d, из кэша: %d\n" % (len(jobs), reused))
 
         for job in jobs:
             res = job.get("result")
@@ -1098,8 +1234,15 @@ def main():
 
     if hist_path:
         history = update_history(history, result["loads"])
+        # свежие ячейки кладём первыми, хвост старых обрезаем по лимиту
+        cells = dict(fresh)
+        for k, v in CELL_CACHE.items():
+            if len(cells) >= CACHE_LIMIT:
+                break
+            cells.setdefault(k, v)
         with open(hist_path, "w", encoding="utf-8") as f:
-            json.dump(history, f, ensure_ascii=False, indent=1)
+            json.dump({"names": history, "cache_ver": CACHE_VER, "cells": cells},
+                      f, ensure_ascii=False, separators=(",", ":"))
 
     os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
     with open(dst, "w", encoding="utf-8") as f:
