@@ -829,21 +829,40 @@ def not_background(arr):
 
 
 def _panels_in(mask, y0, y1, min_width=60):
-    """Ищет панели по столбцам внутри полосы строк [y0, y1)."""
+    """Ищет панели по столбцам внутри полосы строк [y0, y1).
+
+    Раньше панели искались по плотности текста в колонке (доля закрашенных
+    пикселей за всю высоту полосы). Это ломалось, как только на табло стало
+    8 панелей вместо 4: часть панелей заполнена лишь на несколько строк из
+    восемнадцати возможных, и текста в колонке набирается слишком мало,
+    чтобы перейти порог - панель считалась отсутствующей.
+
+    Вместо этого ищем сами вертикальные линии-рамки между панелями - они
+    сплошные на всю высоту полосы независимо от того, сколько строк занято
+    (даже у пустой панели без единого прыжка рамка всё равно есть).
+    """
     band = mask[y0:y1, :]
     bh, w = band.shape
     colsum = band.sum(axis=0)
-    thr = bh * 0.35
-    panels, inside, s = [], False, 0
+    line_thr = bh * 0.85
+    is_line = colsum > line_thr
+
+    # соседние засвеченные столбцы - одна и та же линия (рамка бывает
+    # толщиной в пару пикселей) - схлопываем их в одну границу по центру
+    borders, cur = [], []
     for x in range(w):
-        if colsum[x] > thr and not inside:
-            inside, s = True, x
-        elif colsum[x] <= thr and inside:
-            inside = False
-            if x - s > min_width:
-                panels.append((s, x))
-    if inside and w - s > min_width:
-        panels.append((s, w))
+        if is_line[x]:
+            if cur and x - cur[-1] > 3:
+                borders.append(sum(cur) // len(cur))
+                cur = []
+            cur.append(x)
+    if cur:
+        borders.append(sum(cur) // len(cur))
+
+    panels = []
+    for a, b in zip(borders, borders[1:]):
+        if b - a > min_width:
+            panels.append((a, b))
     return panels
 
 
@@ -881,14 +900,36 @@ def find_bands(arr):
     mask = not_background(arr)
     h, w = mask.shape
 
-    # полосы: строки, где заметная часть ширины занята не фоном
+    # полосы: строки, где заметная часть ширины занята не фоном.
+    # Между строками таблицы всегда есть промежутки (текст занимает не всю
+    # высоту строки), поэтому одна полоса с панелями никогда не даёт
+    # непрерывного покрытия - её пришлось бы ловить по каждой отдельной
+    # строке текста. Чтобы вся полоса с 17-18 строками распозналась как
+    # один ряд, сначала "заращиваем" небольшие промежутки (между строками
+    # одной панели, обычно ~10-15 px) - и только потом ищем протяжённые
+    # области. Настоящий зазор между двумя рядами панелей намного больше
+    # (полсотни пикселей и выше) и заращиванием не трогается.
     rowsum = mask.sum(axis=1)
     thr_row = w * 0.30
+    above = rowsum > thr_row
+    close_gap = 25
+    closed = above.copy()
+    y = 0
+    while y < h:
+        if not above[y]:
+            y0 = y
+            while y < h and not above[y]:
+                y += 1
+            if y - y0 <= close_gap and y0 > 0 and y < h:
+                closed[y0:y] = True
+        else:
+            y += 1
+
     bands, inside, s = [], False, 0
     for y in range(h):
-        if rowsum[y] > thr_row and not inside:
+        if closed[y] and not inside:
             inside, s = True, y
-        elif rowsum[y] <= thr_row and inside:
+        elif not closed[y] and inside:
             inside = False
             if y - s > 40:
                 bands.append((s, y))
