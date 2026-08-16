@@ -523,8 +523,13 @@ def update_stats(path, entry, keep=400):
     g_all, g_ch = gaps(runs), gaps(changed)
     def avg(xs):
         return round(sum(xs) / len(xs), 1) if xs else None
-    lags = [r["lag"] for r in runs if r.get("lag") is not None]
-    durs = [r["sec"] for r in runs if r.get("sec") is not None]
+    # Прогоны без табло на экране в замерах скорости не участвуют: там нечего
+    # распознавать, и они занижали бы среднее. В счётчике прогонов и в
+    # "обновлено" они есть - иначе сводка выглядит так, будто конвейер умер,
+    # хотя он просто ждёт, когда табло вернётся на экран.
+    work = [r for r in runs if r.get("board") is not False]
+    lags = [r["lag"] for r in work if r.get("lag") is not None]
+    durs = [r["sec"] for r in work if r.get("sec") is not None]
 
     data["runs"] = runs
     data["summary"] = {
@@ -1115,6 +1120,18 @@ def main():
         with open(dst, "w", encoding="utf-8") as f:
             json.dump(result, f, ensure_ascii=False, indent=1)
         print("панели не найдены - похоже, табло сейчас не показывается")
+        if stats_path:
+            try:
+                mt = os.path.getmtime(src)
+            except OSError:
+                mt = None
+            now = time.time()
+            update_stats(stats_path, {
+                "t": round(now, 1), "iso": result["updated"],
+                "digest": None, "changed": False, "board": False,
+                "lag": round(now - mt, 1) if mt else None,
+                "sec": round(now - t_start, 1), "rows": 0, "clock": "",
+            })
         return
 
     top0 = bands[0][1]            # верх самого первого ряда - под ним шапка
