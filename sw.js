@@ -3,7 +3,7 @@
 // идут в сеть - воркер их не перехватывает, чтобы табло не показывало
 // устаревшее. Без сети страница открывается из кэша и сама покажет
 // "данные не обновлялись".
-var CACHE = 'tanay-v6';
+var CACHE = 'tanay-v7';
 var ASSETS = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ var ASSETS = [
   './wl.html',
   './log.html',
   './journal.js',
+  './support.js',
   './logo.png',
   './manifest.webmanifest',
   './icon-192-v3.png',
