@@ -3,7 +3,7 @@
 // идут в сеть - воркер их не перехватывает, чтобы табло не показывало
 // устаревшее. Без сети страница открывается из кэша и сама покажет
 // "данные не обновлялись".
-var CACHE = 'tanay-v7';
+var CACHE = 'tanay-v8';
 var ASSETS = [
   './',
   './index.html',
@@ -11,6 +11,7 @@ var ASSETS = [
   './wl.html',
   './log.html',
   './journal.js',
+  './push.js',
   './support.js',
   './logo.png',
   './manifest.webmanifest',
@@ -34,6 +35,42 @@ self.addEventListener('activate', function (e) {
       }));
     }).then(function () { return self.clients.claim(); })
   );
+});
+
+// Пуш приходит пустым: текст лежит на сервере и забирается по адресу
+// /push/msg. Так не нужно шифровать содержимое пуша по RFC 8291.
+// iOS требует показать уведомление на каждый принятый пуш, поэтому
+// при любой осечке показываем хотя бы общую фразу - иначе Safari
+// может отобрать подписку.
+var API = 'https://tanay-board.myshkevich.workers.dev';
+
+self.addEventListener('push', function (e) {
+  e.waitUntil((async function () {
+    var title = 'Табло Танай', body = 'Есть изменения по вашему взлёту';
+    try {
+      var sub = await self.registration.pushManager.getSubscription();
+      if (sub) {
+        var buf = await crypto.subtle.digest(
+          'SHA-256', new TextEncoder().encode(sub.endpoint));
+        var id = '';
+        new Uint8Array(buf).forEach(function (b) {
+          id += b.toString(16).padStart(2, '0');
+        });
+        var r = await fetch(API + '/push/msg?id=' + id.slice(0, 24),
+                            { cache: 'no-store' });
+        if (r.ok) {
+          var m = await r.json();
+          if (m && m.title) { title = m.title; body = m.body || ''; }
+        }
+      }
+    } catch (err) { /* показываем общую фразу */ }
+    return self.registration.showNotification(title, {
+      body: body,
+      icon: './icon-192-v3.png',
+      badge: './icon-192-v3.png',
+      tag: 'tanay-board',
+    });
+  })());
 });
 
 // тап по уведомлению открывает табло, а не новую вкладку

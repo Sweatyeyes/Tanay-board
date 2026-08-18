@@ -258,6 +258,7 @@
 <div id="app"><div class="note">Загрузка…</div></div>
 <a class="switch" href="index.html">← показать экран</a>
 <script src="journal.js"></script>
+<script src="push.js"></script>
 <div id="support"></div>
 <div class="foot">Skydive Tanay · Drop Zone Board</div>
 <script>
@@ -529,6 +530,7 @@
     if (!ev) return;
     events[ev] = e.target.checked;
     save('tanay_events', events);
+    pushSync();
     renderNotifyState();
   });
 
@@ -600,6 +602,7 @@
     var dup = false;
     for (var i = 0; i < watch.length; i++) if (norm(watch[i]) === norm(v)) dup = true;
     if (!dup) { watch.push(v); save('tanay_watch', watch); }
+    pushSync();
     inputEl.value = '';
     renderChips();
     if (lastData) render(lastData);
@@ -613,13 +616,23 @@
     if (i == null) return;
     watch.splice(parseInt(i, 10), 1);
     save('tanay_watch', watch);
+    pushSync();
     renderChips();
     if (lastData) render(lastData);
   });
 
+  // Пуши. Пока приложение открыто, уведомления рождаются здесь же; пуш нужен
+  // для случая, когда экран погас и страницу заморозили. Список фамилий на
+  // сервер уходит хэшами - сверить можно, прочитать нельзя.
+  function pushSync() {
+    if (window.TanayPush && notifyOn) TanayPush.sync(watch, events);
+  }
+
   optNotify.addEventListener('change', function () {
     if (!optNotify.checked) {
-      notifyOn = false; save('tanay_notify', notifyOn); renderNotifyState(); return;
+      notifyOn = false; save('tanay_notify', notifyOn); renderNotifyState();
+      if (window.TanayPush) TanayPush.unsubscribe();
+      return;
     }
     if (!notifySupported()) { optNotify.checked = false; renderNotifyState(); return; }
     Notification.requestPermission().then(function (p) {
@@ -629,6 +642,8 @@
       renderNotifyState();
       if (notifyOn) {
         return ensureSw().then(function () {
+          // подписка на пуши - чтобы будило и при погасшем экране
+          if (window.TanayPush) TanayPush.subscribe(watch, events);
           return showNote('Уведомления включены',
                           'Сообщу, когда ваша фамилия появится во взлёте.', 'test');
         }).then(renderNotifyState);
