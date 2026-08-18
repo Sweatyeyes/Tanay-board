@@ -91,6 +91,9 @@ AIRCRAFT = [
 TESS_RU = "--oem 1 --psm 7 -l rus"
 TESS_MIX = "--oem 1 --psm 7 -l rus+eng"
 TESS_MIX8 = "--oem 1 --psm 8 -l rus+eng"
+# Отдельный проход только латиницей - для иностранных фамилий.
+# Смешанный rus+eng тут не годится: модель всё равно тянет в кириллицу.
+TESS_EN = "--oem 1 --psm 7 -l eng"
 
 SAMPLES = []   # образцы ячеек для отладочной картинки
 
@@ -622,6 +625,27 @@ def clean_message(text):
     return t
 
 
+def mostly_latin(text):
+    """Строка написана латиницей, а не кириллицей."""
+    lat = len(re.findall(r"[A-Za-z]", text or ""))
+    cyr = len(re.findall(r"[А-Яа-яЁё]", text or ""))
+    return lat >= 3 and lat > cyr
+
+
+def looks_garbled(text):
+    """Похоже, что кириллическая модель прочитала латинское имя.
+
+    Признак простой: заглавная буква в середине слова. В русских фамилиях
+    и именах такого не бывает, а "Abdulbari" под моделью rus превращается
+    в "АБЧиБай" - с большими буквами посреди слова.
+    """
+    for w in (text or "").split():
+        core = re.sub(r"[^A-Za-zА-Яа-яЁё]", "", w)
+        if len(core) >= 4 and re.search(r"[a-zа-яё][A-ZА-ЯЁ]", core):
+            return True
+    return False
+
+
 def normalize_name(name):
     """Подгоняет распознанную строку к каноническому виду.
 
@@ -654,6 +678,11 @@ def normalize_name(name):
     if difflib.SequenceMatcher(None, core, "вып").ratio() >= 0.7:
         return "(Вып.)"
 
+    # Латинское имя ("Abdulbari Qubaisi") к русским словарям не подгоняем:
+    # там для него нет ни фамилий, ни имён, и любая подгонка только испортит.
+    if mostly_latin(" ".join(parts)):
+        return " ".join(parts[:2])
+
     if len(parts) >= 2:
         patronymic = parts[2] if len(parts) >= 3 else ""
         parts[1] = fix_first_name(parts[1], parts[0], patronymic)
@@ -672,6 +701,47 @@ READY_DIGITS = dict(DIGIT_FIX)
 READY_DIGITS.update({"/": "7", "\\": "7", "|": "1", "!": "1", "]": "1"})
 
 READY_RE = re.compile(r"(готов\w*\s+)(\S{1,3})(\s*мин)", re.I)
+
+
+# Номер взлёта в заголовке: "7 взлет Л-410". Иногда цифра читается как
+# скобка или палочка ("{ взлет"), и тогда номер теряется целиком - а на нём
+# держатся уведомления, книжка прыжков и память о свёрнутых списках.
+LOAD_HEAD = re.compile(r"^(\s*)(\S{1,3})(\s*взл)", re.I)
+
+
+def load_number(title):
+    m = re.search(r"(\d+)\s*взл", title or "", re.I)
+    if not m:
+        return None
+    n = int(m.group(1))
+    return n if 1 <= n <= 99 else None
+
+
+def fix_load_numbers(loads):
+    """Восстанавливает потерянный номер взлёта по соседним панелям.
+
+    Панели на табло идут подряд слева направо, поэтому сосед задаёт номер
+    надёжнее, чем угадывание по начертанию испорченного символа.
+    """
+    nums = [load_number(l.get("title")) for l in loads]
+    known = [(i, n) for i, n in enumerate(nums) if n is not None]
+    if not known or len(known) == len(nums):
+        return
+    for i, n in enumerate(nums):
+        if n is not None:
+            continue
+        j, base = min(known, key=lambda kv: abs(kv[0] - i))
+        guess = base + (i - j)
+        if guess < 1 or guess > 99:
+            continue
+        t = loads[i].get("title") or ""
+        new = LOAD_HEAD.sub(lambda m: m.group(1) + str(guess) + m.group(3), t, count=1)
+        if new == t and re.match(r"\s*взл", t, re.I):
+            new = "%d %s" % (guess, t.lstrip())     # номер пропал совсем
+        if new != t:
+            sys.stderr.write("панель %d: номер взлёта восстановлен по соседям: %r -> %r\n"
+                             % (i + 1, t, new))
+            loads[i]["title"] = new
 
 
 def fix_ready_minutes(title):
@@ -1065,6 +1135,14 @@ def recognize_row(job):
         return job
 
     name_txt, name_conf = ocr_best(name_cell)
+    # Иностранная фамилия под русской моделью превращается в кашу
+    # ("Abdulbari Qubaisi" -> "АБЧиБай Чиа"). Заметив это по заглавным
+    # посреди слова, перечитываем ячейку только латиницей. Лишний проход
+    # идёт редко, на общую скорость не влияет.
+    if looks_garbled(name_txt):
+        en_txt, en_conf = ocr_best(name_cell, cfg=TESS_EN)
+        if en_txt and mostly_latin(en_txt) and en_conf >= name_conf - 8:
+            name_txt, name_conf = en_txt, en_conf
     name = normalize_name(name_txt.replace("|", "").strip())
     is_service = name.startswith("КВОРУМ") or name == "(Вып.)"
     is_staff = False
@@ -1294,6 +1372,7 @@ def main():
 
     # панели, где после отсева ничего не осталось, на страницу не выводим
     result["loads"] = [l for l in result["loads"] if l["rows"] or l["free_from"]]
+    fix_load_numbers(result["loads"])
 
     reconcile_names(result["loads"], history)
     for l in result["loads"]:
