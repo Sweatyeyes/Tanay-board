@@ -252,6 +252,7 @@
   </div>
   <div class="warn" id="notifyWarn"></div>
   <div class="diag" id="notifyDiag"></div>
+  <div class="diag" id="pushState"></div>
   <button class="testbtn" id="notifyTest">Проверить уведомление</button>
 </div>
 
@@ -514,6 +515,7 @@
   var optNotify = document.getElementById('optNotify');
   var notifyWarn = document.getElementById('notifyWarn');
   var notifyDiag = document.getElementById('notifyDiag');
+  var pushState = document.getElementById('pushState');
   var notifyTest = document.getElementById('notifyTest');
   var eventsBox = document.getElementById('events');
 
@@ -589,6 +591,17 @@
       notifyDiag.innerHTML = esc(d.join(' · '));
     } else {
       notifyDiag.innerHTML = '';
+    }
+
+    // Состояние подписки на пуши - когда уведомления включены. Без этой
+    // строки непонятно, будит ли телефон при погасшем экране, и поломку
+    // видно только по счётчику подписок на сервере.
+    if (notifyOn && window.TanayPush) {
+      TanayPush.state().then(function (s) {
+        pushState.textContent = 'уведомления при погасшем экране: ' + s;
+      });
+    } else if (pushState) {
+      pushState.textContent = '';
     }
   }
 
