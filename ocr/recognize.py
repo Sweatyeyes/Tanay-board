@@ -613,6 +613,22 @@ def detect_aircraft(title):
 STATIC_MSG = re.compile(r"^\s*КАТЕГОРИ", re.I)
 
 
+def read_message(img):
+    """Читает строку сообщения и русской, и латинской моделью.
+
+    Диспетчер пишет и по-русски, и по-английски: "STANDBY UNTIL 16:30"
+    под моделью rus превращалось в "ЭТАМОВУ ПИМТИЕ 16:30". Определить
+    язык заранее нельзя, поэтому читаем обеими и берём ту, в которой
+    Tesseract увереннее. Строка одна, лишний проход ничего не стоит.
+    """
+    best_text, best_conf = "", -1.0
+    for cfg in (TESS_RU, TESS_EN):
+        text, conf = ocr_with_conf(prep(img, scale=2, invert=False), cfg)
+        if text and conf > best_conf:
+            best_text, best_conf = text, conf
+    return best_text
+
+
 def clean_message(text):
     """Отсеивает статичную легенду и обрывки без смысла."""
     t = (text or "").strip()
@@ -1249,8 +1265,7 @@ def main():
     msg_crop = im.crop((0, min(H - 1, bottom_last + 90), W, min(H, bottom_last + 190)))
     msg_arr = np.array(msg_crop).astype(int)
     if (msg_arr.sum(axis=2) < 200).mean() > 0.002:
-        result["message"] = clean_message(
-            ocr(msg_crop, cfg=TESS_RU, invert=False, scale=2))
+        result["message"] = clean_message(read_message(msg_crop))
 
     draw = ImageDraw.Draw(im) if dbg else None
     jobs = []          # что распознавать; сами прогоны идут ниже, параллельно
