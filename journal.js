@@ -239,7 +239,65 @@
     return n;
   }
 
+  // ---------- дозагрузка с сервера ----------
+  //
+  // Наблюдение из открытой страницы ловит не всё: если приложение весь день
+  // не открывали, уход взлёта заметить некому. Поэтому воркер ведёт общий
+  // журнал ушедших взлётов, а телефон забирает оттуда только своё - по хэшу
+  // фамилии. Сама фамилия на сервер не уходит.
+  var API = 'https://tanay-board.myshkevich.workers.dev';
+
+  function nameHash(surname) {
+    if (!global.crypto || !crypto.subtle) return Promise.resolve('');
+    var data = new TextEncoder().encode('tanay|' + norm(surname));
+    return crypto.subtle.digest('SHA-256', data).then(function (buf) {
+      var h = '';
+      new Uint8Array(buf).forEach(function (b) { h += b.toString(16).padStart(2, '0'); });
+      return h.slice(0, 16);
+    });
+  }
+
+  function pull() {
+    var c = cfg();
+    if (!c.me) return Promise.resolve(0);
+    // просим с даты последней записи: раньше неё нам ничего не нужно
+    var list = jumps();
+    var from = '';
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].date && (!from || list[i].date < from)) from = list[i].date;
+    }
+    if (!from) {
+      var d = new Date(); d.setDate(d.getDate() - 45);
+      from = iso(d);
+    }
+    return nameHash(String(c.me).trim().split(/\s+/)[0]).then(function (h) {
+      if (!h) return 0;
+      return fetch(API + '/flights?h=' + h + '&from=' + from, { cache: 'no-store' })
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .then(function (rows) {
+          if (!Array.isArray(rows) || !rows.length) return 0;
+          var have = jumps(), added = 0;
+          for (var k = 0; k < rows.length; k++) {
+            var f = rows[k];
+            if (!f.date || hasJump(have, f.date, f.load)) continue;
+            have.push({
+              id: Date.now() + Math.floor(Math.random() * 1000) + k,
+              date: f.date, time: f.time || '', load: String(f.load),
+              canopy: c.canopy || '', craft: f.craft || '',
+              alt: c.alt === '' ? '' : +c.alt, ff: c.ff === '' ? '' : +c.ff,
+              ex: c.ex || '', task: f.cat || '', dz: c.dz || '', auto: 1
+            });
+            added++;
+          }
+          if (added) setJumps(have);
+          return added;
+        })
+        .catch(function () { return 0; });
+    });
+  }
+
   global.TanayLog = {
+    pull: pull,
     cfg: cfg, setCfg: setCfg,
     jumps: jumps, setJumps: setJumps, sortJumps: sortJumps,
     numbered: numbered, totals: totals,

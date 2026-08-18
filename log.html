@@ -508,8 +508,11 @@
   });
 
   // ---------- догоняем табло при открытии вкладки ----------
+  // Сначала забираем с сервера ушедшие взлёты - это ловит и те дни,
+  // когда приложение вообще не открывали. Потом сверяемся с текущим табло.
   function catchUp() {
     if (!TanayLog.cfg().me) return;
+    TanayLog.pull().then(function (n) { if (n) render(); });
     fetch(JSON_URL + '?t=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
       .catch(function () {
