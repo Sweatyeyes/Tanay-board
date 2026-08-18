@@ -254,6 +254,7 @@
   <div class="diag" id="notifyDiag"></div>
   <div class="diag" id="pushState"></div>
   <button class="testbtn" id="notifyTest">Проверить уведомление</button>
+  <button class="testbtn" id="pushTest">Проверить при погасшем экране</button>
 </div>
 
 <div id="app"><div class="note">Загрузка…</div></div>
@@ -516,6 +517,7 @@
   var notifyWarn = document.getElementById('notifyWarn');
   var notifyDiag = document.getElementById('notifyDiag');
   var pushState = document.getElementById('pushState');
+  var pushTest = document.getElementById('pushTest');
   var notifyTest = document.getElementById('notifyTest');
   var eventsBox = document.getElementById('events');
 
@@ -673,6 +675,17 @@
     }
     showNote('Проверка', 'Если вы это видите — уведомления работают.',
              'test' + Date.now()).then(renderNotifyState);
+  });
+
+  // Отдельная проверка пуша: показ уведомления из открытой страницы и
+  // доставка при погасшем экране - разные вещи, и ломаются они по-разному.
+  // Эта кнопка просит сервер разбудить телефон по-настоящему.
+  pushTest.addEventListener('click', function () {
+    if (!window.TanayPush) return;
+    pushState.textContent = 'проверяю…';
+    TanayPush.test().then(function (s) {
+      pushState.textContent = 'проверка пуша: ' + s;
+    });
   });
 
   // ---------- отрисовка табло ----------

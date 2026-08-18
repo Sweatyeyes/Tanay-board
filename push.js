@@ -109,8 +109,30 @@
     }).catch(function () { return 'ошибка'; });
   }
 
+  // Просит сервер прислать настоящий пуш прямо сейчас. Проверяет всю цепочку
+  // разом: подпись ключом, доставку через Apple, пробуждение телефона.
+  // Возвращает понятную человеку строку.
+  function test() {
+    if (!supported()) return Promise.resolve('этот браузер не умеет пуши');
+    if (!standalone()) return Promise.resolve('работает только в приложении с домашнего экрана');
+    return navigator.serviceWorker.ready.then(function (reg) {
+      return reg.pushManager.getSubscription();
+    }).then(function (sub) {
+      if (!sub) return 'подписки нет — переключите уведомления';
+      return fetch(API + '/push/selftest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint: sub.endpoint }),
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        if (d && d.ok) return 'отправлен — уведомление должно прийти';
+        return 'сервер не смог отправить: ' + ((d && (d.why || d.result)) || 'неизвестно');
+      });
+    }).catch(function (e) { return 'ошибка: ' + (e && e.message ? e.message : e); });
+  }
+
   global.TanayPush = {
     supported: supported, standalone: standalone,
-    subscribe: subscribe, unsubscribe: unsubscribe, sync: sync, state: state,
+    subscribe: subscribe, unsubscribe: unsubscribe, sync: sync,
+    state: state, test: test,
   };
 })(window);
