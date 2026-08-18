@@ -37,6 +37,16 @@ self.addEventListener('activate', function (e) {
   );
 });
 
+// Страница спрашивает, какая версия воркера сейчас работает. Без этого
+// невозможно отличить "код обновлён" от "телефон крутит старую копию" -
+// а обновляется сервис-воркер лениво, и на айфоне особенно упрямо.
+self.addEventListener('message', function (e) {
+  if (!e.data || e.data.ask !== 'version') return;
+  var reply = { version: CACHE, push: true };
+  if (e.ports && e.ports[0]) e.ports[0].postMessage(reply);
+  else if (e.source) e.source.postMessage(reply);
+});
+
 // Пуш приходит пустым: текст лежит на сервере и забирается по адресу
 // /push/msg. Так не нужно шифровать содержимое пуша по RFC 8291.
 // iOS требует показать уведомление на каждый принятый пуш, поэтому

@@ -99,6 +99,29 @@
     }).catch(function () { return false; });
   }
 
+  // Какая версия сервис-воркера реально работает на этом телефоне.
+  // Старая копия без обработчика пуша - самая частая причина того, что
+  // сервер отправил, служба доставки приняла, а уведомления нет.
+  function swVersion() {
+    if (!('serviceWorker' in navigator) || !navigator.serviceWorker.controller) {
+      return Promise.resolve('не управляет страницей');
+    }
+    return new Promise(function (resolve) {
+      var ch = new MessageChannel();
+      var done = false;
+      ch.port1.onmessage = function (e) {
+        done = true;
+        resolve((e.data && e.data.version) || 'без версии');
+      };
+      try {
+        navigator.serviceWorker.controller.postMessage({ ask: 'version' }, [ch.port2]);
+      } catch (err) { resolve('не отвечает'); return; }
+      setTimeout(function () {
+        if (!done) resolve('старая копия — не отвечает');
+      }, 1500);
+    });
+  }
+
   function state() {
     if (!supported()) return Promise.resolve('нет поддержки');
     if (!standalone()) return Promise.resolve('только в установленном приложении');
@@ -133,6 +156,6 @@
   global.TanayPush = {
     supported: supported, standalone: standalone,
     subscribe: subscribe, unsubscribe: unsubscribe, sync: sync,
-    state: state, test: test,
+    state: state, test: test, swVersion: swVersion,
   };
 })(window);
