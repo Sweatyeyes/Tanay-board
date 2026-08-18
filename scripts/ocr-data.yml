@@ -63,6 +63,26 @@ jobs:
           echo "--- board.json ---"
           cat out/board.json
 
+      - name: Notify subscribers
+        continue-on-error: true
+        env:
+          PUSH_SECRET: ${{ secrets.PUSH_SECRET }}
+        run: |
+          # Пуши будят телефон, когда приложение закрыто. Воркер сам решает,
+          # кому слать: сравнивает состав взлётов с прошлым прогоном.
+          # Проверка на пустой секрет - в скрипте, а не в условии шага:
+          # контекст secrets в if недоступен и ломает разбор файла целиком.
+          # Ошибка здесь не должна ронять публикацию табло.
+          if [ -z "$PUSH_SECRET" ]; then
+            echo "PUSH_SECRET не задан - уведомления пропускаю"
+            exit 0
+          fi
+          curl -sS -m 20 -X POST \
+            -H "Content-Type: application/json" \
+            -H "X-Push-Secret: $PUSH_SECRET" \
+            --data-binary @out/board.json \
+            https://tanay-board.myshkevich.workers.dev/push/fire || true
+
       - name: Publish to ocr branch
         run: |
           cd out
