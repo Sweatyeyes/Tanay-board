@@ -612,6 +612,23 @@ def detect_aircraft(title):
 # Без этой проверки она вылезала в приложении красной плашкой.
 STATIC_MSG = re.compile(r"^\s*КАТЕГОРИ", re.I)
 
+# Водяной знак Windows в правом нижнем углу экрана попадает в ту же полосу,
+# где диспетчер пишет объявление. Читается он всегда криво ("AkTHeauwa
+# Windows"), поэтому ловим не по точному тексту, а по похожести.
+WATERMARK = ("активация windows", "activate windows",
+             "чтобы активировать windows", "go to settings to activate")
+
+
+def looks_watermark(text):
+    t = re.sub(r"[^a-zа-яё ]", " ", (text or "").lower())
+    t = " ".join(t.split())
+    if not t:
+        return False
+    if "windows" in t or "windovs" in t:
+        return True
+    return any(difflib.SequenceMatcher(None, t, w).ratio() >= 0.6
+               for w in WATERMARK)
+
 
 def read_message(img):
     """Читает строку сообщения и русской, и латинской моделью.
@@ -632,7 +649,7 @@ def read_message(img):
 def clean_message(text):
     """Отсеивает статичную легенду и обрывки без смысла."""
     t = (text or "").strip()
-    if not t or STATIC_MSG.match(t):
+    if not t or STATIC_MSG.match(t) or looks_watermark(t):
         return ""
     letters = sum(1 for c in t if c.isalpha())
     # у настоящего объявления букв заметно больше, чем мусорных знаков
@@ -779,6 +796,50 @@ def fix_ready_minutes(title):
             return m.group(1) + fixed + m.group(3)
         return m.group(0)
     return READY_RE.sub(sub, title or "")
+
+
+DEPARTED = "ОТПРАВЛЕН"
+
+
+def fix_departed(title):
+    """Восстанавливает пометку "ОТПРАВЛЕН!!!" в заголовке взлёта.
+
+    Три восклицательных знака подряд сливаются в одну палку, и выходит
+    то "ОТПРАВЛЕНИ!", то "ОТПРАВЛЕН111", то "ОТПРАВЛЕНШ". Само слово
+    узнаём по началу и дописываем концовку целиком.
+
+    Слово важное: по нему приложение понимает, что взлёт ушёл, - и
+    подсвечивает его, и закрывает уведомления по этому борту.
+    """
+    out = []
+    for w in (title or "").split():
+        core = re.sub(r"[^А-ЯЁA-Z]", "", w.upper())
+        if len(core) >= 8 and difflib.SequenceMatcher(
+                None, core[:len(DEPARTED)], DEPARTED).ratio() >= 0.8:
+            out.append("ОТПРАВЛЕН!!!")
+        else:
+            out.append(w)
+    s = " ".join(out)
+    # хвост мог отделиться в отдельное слово - убираем повтор
+    return re.sub(r"(ОТПРАВЛЕН!!!)(\s*[!1lI|]+)+", r"\1", s)
+
+
+def fix_takeoff_word(title):
+    """Приводит к виду "взлет" слово, которое прочиталось криво.
+
+    Оно короткое и стоит вторым в заголовке, поэтому ошибка в одной букве
+    видна сразу: "2 аэлет АН-2", "4 взлёт". Правим только слова похожей
+    длины - названия бортов и "готовность" под правило не попадают.
+    """
+    out = []
+    for w in (title or "").split():
+        core = re.sub(r"[^А-Яа-яЁё]", "", w).lower()
+        if 4 <= len(core) <= 6 and difflib.SequenceMatcher(
+                None, core, "взлет").ratio() >= 0.6:
+            out.append(w.replace(core, "взлет") if core in w else "взлет")
+        else:
+            out.append(w)
+    return " ".join(out)
 
 
 def normalize_category(text):
@@ -1484,6 +1545,8 @@ def run():
         # на табло пишут "готов 5 мин." - на странице хотим "готовность"
         title = re.sub(r"\bготов\b", "готовность", title)
         title = fix_ready_minutes(title)
+        title = fix_departed(title)
+        title = fix_takeoff_word(title)
 
         # capacity считаем по самому табло: занятые + свободные строки.
         # Это вместимость борта (у Л-410 - 18), а не высота сетки: ниже
