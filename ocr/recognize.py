@@ -1102,23 +1102,35 @@ def _longest_true(row):
     return int((edges[1::2] - edges[0::2]).max())
 
 
-def _spans(col, fill=12, least=60):
-    """Отрезки, занятые линией, с заклейкой мелких разрывов.
+def _spans(col, longrow=None, fill=12, least=60):
+    """Отрезки, занятые вертикальной рамкой таблицы.
 
-    Вертикальная рамка прерывается там, где в неё упирается разделитель
-    строк, поэтому разрывы в десяток пикселей склеиваем.
+    Рамка рвётся там, где в неё упирается разделитель строк, поэтому
+    разрывы в десяток пикселей склеиваем.
+
+    Если передан longrow, отбрасываются отрезки во всю высоту экрана:
+    таблица столько не занимает никогда, а посторонняя вертикальная
+    черта - запросто. Именно из-за такой черты два ряда таблиц однажды
+    слились в один, сетка строк съехала, и вместо номеров взлётов пошла
+    чушь.
     """
     ys = np.flatnonzero(col)
     if ys.size == 0:
         return []
-    out, s, p = [], ys[0], ys[0]
+    out, s, p = [], int(ys[0]), int(ys[0])
     for y in ys[1:]:
+        y = int(y)
         if y - p > fill:
-            out.append((int(s), int(p)))
+            out.append((s, p))
             s = y
         p = y
-    out.append((int(s), int(p)))
-    return [o for o in out if o[1] - o[0] >= least]
+    out.append((s, p))
+    out = [o for o in out if o[1] - o[0] >= least]
+    if longrow is None:
+        return out
+
+    tall = len(longrow) * 0.75
+    return [o for o in out if o[1] - o[0] <= tall]
 
 
 def _overlap(a, b):
@@ -1143,6 +1155,11 @@ def find_bands(arr):
     H, W = lum.shape
     hor = _ridge(lum, 0)
     ver = _ridge(lum, 1)
+
+    # строки, через которые проходит длинная горизонтальная линия:
+    # это разделители строк и верх с низом таблиц
+    need = max(120, W // 12)
+    longrow = np.array([_longest_true(hor[y]) >= need for y in range(H)])
 
     # Боковые рамки таблиц: длинные вертикальные линии.
     cv = ver.sum(axis=0)
@@ -1216,7 +1233,7 @@ def find_bands(arr):
     # рядами обрывается. Разрывы от разделителей строк заклеиваем.
     seen = []
     for b in bx:
-        seen.extend(_spans(ver[:, b]))
+        seen.extend(_spans(ver[:, b], longrow))
     if not seen:
         return []
     seen.sort()
@@ -1227,7 +1244,9 @@ def find_bands(arr):
             rows[-1][1] = max(rows[-1][1], s[1])
         else:
             rows.append(list(s))
-    rows = [r for r in rows if r[1] - r[0] >= 40]
+    # В ряду обязаны быть разделители строк - иначе это не таблицы.
+    rows = [r for r in rows
+            if r[1] - r[0] >= 40 and longrow[r[0]:r[1] + 1].sum() >= 3]
 
     out = []
     for (top, bottom) in rows:
@@ -1239,7 +1258,7 @@ def find_bands(arr):
             best = 0
             for xx in (x0, x1):
                 cov = sum(_overlap(s, band)
-                          for s in _spans(ver[:, xx], least=20))
+                          for s in _spans(ver[:, xx], longrow, least=20))
                 best = max(best, cov)
             if best > (bottom - top) * 0.4:
                 panels.append((x0, x1))
