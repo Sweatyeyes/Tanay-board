@@ -1058,7 +1058,10 @@ def find_bands(arr):
                 cand[-1] = (x, cv[x])
         else:
             cand.append((x, cv[x]))
-    cand = [c[0] for c in cand]
+    # оставляем самые заметные линии: их и так немного, а перебор ниже
+    # растёт как квадрат от их числа
+    cand.sort(key=lambda c: -c[1])
+    cand = sorted(c[0] for c in cand[:40])
     if len(cand) < 2:
         return []
 
@@ -1067,6 +1070,10 @@ def find_bands(arr):
     # шагом, поэтому подбираем ширину и промежуток так, чтобы получившаяся
     # решётка объяснила как можно больше найденных линий. Лишняя черта в
     # решётку не ложится и остаётся за бортом.
+    near = np.zeros(W + 8, dtype=bool)
+    for c in cand:
+        near[max(0, c - 3):min(W, c + 4)] = True
+
     widths = sorted({b - a for i, a in enumerate(cand) for b in cand[i + 1:]
                      if b - a >= W // 12})
     best = None
@@ -1074,15 +1081,15 @@ def find_bands(arr):
         for x0 in cand:
             right = [x for x in cand if x > x0 + w + 2]
             g = (min(right) - (x0 + w)) if right else 14
-            if not (2 <= g <= w // 3):
+            if not (2 <= g <= max(2, w // 3)):
                 g = 14
             marks, x = [], x0
             while x - w - g >= 0:
                 x -= w + g
-            while x + w <= W:
+            while x + w < W:
                 marks += [x, x + w]
                 x += w + g
-            hits = sum(1 for c in cand if any(abs(c - m) <= 3 for m in marks))
+            hits = sum(1 for m in marks if near[m])
             score = (hits, -w)
             if best is None or score > best[0]:
                 best = (score, w, g, x0)
@@ -1092,15 +1099,19 @@ def find_bands(arr):
     step = width + gap
 
     def snap(x):
-        near = [b for b in cand if abs(b - x) <= 4]
-        return min(near, key=lambda b: abs(b - x)) if near else x
+        close = [b for b in cand if abs(b - x) <= 4]
+        return min(close, key=lambda b: abs(b - x)) if close else x
 
     grid, x = [], anchor
     while x - step >= 0:
         x -= step
-    while x + width <= W:
-        grid.append((snap(x), snap(x + width)))
+    while x + width < W:
+        x0, x1 = snap(x), snap(x + width)
+        if 0 <= x0 < x1 < W:
+            grid.append((x0, x1))
         x += step
+    if not grid:
+        return []
     bx = cand
 
     # Ряды таблиц: по вертикали рамка идёт на всю высоту таблицы, а между
@@ -1316,6 +1327,36 @@ def recognize_row(job):
 
 
 def main():
+    """Обёртка. Если разбор упадёт, всё равно пишем board.json.
+
+    Сборка публикует табло только когда скрипт завершился без ошибки.
+    Значит любое падение здесь замораживает страницу на последнем удачном
+    прогоне - снаружи это выглядит как "приложение перестало обновляться",
+    и понять причину нельзя. Поэтому ошибку записываем в сам board.json.
+    """
+    try:
+        run()
+    except SystemExit:
+        raise
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        dst = sys.argv[2] if len(sys.argv) > 2 else "board.json"
+        from datetime import datetime
+        try:
+            os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
+            with open(dst, "w", encoding="utf-8") as f:
+                json.dump({
+                    "updated": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "clock": "", "work_until": "", "message": "",
+                    "loads": [], "status": "no_board",
+                    "why": {"ошибка": "%s: %s" % (type(e).__name__, e)},
+                }, f, ensure_ascii=False, indent=1)
+        except Exception:
+            pass
+
+
+def run():
     t_start = time.time()
     src = sys.argv[1] if len(sys.argv) > 1 else "board.png"
     dst = sys.argv[2] if len(sys.argv) > 2 else "board.json"
@@ -1355,7 +1396,17 @@ def main():
     from datetime import datetime
     result["updated"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    bands = find_bands(arr)
+    # Разбор разметки не должен ронять весь прогон: если он сломается,
+    # сборка молча перестанет публиковать табло, и снаружи это выглядит
+    # как "приложение не обновляется". Лучше отдать пустой результат и
+    # написать в нём, что именно упало.
+    crash = None
+    try:
+        bands = find_bands(arr)
+    except Exception as e:
+        bands = []
+        crash = "%s: %s" % (type(e).__name__, e)
+        sys.stderr.write("find_bands упал: %s\n" % crash)
 
     # Если панелей нет - скорее всего RMS показывает заглушку "Подключение..."
     if not bands:
@@ -1363,10 +1414,13 @@ def main():
         # Улика на будущее: по ней видно, была ли картинка пустой на самом
         # деле или разбор ошибся. "Занято" - какая доля экрана не фон.
         # Пустое табло даёт единицы процентов, живое - десятки.
+        result["why"] = {}
+        if crash:
+            result["why"]["ошибка разбора"] = crash
         try:
             m = not_background(arr)
-            result["why"] = {"занято": round(float(m.mean()), 3),
-                             "ряды_с_таблицами": int((m.mean(axis=1) > 0.30).sum())}
+            result["why"]["занято"] = round(float(m.mean()), 3)
+            result["why"]["ряды_с_таблицами"] = int((m.mean(axis=1) > 0.30).sum())
         except Exception:
             pass
         with open(dst, "w", encoding="utf-8") as f:
