@@ -974,84 +974,176 @@ def not_background(arr):
     return mask
 
 
-def _panels_in(mask, y0, y1, min_width=60):
-    """Ищет панели по столбцам внутри полосы строк [y0, y1)."""
-    band = mask[y0:y1, :]
-    bh, w = band.shape
-    colsum = band.sum(axis=0)
-    thr = bh * 0.35
-    panels, inside, s = [], False, 0
-    for x in range(w):
-        if colsum[x] > thr and not inside:
-            inside, s = True, x
-        elif colsum[x] <= thr and inside:
-            inside = False
-            if x - s > min_width:
-                panels.append((s, x))
-    if inside and w - s > min_width:
-        panels.append((s, w))
-    return panels
+def _ridge(lum, axis, gap=3, thr=55):
+    """Маска тонких светлых линий.
+
+    Пиксель считается линией, если он заметно светлее того, что лежит в
+    трёх пикселях по обе стороны от него поперёк линии. Ровная заливка
+    любого цвета даёт ноль, обычный перепад "фон - панель" тоже: там
+    светлее только с одной стороны. Остаются именно линии - рамки таблиц
+    и разделители строк.
+    """
+    up = np.roll(lum, gap, axis=axis)
+    dn = np.roll(lum, -gap, axis=axis)
+    m = (lum - np.maximum(up, dn)) > thr
+    if axis == 0:
+        m[:gap, :] = False
+        m[-gap:, :] = False
+    else:
+        m[:, :gap] = False
+        m[:, -gap:] = False
+    return m
 
 
-def _edges(mask, x0, x1, y0, y1):
-    """Верх и низ таблицы внутри панели: её строки заполнены целиком."""
-    inner = mask[y0:y1, x0 + 3:x1 - 3]
-    if inner.shape[1] < 5:
-        return None, None
-    need = inner.shape[1] * 0.9
-    rows = [y for y in range(inner.shape[0]) if inner[y].sum() >= need]
-    if not rows:
-        return None, None
-    groups, start, prev = [], None, None
-    for y in rows:
-        if start is None:
-            start = y
-        elif y - prev > 2:
-            groups.append((start, prev + 1)); start = y
-        prev = y
-    groups.append((start, prev + 1))
-    top, bottom = max(groups, key=lambda g: g[1] - g[0])
-    return top + y0, bottom + y0
+def _longest_true(row):
+    """Длина самой длинной непрерывной цепочки True в строке."""
+    if not row.any():
+        return 0
+    edges = np.flatnonzero(np.diff(np.concatenate(
+        ([0], row.astype(np.int8), [0]))))
+    return int((edges[1::2] - edges[0::2]).max())
+
+
+def _spans(col, fill=12, least=60):
+    """Отрезки, занятые линией, с заклейкой мелких разрывов.
+
+    Вертикальная рамка прерывается там, где в неё упирается разделитель
+    строк, поэтому разрывы в десяток пикселей склеиваем.
+    """
+    ys = np.flatnonzero(col)
+    if ys.size == 0:
+        return []
+    out, s, p = [], ys[0], ys[0]
+    for y in ys[1:]:
+        if y - p > fill:
+            out.append((int(s), int(p)))
+            s = y
+        p = y
+    out.append((int(s), int(p)))
+    return [o for o in out if o[1] - o[0] >= least]
+
+
+def _overlap(a, b):
+    return max(0, min(a[1], b[1]) - max(a[0], b[0]))
 
 
 def find_bands(arr):
-    """Находит ряды таблиц: панели могут идти в один ряд, а могут в два.
+    """Находит таблицы: сколько бы их ни было и какого бы цвета ни было табло.
 
-    Табло иногда показывает не 4 панели, а 8 - тогда они лягут двумя
-    рядами. Поэтому сначала ищем горизонтальные полосы с таблицами, и
-    уже внутри каждой полосы - панели и границы строк. Один ряд -
-    поведение прежнее.
+    Раньше панели искали как чёрные прямоугольники на оранжевом поле. Но
+    табло умеет показывать и восемь таблиц вместо четырёх, и в другой
+    раскраске - на чёрном фоне. Тогда "чёрный прямоугольник на другом
+    фоне" перестаёт существовать как признак, и не находилось ничего.
+
+    Поэтому опираемся на то, что есть у таблицы при любой раскраске: она
+    расчерчена линиями. Горизонтальные разделители строк дают колонки -
+    по ширине таблиц; вертикальные рамки дают ряды - по высоте.
 
     Возвращает список (панели, верх, низ), сверху вниз.
     """
-    mask = not_background(arr)
-    h, w = mask.shape
+    lum = arr.sum(axis=2)
+    H, W = lum.shape
+    hor = _ridge(lum, 0)
+    ver = _ridge(lum, 1)
 
-    # полосы: строки, где заметная часть ширины занята не фоном
-    rowsum = mask.sum(axis=1)
-    thr_row = w * 0.30
-    bands, inside, s = [], False, 0
-    for y in range(h):
-        if rowsum[y] > thr_row and not inside:
-            inside, s = True, y
-        elif rowsum[y] <= thr_row and inside:
-            inside = False
-            if y - s > 40:
-                bands.append((s, y))
-    if inside and h - s > 40:
-        bands.append((s, h))
-    if not bands:
-        bands = [(0, h)]
+    # Боковые рамки таблиц: длинные вертикальные линии.
+    cv = ver.sum(axis=0)
+    lim = max(H * 0.18, cv.max() * 0.35)
+    cand = []
+    for x in range(W):
+        if cv[x] <= lim:
+            continue
+        if cand and x - cand[-1][0] <= 4:
+            if cv[x] > cand[-1][1]:
+                cand[-1] = (x, cv[x])
+        else:
+            cand.append((x, cv[x]))
+    cand = [c[0] for c in cand]
+    if len(cand) < 2:
+        return []
+
+    # Среди длинных линий есть и лишняя - черта после номера строки внутри
+    # таблицы. Отсеиваем перебором: таблицы одной ширины и стоят с равным
+    # шагом, поэтому подбираем ширину и промежуток так, чтобы получившаяся
+    # решётка объяснила как можно больше найденных линий. Лишняя черта в
+    # решётку не ложится и остаётся за бортом.
+    widths = sorted({b - a for i, a in enumerate(cand) for b in cand[i + 1:]
+                     if b - a >= W // 12})
+    best = None
+    for w in widths:
+        for x0 in cand:
+            right = [x for x in cand if x > x0 + w + 2]
+            g = (min(right) - (x0 + w)) if right else 14
+            if not (2 <= g <= w // 3):
+                g = 14
+            marks, x = [], x0
+            while x - w - g >= 0:
+                x -= w + g
+            while x + w <= W:
+                marks += [x, x + w]
+                x += w + g
+            hits = sum(1 for c in cand if any(abs(c - m) <= 3 for m in marks))
+            score = (hits, -w)
+            if best is None or score > best[0]:
+                best = (score, w, g, x0)
+    if best is None:
+        return []
+    _, width, gap, anchor = best
+    step = width + gap
+
+    def snap(x):
+        near = [b for b in cand if abs(b - x) <= 4]
+        return min(near, key=lambda b: abs(b - x)) if near else x
+
+    grid, x = [], anchor
+    while x - step >= 0:
+        x -= step
+    while x + width <= W:
+        grid.append((snap(x), snap(x + width)))
+        x += step
+    bx = cand
+
+    # Ряды таблиц: по вертикали рамка идёт на всю высоту таблицы, а между
+    # рядами обрывается. Разрывы от разделителей строк заклеиваем.
+    seen = []
+    for b in bx:
+        seen.extend(_spans(ver[:, b]))
+    if not seen:
+        return []
+    seen.sort()
+    rows = [list(seen[0])]
+    for s in seen[1:]:
+        if _overlap(rows[-1], s) > (s[1] - s[0]) * 0.5:
+            rows[-1][0] = min(rows[-1][0], s[0])
+            rows[-1][1] = max(rows[-1][1], s[1])
+        else:
+            rows.append(list(s))
+    rows = [r for r in rows if r[1] - r[0] >= 40]
 
     out = []
-    for (by0, by1) in bands:
-        panels = _panels_in(mask, by0, by1)
+    for (top, bottom) in rows:
+        band, panels = (top, bottom), []
+        for (x0, x1) in grid:
+            # Рамку считаем на месте, если она закрывает большую часть
+            # высоты ряда. Целиком она бывает редко: её рвут разделители
+            # строк и подсветка, поэтому складываем все куски.
+            best = 0
+            for xx in (x0, x1):
+                cov = sum(_overlap(s, band)
+                          for s in _spans(ver[:, xx], least=20))
+                best = max(best, cov)
+            if best > (bottom - top) * 0.4:
+                panels.append((x0, x1))
         if not panels:
             continue
-        top, bottom = _edges(mask, panels[0][0], panels[0][1], by0, by1)
-        if top is None:
+        # В ряду должна быть хоть одна расчерченная таблица - иначе это
+        # не таблицы, а случайные длинные линии на экране.
+        lines = sum(1 for y in range(top, min(bottom, H))
+                    if _longest_true(hor[y, panels[0][0]:panels[-1][1]]) >= width * 0.5)
+        if lines < 3:
             continue
-        out.append((panels, top, bottom))
+        out.append((panels, top, bottom + 1))
+    out.sort(key=lambda b: b[1])
     return out
 
 
@@ -1307,7 +1399,13 @@ def main():
     # ---- сообщение внизу (под таблицей) ----
     msg_crop = im.crop((0, min(H - 1, bottom_last + 90), W, min(H, bottom_last + 190)))
     msg_arr = np.array(msg_crop).astype(int)
-    if (msg_arr.sum(axis=2) < 200).mean() > 0.002:
+    # Есть ли там вообще надпись. Считаем не тёмные пиксели, а непохожие
+    # на здешний фон: на оранжевом табло надпись тёмная, на чёрном светлая.
+    if msg_arr.size:
+        far = (np.abs(msg_arr - _common_color(msg_arr)).sum(axis=2) > 90).mean()
+    else:
+        far = 0.0
+    if 0.002 < far < 0.5:
         result["message"] = clean_message(read_message(msg_crop))
 
     draw = ImageDraw.Draw(im) if dbg else None
