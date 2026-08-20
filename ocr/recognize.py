@@ -824,6 +824,24 @@ def fix_departed(title):
     return re.sub(r"(ОТПРАВЛЕН!!!)(\s*[!1lI|]+)+", r"\1", s)
 
 
+def fix_work_until(text):
+    """Чинит подпись в правом верхнем углу: "Работа до 20:14".
+
+    Текст известен целиком, кроме времени, поэтому не подгоняем буквы,
+    а собираем строку заново - но только если первое слово похоже на
+    "Работа" и дальше действительно нашлось время.
+    """
+    t = (text or "").strip()
+    m = re.search(r"(\d{1,2})[:.;](\d{2})", t)
+    if not t or not m:
+        return t
+    words = re.sub(r"[^А-Яа-яЁё ]", " ", t[:m.start()]).split()
+    if words and difflib.SequenceMatcher(
+            None, words[0].lower(), "работа").ratio() >= 0.6:
+        return "Работа до %s:%s" % (m.group(1), m.group(2))
+    return t
+
+
 def fix_takeoff_word(title):
     """Приводит к виду "взлет" слово, которое прочиталось криво.
 
@@ -1260,8 +1278,15 @@ def fit_grid(arr, x0, x1, top, bottom, default=17.85):
                 if origin < top - pitch * 0.5:
                     origin += pitch
 
-    n = int(round((bottom - origin) / pitch))
-    n = max(18, min(30, n))
+    # Строк ровно столько, сколько целиком помещается в таблицу.
+    #
+    # Раньше здесь стояло "не меньше восемнадцати": в старой раскладке из
+    # четырёх таблиц строк всегда хватало, и это ничего не портило. Когда
+    # табло стало показывать восемь таблиц, нижний ряд стал вдвое ниже -
+    # и лишние строки сетки уехали за нижний край, прямо на панель задач
+    # Windows. Оттуда в списке и появлялся пассажир "Сеть".
+    n = int((bottom - origin) / pitch)
+    n = max(1, min(30, n))
     return origin, pitch, n
 
 
@@ -1509,7 +1534,8 @@ def run():
     hy0 = max(0, top0 - 58)
     hy1 = max(hy0 + 1, top0 - 26)
     result["clock"] = ocr(im.crop((0, hy0, 420, hy1)), cfg=TESS_MIX)
-    result["work_until"] = ocr(im.crop((max(0, W - 420), hy0, W, hy1)), cfg=TESS_MIX)
+    result["work_until"] = fix_work_until(
+        ocr(im.crop((max(0, W - 420), hy0, W, hy1)), cfg=TESS_MIX))
 
     # ---- сообщение внизу (под таблицей) ----
     msg_crop = im.crop((0, min(H - 1, bottom_last + 90), W, min(H, bottom_last + 190)))
@@ -1559,6 +1585,9 @@ def run():
         for r in range(n_rows):
             ry0 = int(round(origin + r * pitch))
             ry1 = int(round(origin + (r + 1) * pitch))
+            # подстраховка: ниже таблицы читать нечего, там уже чужое
+            if ry1 > bottom:
+                break
             # для определения типа строки отступаем от рамок панели
             cell = im.crop((x0 + 4, ry0 + 2, x1 - 4, ry1 - 1))
             kind = classify_row(cell)
