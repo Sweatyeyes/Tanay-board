@@ -932,19 +932,46 @@ def pick_category(raws, is_service):
     return ""
 
 
+def _common_color(block):
+    flat = block.reshape(-1, 3)
+    colors, counts = np.unique(flat, axis=0, return_counts=True)
+    return colors[counts.argmax()]
+
+
 def not_background(arr):
     """Маска "это не фон табло".
 
-    Фон берём из нижней части экрана - там всегда пустое оранжевое поле.
-    По всей картинке так делать нельзя: чёрных пикселей в панелях больше,
-    чем оранжевых, и фоном ошибочно окажется чёрный.
+    Цвет фона берём с боковых полей - узких полосок вдоль левого и правого
+    края экрана. Таблицы до края никогда не доходят, поэтому там оранжевый
+    при любой раскладке табло.
+
+    Раньше фон искали в нижней трети экрана. Пока таблиц было четыре, там
+    было пустое оранжевое поле. Когда табло стало показывать восемь, туда
+    попал второй ряд таблиц - и самым частым цветом мог оказаться чёрный.
+    Тогда маска переворачивалась: фоном считались сами таблицы, и дальше
+    не находилось ничего.
+
+    Верх и низ картинки в расчёт не берём: там заголовок окна и панель
+    задач Windows, они не имеют отношения к табло.
     """
-    h = arr.shape[0]
-    sample = arr[int(h * 0.60):int(h * 0.90), :, :]
-    flat = sample.reshape(-1, 3)
-    colors, counts = np.unique(flat, axis=0, return_counts=True)
-    bg = colors[counts.argmax()]
-    return np.abs(arr - bg).sum(axis=2) > 90
+    h, w = arr.shape[0], arr.shape[1]
+    edge = max(3, int(w * 0.01))
+    y0, y1 = int(h * 0.05), int(h * 0.88)
+    ring = np.concatenate([
+        arr[y0:y1, :edge, :].reshape(-1, 3),
+        arr[y0:y1, w - edge:, :].reshape(-1, 3),
+    ])
+    bg = _common_color(ring)
+    mask = np.abs(arr - bg).sum(axis=2) > 90
+
+    # Подстраховка: если поля вдруг оказались нетипичными (другое
+    # разрешение, окно не на весь экран), маска выйдет вырожденной -
+    # почти всё фон или почти ничего. Тогда возвращаемся к старому способу.
+    share = mask.mean()
+    if share < 0.05 or share > 0.90:
+        bg = _common_color(arr[int(h * 0.60):int(h * 0.90), :, :])
+        mask = np.abs(arr - bg).sum(axis=2) > 90
+    return mask
 
 
 def _panels_in(mask, y0, y1, min_width=60):
@@ -1241,6 +1268,15 @@ def main():
     # Если панелей нет - скорее всего RMS показывает заглушку "Подключение..."
     if not bands:
         result["status"] = "no_board"
+        # Улика на будущее: по ней видно, была ли картинка пустой на самом
+        # деле или разбор ошибся. "Занято" - какая доля экрана не фон.
+        # Пустое табло даёт единицы процентов, живое - десятки.
+        try:
+            m = not_background(arr)
+            result["why"] = {"занято": round(float(m.mean()), 3),
+                             "ряды_с_таблицами": int((m.mean(axis=1) > 0.30).sum())}
+        except Exception:
+            pass
         with open(dst, "w", encoding="utf-8") as f:
             json.dump(result, f, ensure_ascii=False, indent=1)
         print("панели не найдены - похоже, табло сейчас не показывается")
