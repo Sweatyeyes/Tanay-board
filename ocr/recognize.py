@@ -534,6 +534,13 @@ def update_stats(path, entry, keep=400):
     lags = [r["lag"] for r in work if r.get("lag") is not None]
     durs = [r["sec"] for r in work if r.get("sec") is not None]
 
+    # Разбор скорости. Одно среднее время ни о чём не говорит: прогон по
+    # новому кадру честно читает все строки заново, а по прежнему должен
+    # почти целиком браться из кэша. Если эти два числа близки - значит
+    # кэш не работает, и искать надо там, а не в самом распознавании.
+    with_cells = [r for r in work if r.get("cells")]
+    share = [100.0 * r["reused"] / r["cells"] for r in with_cells]
+
     data["runs"] = runs
     data["summary"] = {
         "прогонов": len(runs),
@@ -542,6 +549,13 @@ def update_stats(path, entry, keep=400):
         "интервал между сменами кадра, с": avg(g_ch),
         "задержка снимок-распознавание, с": avg(lags),
         "время распознавания, с": avg(durs),
+        "таблиц на табло": avg([r["panels"] for r in work if r.get("panels")]),
+        "строк в кадре": avg([r["cells"] for r in with_cells]),
+        "из них из кэша, %": avg(share),
+        "время, новый кадр, с": avg([r["sec"] for r in work
+                                     if r.get("changed") and r.get("sec") is not None]),
+        "время, прежний кадр, с": avg([r["sec"] for r in work
+                                       if not r.get("changed") and r.get("sec") is not None]),
         "обновлено": entry.get("iso"),
     }
     if path:
@@ -1654,6 +1668,9 @@ def run():
                                      res.get("_conf", 0), 1 if res.get("service") else 0]
         reused = sum(1 for j in jobs if j.get("cached"))
         sys.stderr.write("строк: %d, из кэша: %d\n" % (len(jobs), reused))
+        # запоминаем для замеров: по этим двум числам видно, куда уходит
+        # время - на настоящую работу или на перечитывание одного и того же
+        globals()["_LAST_CELLS"] = (len(jobs), reused)
 
         for job in jobs:
             res = job.get("result")
@@ -1760,6 +1777,9 @@ def run():
             "lag": round(now - shot_mtime, 1) if shot_mtime else None,
             "sec": round(dur, 1),
             "rows": total,
+            "cells": globals().get("_LAST_CELLS", (0, 0))[0],
+            "reused": globals().get("_LAST_CELLS", (0, 0))[1],
+            "panels": n_panels,
             "clock": result["clock"],
         }
         summary = update_stats(stats_path, entry)
