@@ -556,6 +556,11 @@ def update_stats(path, entry, keep=400):
                                      if r.get("changed") and r.get("sec") is not None]),
         "время, прежний кадр, с": avg([r["sec"] for r in work
                                        if not r.get("changed") and r.get("sec") is not None]),
+        "по этапам, с": {
+            k: avg([r["stages"][k] for r in work
+                    if isinstance(r.get("stages"), dict) and k in r["stages"]])
+            for k in ("разметка", "шапка", "сетка и заголовки", "строки")
+        },
         "обновлено": entry.get("iso"),
     }
     if path:
@@ -1540,6 +1545,9 @@ def run():
             })
         return
 
+    # засечки по этапам: одно общее время не показывает, где именно долго
+    t_layout = time.time()
+
     top0 = bands[0][1]            # верх самого первого ряда - под ним шапка
     bottom_last = bands[-1][2]    # низ последнего ряда - под ним сообщение
     result["grid"] = {"bands": []}
@@ -1562,6 +1570,8 @@ def run():
         far = 0.0
     if 0.002 < far < 0.5:
         result["message"] = clean_message(read_message(msg_crop))
+
+    t_head = time.time()
 
     draw = ImageDraw.Draw(im) if dbg else None
     jobs = []          # что распознавать; сами прогоны идут ниже, параллельно
@@ -1646,6 +1656,8 @@ def run():
         if load["rows"] or load["free_from"] or jobs:
             result["loads"].append(load)
 
+    t_build = time.time()
+
     # ---- само распознавание: параллельно по числу ядер ----
     fresh = {}
     if jobs:
@@ -1659,6 +1671,15 @@ def run():
             for job in jobs:
                 recognize_row(job)
 
+    t_ocr = time.time()
+    globals()["_STAGES"] = {
+        "разметка": round(t_layout - t_start, 1),
+        "шапка": round(t_head - t_layout, 1),
+        "сетка и заголовки": round(t_build - t_head, 1),
+        "строки": round(t_ocr - t_build, 1),
+    }
+
+    if jobs:
         # снимок для кэша - пока в строках ещё есть служебные поля
         for job in jobs:
             res = job.get("result")
@@ -1780,6 +1801,7 @@ def run():
             "cells": globals().get("_LAST_CELLS", (0, 0))[0],
             "reused": globals().get("_LAST_CELLS", (0, 0))[1],
             "panels": n_panels,
+            "stages": globals().get("_STAGES") or None,
             "clock": result["clock"],
         }
         summary = update_stats(stats_path, entry)
