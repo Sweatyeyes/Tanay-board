@@ -801,6 +801,43 @@ def fix_load_numbers(loads):
             loads[i]["title"] = new
 
 
+def drop_duplicate_loads(loads):
+    """Убирает повторы: один и тот же взлёт не бывает на табло дважды.
+
+    Страховка на случай, если разбор разметки снова ошибётся и один ряд
+    таблиц разложится на два. Тогда каждый взлёт удваивается, и человек
+    видит вдвое больше взлётов, чем на экране. Из пары с одинаковым
+    номером оставляем ту, где строк больше: обрывок всегда короче.
+    """
+    best = {}
+    for load in loads:
+        n = load_number(load.get("title"))
+        if n is None:
+            continue
+        old = best.get(n)
+        if old is None or len(load.get("rows") or []) > len(old.get("rows") or []):
+            best[n] = load
+
+    out, seen = [], set()
+    for load in loads:
+        n = load_number(load.get("title"))
+        if n is None:
+            out.append(load)
+            continue
+        if n in seen or best[n] is not load:
+            continue
+        seen.add(n)
+        out.append(load)
+    if len(out) != len(loads):
+        sys.stderr.write("убраны повторы взлётов: было %d, стало %d\n"
+                         % (len(loads), len(out)))
+        # после выбрасывания повторов порядок мог перепутаться -
+        # выстраиваем по номеру, безномерные оставляем в конце
+        out.sort(key=lambda l: (load_number(l.get("title")) is None,
+                                load_number(l.get("title")) or 0))
+    loads[:] = out
+
+
 def fix_ready_minutes(title):
     """Чинит число в "готовность N мин.".
 
@@ -1236,12 +1273,19 @@ def find_bands(arr):
         seen.extend(_spans(ver[:, b], longrow))
     if not seen:
         return []
+    # Собираем отрезки в ряды. Мерка - от короткого из двух: у одной и той
+    # же таблицы рамки в разных колонках бывают разной длины, потому что
+    # подсвеченные строки рвут линию. Раньше мерили от нового отрезка, и
+    # короткий обрывок рядом с полным давал второй, лишний ряд - табло
+    # показывало четыре взлёта, а приложение восемь.
     seen.sort()
     rows = [list(seen[0])]
     for s in seen[1:]:
-        if _overlap(rows[-1], s) > (s[1] - s[0]) * 0.5:
-            rows[-1][0] = min(rows[-1][0], s[0])
-            rows[-1][1] = max(rows[-1][1], s[1])
+        cur = rows[-1]
+        shorter = min(cur[1] - cur[0], s[1] - s[0])
+        if _overlap(cur, s) > shorter * 0.5:
+            cur[0] = min(cur[0], s[0])
+            cur[1] = max(cur[1], s[1])
         else:
             rows.append(list(s))
     # В ряду обязаны быть разделители строк - иначе это не таблицы.
@@ -1732,6 +1776,7 @@ def run():
     # панели, где после отсева ничего не осталось, на страницу не выводим
     result["loads"] = [l for l in result["loads"] if l["rows"] or l["free_from"]]
     fix_load_numbers(result["loads"])
+    drop_duplicate_loads(result["loads"])
 
     reconcile_names(result["loads"], history)
     for l in result["loads"]:
