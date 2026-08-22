@@ -1401,22 +1401,38 @@ def classify_row(cell):
 #     перечитать, поэтому версия поднята.
 # 3 - расширено опознание латинских фамилий: ловим не только "АБЧиБай",
 #     но и "АБЧИБай". Старые записи с кашей вместо имени надо перечитать.
-CACHE_VER = 3
+# 4 - кэш разделён на две части: имя и категория запоминаются порознь.
+#     Раньше строка бралась из кэша, только если совпали обе ячейки сразу,
+#     и одна испорченная категория заставляла заново читать и фамилию.
+CACHE_VER = 4
 # Ветка ocr каждый раз пересоздаётся и уходит force-push'ем, истории коммитов
 # у неё нет - но файл летит по сети на каждом прогоне, поэтому держим его
 # небольшим: полутора тысяч строк хватает на несколько прыжковых дней.
 CACHE_LIMIT = 1500
-CELL_CACHE = {}
+# Имена и категории кэшируются отдельно.
+#
+# Ячейка категории на табло повторяется постоянно: "Спортивный" у половины
+# строк нарисован пиксель в пиксель одинаково. Общий ключ на две ячейки
+# всё это обесценивал - стоило поменяться фамилии, и категория читалась
+# заново, а на неё уходит до четырёх прогонов распознавания из шести.
+CELL_CACHE = {}       # ячейка с фамилией -> [имя, свой, уверенность, служебная]
+CAT_CACHE = {}        # ячейка с категорией -> [категория, как прочиталось]
 
 
-def cell_key(name_cell, cat_cell):
+def _cell_hash(cell, tag):
     h = hashlib.blake2b(digest_size=10)
-    h.update(b"v%d|" % CACHE_VER)
-    h.update(b"%dx%d|" % name_cell.size)
-    h.update(name_cell.tobytes())
-    h.update(b"|")
-    h.update(cat_cell.tobytes())
+    h.update(b"v%d|%s|" % (CACHE_VER, tag))
+    h.update(b"%dx%d|" % cell.size)
+    h.update(cell.tobytes())
     return h.hexdigest()
+
+
+def name_key(name_cell):
+    return _cell_hash(name_cell, b"n")
+
+
+def cat_key(cat_cell):
+    return _cell_hash(cat_cell, b"c")
 
 
 # Ниже этого порога распознаванию верить нельзя: именно так в кэш попали
@@ -1425,17 +1441,16 @@ def cell_key(name_cell, cat_cell):
 CACHE_MIN_CONF = 60.0
 
 
-def cacheable(res):
-    """В кэш идёт только уверенный разбор - сомнительный лучше пересчитать."""
-    if res.get("service"):
+def name_cacheable(name, conf, service):
+    """Запоминать имя стоит только при уверенном чтении."""
+    if service:
         return True
-    letters = re.sub(r"[^А-Яа-яЁёA-Za-z]", "", res.get("name") or "")
+    letters = re.sub(r"[^А-Яа-яЁёA-Za-z]", "", name or "")
     try:
-        conf = float(res.get("_conf", -1))
+        conf = float(conf)
     except (TypeError, ValueError):
         conf = -1.0
-    return (len(letters) >= 4 and res.get("cat_full") in KNOWN_CATS
-            and conf >= CACHE_MIN_CONF)
+    return len(letters) >= 4 and conf >= CACHE_MIN_CONF
 
 
 def recognize_row(job):
@@ -1443,50 +1458,60 @@ def recognize_row(job):
 
     Tesseract работает отдельным процессом, поэтому потоки дают настоящее
     ускорение - на четырёх ядрах раннера примерно вчетверо.
+
+    Имя и категория ищутся в кэше порознь: чаще всего одна из двух ячеек
+    уже встречалась, и половину работы можно не делать.
     """
     name_cell, cat_cell = job["name_cell"], job["cat_cell"]
 
-    hit = CELL_CACHE.get(job.get("key"))
+    hit = CELL_CACHE.get(job.get("kname"))
     if hit:
-        job["result"] = {"n": job["n"], "name": hit[0], "staff": bool(hit[1]),
-                         "cat": short_category(hit[2]), "cat_full": hit[2],
-                         "cat_raw": hit[3], "_conf": hit[4],
-                         "service": bool(hit[5])}
-        job["cached"] = True
-        return job
+        name, is_staff, name_conf, is_service = hit[0], bool(hit[1]), hit[2], bool(hit[3])
+    else:
+        name_txt, name_conf = ocr_best(name_cell)
+        # Иностранная фамилия под русской моделью превращается в кашу
+        # ("Abdulbari Qubaisi" -> "АБЧиБай Чиа"). Заметив это по заглавным
+        # посреди слова, перечитываем ячейку только латиницей. Лишний проход
+        # идёт редко, на общую скорость не влияет.
+        if looks_garbled(name_txt):
+            en_txt, en_conf = ocr_best(name_cell, cfg=TESS_EN)
+            if en_txt and mostly_latin(en_txt) and en_conf >= name_conf - 8:
+                name_txt, name_conf = en_txt, en_conf
+        name = normalize_name(name_txt.replace("|", "").strip())
+        is_service = name.startswith("КВОРУМ") or name == "(Вып.)"
+        is_staff = False
+        if not is_service:
+            name, is_staff = match_staff(name)
+        if name_cacheable(name, name_conf, is_service):
+            CELL_CACHE[job["kname"]] = [name, 1 if is_staff else 0,
+                                        name_conf, 1 if is_service else 0]
 
-    name_txt, name_conf = ocr_best(name_cell)
-    # Иностранная фамилия под русской моделью превращается в кашу
-    # ("Abdulbari Qubaisi" -> "АБЧиБай Чиа"). Заметив это по заглавным
-    # посреди слова, перечитываем ячейку только латиницей. Лишний проход
-    # идёт редко, на общую скорость не влияет.
-    if looks_garbled(name_txt):
-        en_txt, en_conf = ocr_best(name_cell, cfg=TESS_EN)
-        if en_txt and mostly_latin(en_txt) and en_conf >= name_conf - 8:
-            name_txt, name_conf = en_txt, en_conf
-    name = normalize_name(name_txt.replace("|", "").strip())
-    is_service = name.startswith("КВОРУМ") or name == "(Вып.)"
-    is_staff = False
-    if not is_service:
-        name, is_staff = match_staff(name)
+    # Категорию у служебных строк ("КВОРУМ DZ") разбор трактует иначе,
+    # поэтому их в общий кэш категорий не кладём и оттуда не берём.
+    cat_hit = None if is_service else CAT_CACHE.get(job.get("kcat"))
+    if cat_hit:
+        cat, cat_raw = cat_hit[0], cat_hit[1]
+    else:
+        cat_raws = ocr_category(cat_cell)
+        cat = pick_category(cat_raws, is_service)
+        cat_raw = next((x for x in cat_raws if x), "")
+        # спасательный проход: если ансамбль дал мусор, пробуем
+        # увеличение x8 - оно вытаскивает совсем мелкие ячейки
+        if cat not in KNOWN_CATS and cat != "???":
+            for scale in (8, 6):
+                try:
+                    r2 = pytesseract.image_to_string(
+                        prep(cat_cell, scale=scale), config=TESS_MIX8).strip()
+                except Exception:
+                    continue
+                n2 = normalize_category(r2)
+                if n2 in KNOWN_CATS:
+                    cat, cat_raw = n2, r2
+                    break
+        if not is_service and cat in KNOWN_CATS:
+            CAT_CACHE[job["kcat"]] = [cat, cat_raw]
 
-    cat_raws = ocr_category(cat_cell)
-    cat = pick_category(cat_raws, is_service)
-    cat_raw = next((x for x in cat_raws if x), "")
-    # спасательный проход: если ансамбль дал мусор, пробуем
-    # увеличение x8 - оно вытаскивает совсем мелкие ячейки
-    if cat not in KNOWN_CATS and cat != "???":
-        for scale in (8, 6):
-            try:
-                r2 = pytesseract.image_to_string(
-                    prep(cat_cell, scale=scale), config=TESS_MIX8).strip()
-            except Exception:
-                continue
-            n2 = normalize_category(r2)
-            if n2 in KNOWN_CATS:
-                cat, cat_raw = n2, r2
-                break
-
+    job["cached"] = bool(hit) and bool(cat_hit or is_service)
     job["result"] = {"n": job["n"], "name": name, "staff": is_staff,
                      "cat": short_category(cat), "cat_full": cat,
                      "cat_raw": cat_raw, "_conf": name_conf,
@@ -1541,9 +1566,11 @@ def run():
                 raw = json.load(f)
             names = raw.get("names") if isinstance(raw.get("names"), dict) else raw
             history = {str(k): float(v) for k, v in names.items()}
-            cached = raw.get("cells") if isinstance(raw, dict) else None
-            if isinstance(cached, dict) and raw.get("cache_ver") == CACHE_VER:
-                CELL_CACHE.update(cached)
+            if isinstance(raw, dict) and raw.get("cache_ver") == CACHE_VER:
+                if isinstance(raw.get("cells"), dict):
+                    CELL_CACHE.update(raw["cells"])
+                if isinstance(raw.get("cats"), dict):
+                    CAT_CACHE.update(raw["cats"])
         except Exception as e:
             sys.stderr.write("history load error: %s\n" % e)
 
@@ -1708,7 +1735,8 @@ def run():
             # сами прогоны распознавания делаются позже и параллельно
             jobs.append({"load": load, "n": r + 1,
                          "name_cell": name_cell, "cat_cell": cat_cell,
-                         "key": cell_key(name_cell, cat_cell)})
+                         "kname": name_key(name_cell),
+                         "kcat": cat_key(cat_cell)})
 
         # мест на борту: меряем по табло, но у отправленного взлёта зелёных
         # строк уже нет - тогда берём из таблицы бортов
@@ -1722,7 +1750,7 @@ def run():
     t_build = time.time()
 
     # ---- само распознавание: параллельно по числу ядер ----
-    fresh = {}
+
     if jobs:
         workers = min(8, max(2, (os.cpu_count() or 2)))
         try:
@@ -1743,13 +1771,6 @@ def run():
     }
 
     if jobs:
-        # снимок для кэша - пока в строках ещё есть служебные поля
-        for job in jobs:
-            res = job.get("result")
-            if res and job.get("key") and cacheable(res):
-                fresh[job["key"]] = [res["name"], 1 if res.get("staff") else 0,
-                                     res.get("cat_full", ""), res.get("cat_raw", ""),
-                                     res.get("_conf", 0), 1 if res.get("service") else 0]
         reused = sum(1 for j in jobs if j.get("cached"))
         sys.stderr.write("строк: %d, из кэша: %d\n" % (len(jobs), reused))
         # запоминаем для замеров: по этим двум числам видно, куда уходит
@@ -1785,14 +1806,13 @@ def run():
 
     if hist_path:
         history = update_history(history, result["loads"])
-        # свежие ячейки кладём первыми, хвост старых обрезаем по лимиту
-        cells = dict(fresh)
-        for k, v in CELL_CACHE.items():
-            if len(cells) >= CACHE_LIMIT:
-                break
-            cells.setdefault(k, v)
+        # хвост старых записей обрезаем по лимиту: файл летит по сети
+        # на каждом прогоне
+        cells = dict(list(CELL_CACHE.items())[-CACHE_LIMIT:])
+        cats = dict(list(CAT_CACHE.items())[-CACHE_LIMIT:])
         with open(hist_path, "w", encoding="utf-8") as f:
-            json.dump({"names": history, "cache_ver": CACHE_VER, "cells": cells},
+            json.dump({"names": history, "cache_ver": CACHE_VER,
+                       "cells": cells, "cats": cats},
                       f, ensure_ascii=False, separators=(",", ":"))
 
     os.makedirs(os.path.dirname(dst) or ".", exist_ok=True)
