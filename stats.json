@@ -1,0 +1,6024 @@
+{
+ "runs": [
+  {
+   "t": 1789250791.0,
+   "iso": "2026-09-12T22:06:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789250860.9,
+   "iso": "2026-09-12T22:07:40Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 21.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789250916.4,
+   "iso": "2026-09-12T22:08:36Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 18.0,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251009.5,
+   "iso": "2026-09-12T22:10:09Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 15.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251033.0,
+   "iso": "2026-09-12T22:10:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251091.4,
+   "iso": "2026-09-12T22:11:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251151.5,
+   "iso": "2026-09-12T22:12:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 13.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251220.0,
+   "iso": "2026-09-12T22:13:39Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 16.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251280.3,
+   "iso": "2026-09-12T22:14:40Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 21.2,
+   "sec": 0.2,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251332.4,
+   "iso": "2026-09-12T22:15:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251393.0,
+   "iso": "2026-09-12T22:16:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251450.6,
+   "iso": "2026-09-12T22:17:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251511.8,
+   "iso": "2026-09-12T22:18:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251570.3,
+   "iso": "2026-09-12T22:19:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251631.2,
+   "iso": "2026-09-12T22:20:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251689.2,
+   "iso": "2026-09-12T22:21:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251751.5,
+   "iso": "2026-09-12T22:22:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251811.0,
+   "iso": "2026-09-12T22:23:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251871.5,
+   "iso": "2026-09-12T22:24:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251930.5,
+   "iso": "2026-09-12T22:25:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789251988.6,
+   "iso": "2026-09-12T22:26:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252048.7,
+   "iso": "2026-09-12T22:27:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252109.1,
+   "iso": "2026-09-12T22:28:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252171.8,
+   "iso": "2026-09-12T22:29:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252230.9,
+   "iso": "2026-09-12T22:30:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252296.1,
+   "iso": "2026-09-12T22:31:36Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252351.4,
+   "iso": "2026-09-12T22:32:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252411.4,
+   "iso": "2026-09-12T22:33:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252487.6,
+   "iso": "2026-09-12T22:34:47Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 17.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252530.7,
+   "iso": "2026-09-12T22:35:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252589.9,
+   "iso": "2026-09-12T22:36:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252652.8,
+   "iso": "2026-09-12T22:37:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252712.7,
+   "iso": "2026-09-12T22:38:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 13.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252784.8,
+   "iso": "2026-09-12T22:39:44Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 24.0,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252832.7,
+   "iso": "2026-09-12T22:40:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 13.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252899.8,
+   "iso": "2026-09-12T22:41:39Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 17.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789252950.7,
+   "iso": "2026-09-12T22:42:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.0,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253008.4,
+   "iso": "2026-09-12T22:43:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 9.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253067.7,
+   "iso": "2026-09-12T22:44:27Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253131.0,
+   "iso": "2026-09-12T22:45:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253189.9,
+   "iso": "2026-09-12T22:46:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253252.6,
+   "iso": "2026-09-12T22:47:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 13.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253308.2,
+   "iso": "2026-09-12T22:48:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253376.6,
+   "iso": "2026-09-12T22:49:36Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 18.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253458.3,
+   "iso": "2026-09-12T22:50:58Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 38.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253488.9,
+   "iso": "2026-09-12T22:51:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.0,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253561.7,
+   "iso": "2026-09-12T22:52:41Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 23.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253606.9,
+   "iso": "2026-09-12T22:53:26Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253670.8,
+   "iso": "2026-09-12T22:54:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253730.3,
+   "iso": "2026-09-12T22:55:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253791.7,
+   "iso": "2026-09-12T22:56:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253851.2,
+   "iso": "2026-09-12T22:57:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253911.8,
+   "iso": "2026-09-12T22:58:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789253985.4,
+   "iso": "2026-09-12T22:59:45Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 24.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254038.1,
+   "iso": "2026-09-12T23:00:37Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 19.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254111.7,
+   "iso": "2026-09-12T23:01:51Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 33.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254170.9,
+   "iso": "2026-09-12T23:02:50Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 33.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254217.1,
+   "iso": "2026-09-12T23:03:37Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 18.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254274.4,
+   "iso": "2026-09-12T23:04:34Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254328.4,
+   "iso": "2026-09-12T23:05:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254388.0,
+   "iso": "2026-09-12T23:06:27Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254473.8,
+   "iso": "2026-09-12T23:07:53Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 15.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254500.7,
+   "iso": "2026-09-12T23:08:20Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254524.9,
+   "iso": "2026-09-12T23:08:44Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254583.9,
+   "iso": "2026-09-12T23:09:43Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 24.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254631.8,
+   "iso": "2026-09-12T23:10:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254688.1,
+   "iso": "2026-09-12T23:11:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.0,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254751.3,
+   "iso": "2026-09-12T23:12:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254808.1,
+   "iso": "2026-09-12T23:13:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 9.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254872.6,
+   "iso": "2026-09-12T23:14:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254942.8,
+   "iso": "2026-09-12T23:15:42Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 23.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789254999.7,
+   "iso": "2026-09-12T23:16:39Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 18.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255048.5,
+   "iso": "2026-09-12T23:17:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255117.1,
+   "iso": "2026-09-12T23:18:36Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 18.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255170.2,
+   "iso": "2026-09-12T23:19:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255243.2,
+   "iso": "2026-09-12T23:20:43Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 25.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255289.8,
+   "iso": "2026-09-12T23:21:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255348.5,
+   "iso": "2026-09-12T23:22:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255411.5,
+   "iso": "2026-09-12T23:23:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255472.2,
+   "iso": "2026-09-12T23:24:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 13.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255528.3,
+   "iso": "2026-09-12T23:25:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 9.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255589.6,
+   "iso": "2026-09-12T23:26:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255651.5,
+   "iso": "2026-09-12T23:27:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255712.0,
+   "iso": "2026-09-12T23:28:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 13.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255773.4,
+   "iso": "2026-09-12T23:29:33Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255830.9,
+   "iso": "2026-09-12T23:30:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255893.0,
+   "iso": "2026-09-12T23:31:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789255950.2,
+   "iso": "2026-09-12T23:32:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256011.5,
+   "iso": "2026-09-12T23:33:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256070.6,
+   "iso": "2026-09-12T23:34:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256129.0,
+   "iso": "2026-09-12T23:35:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256189.6,
+   "iso": "2026-09-12T23:36:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256262.1,
+   "iso": "2026-09-12T23:37:41Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 21.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256309.5,
+   "iso": "2026-09-12T23:38:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256368.7,
+   "iso": "2026-09-12T23:39:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256431.8,
+   "iso": "2026-09-12T23:40:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256491.5,
+   "iso": "2026-09-12T23:41:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256549.4,
+   "iso": "2026-09-12T23:42:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256609.5,
+   "iso": "2026-09-12T23:43:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256678.4,
+   "iso": "2026-09-12T23:44:38Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 21.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256740.0,
+   "iso": "2026-09-12T23:45:39Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256791.8,
+   "iso": "2026-09-12T23:46:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256853.8,
+   "iso": "2026-09-12T23:47:33Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256916.1,
+   "iso": "2026-09-12T23:48:36Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 18.0,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789256971.2,
+   "iso": "2026-09-12T23:49:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257032.7,
+   "iso": "2026-09-12T23:50:32Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257102.6,
+   "iso": "2026-09-12T23:51:42Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257148.6,
+   "iso": "2026-09-12T23:52:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257208.6,
+   "iso": "2026-09-12T23:53:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257279.9,
+   "iso": "2026-09-12T23:54:39Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 20.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257330.1,
+   "iso": "2026-09-12T23:55:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257391.3,
+   "iso": "2026-09-12T23:56:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257451.1,
+   "iso": "2026-09-12T23:57:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257506.6,
+   "iso": "2026-09-12T23:58:26Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257669.0,
+   "iso": "2026-09-13T00:01:08Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 19.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257826.2,
+   "iso": "2026-09-13T00:03:46Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789257989.3,
+   "iso": "2026-09-13T00:06:29Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 22.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789258126.8,
+   "iso": "2026-09-13T00:08:46Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789258278.7,
+   "iso": "2026-09-13T00:11:18Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.0,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789258422.0,
+   "iso": "2026-09-13T00:13:41Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789258581.8,
+   "iso": "2026-09-13T00:16:21Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 17.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789258722.0,
+   "iso": "2026-09-13T00:18:41Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789258876.9,
+   "iso": "2026-09-13T00:21:16Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259038.9,
+   "iso": "2026-09-13T00:23:58Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259191.5,
+   "iso": "2026-09-13T00:26:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259337.4,
+   "iso": "2026-09-13T00:28:57Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 9.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259494.1,
+   "iso": "2026-09-13T00:31:33Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 16.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259655.7,
+   "iso": "2026-09-13T00:34:15Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 25.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259715.0,
+   "iso": "2026-09-13T00:35:14Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259744.5,
+   "iso": "2026-09-13T00:35:44Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 17.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259793.4,
+   "iso": "2026-09-13T00:36:33Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 13.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259848.8,
+   "iso": "2026-09-13T00:37:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259913.2,
+   "iso": "2026-09-13T00:38:33Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789259976.6,
+   "iso": "2026-09-13T00:39:36Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 17.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260031.8,
+   "iso": "2026-09-13T00:40:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260090.3,
+   "iso": "2026-09-13T00:41:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260148.5,
+   "iso": "2026-09-13T00:42:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260221.9,
+   "iso": "2026-09-13T00:43:41Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 23.0,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260271.1,
+   "iso": "2026-09-13T00:44:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260337.0,
+   "iso": "2026-09-13T00:45:36Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 17.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260391.3,
+   "iso": "2026-09-13T00:46:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260415.7,
+   "iso": "2026-09-13T00:46:55Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.2,
+   "sec": 0.5,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260441.7,
+   "iso": "2026-09-13T00:47:21Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260473.6,
+   "iso": "2026-09-13T00:47:53Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 19.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260496.8,
+   "iso": "2026-09-13T00:48:16Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260523.4,
+   "iso": "2026-09-13T00:48:43Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260544.2,
+   "iso": "2026-09-13T00:49:04Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260573.2,
+   "iso": "2026-09-13T00:49:33Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 18.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260602.5,
+   "iso": "2026-09-13T00:50:02Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 18.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260626.4,
+   "iso": "2026-09-13T00:50:26Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.0,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260647.8,
+   "iso": "2026-09-13T00:50:47Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 9.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260671.1,
+   "iso": "2026-09-13T00:51:11Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260743.5,
+   "iso": "2026-09-13T00:52:23Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 25.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260765.3,
+   "iso": "2026-09-13T00:52:45Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260788.9,
+   "iso": "2026-09-13T00:53:08Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260830.6,
+   "iso": "2026-09-13T00:53:50Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 21.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260861.3,
+   "iso": "2026-09-13T00:54:21Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 16.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260884.8,
+   "iso": "2026-09-13T00:54:44Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260912.4,
+   "iso": "2026-09-13T00:55:12Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260931.2,
+   "iso": "2026-09-13T00:55:31Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 9.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260973.2,
+   "iso": "2026-09-13T00:56:13Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789260995.0,
+   "iso": "2026-09-13T00:56:34Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261037.1,
+   "iso": "2026-09-13T00:57:17Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 16.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261061.7,
+   "iso": "2026-09-13T00:57:41Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261095.5,
+   "iso": "2026-09-13T00:58:15Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261114.9,
+   "iso": "2026-09-13T00:58:34Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 9.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261151.1,
+   "iso": "2026-09-13T00:59:10Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261175.0,
+   "iso": "2026-09-13T00:59:34Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 13.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261210.1,
+   "iso": "2026-09-13T01:00:10Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 9.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261230.9,
+   "iso": "2026-09-13T01:00:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261273.1,
+   "iso": "2026-09-13T01:01:13Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261294.6,
+   "iso": "2026-09-13T01:01:34Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261332.7,
+   "iso": "2026-09-13T01:02:12Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261356.7,
+   "iso": "2026-09-13T01:02:36Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261393.9,
+   "iso": "2026-09-13T01:03:13Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261418.7,
+   "iso": "2026-09-13T01:03:38Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 13.7,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261452.9,
+   "iso": "2026-09-13T01:04:12Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261478.3,
+   "iso": "2026-09-13T01:04:38Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261511.3,
+   "iso": "2026-09-13T01:05:11Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261546.0,
+   "iso": "2026-09-13T01:05:45Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 23.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789261578.7,
+   "iso": "2026-09-13T01:06:09Z",
+   "digest": "d1297a19af1ff856aa41431bdc0faa7b",
+   "changed": true,
+   "lag": 21.6,
+   "sec": 9.3,
+   "rows": 5,
+   "cells": 5,
+   "reused": 2,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 1.2,
+    "строки": 7.2
+   },
+   "clock": "13.09 08:05"
+  },
+  {
+   "t": 1789261605.4,
+   "iso": "2026-09-13T01:06:43Z",
+   "digest": "d1297a19af1ff856aa41431bdc0faa7b",
+   "changed": false,
+   "lag": 13.2,
+   "sec": 1.4,
+   "rows": 5,
+   "cells": 5,
+   "reused": 5,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.6,
+    "строки": 0.0
+   },
+   "clock": "13.09 08:05"
+  },
+  {
+   "t": 1789261661.3,
+   "iso": "2026-09-13T01:07:40Z",
+   "digest": "d1297a19af1ff856aa41431bdc0faa7b",
+   "changed": false,
+   "lag": 40.0,
+   "sec": 1.2,
+   "rows": 5,
+   "cells": 5,
+   "reused": 5,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.5,
+    "строки": 0.0
+   },
+   "clock": "13.09 08:06"
+  },
+  {
+   "t": 1789261685.0,
+   "iso": "2026-09-13T01:08:03Z",
+   "digest": "97ad326c1907b8f30c4f11b086f2a83f",
+   "changed": true,
+   "lag": 13.0,
+   "sec": 1.9,
+   "rows": 6,
+   "cells": 6,
+   "reused": 5,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.1
+   },
+   "clock": "13.09 08:06"
+  },
+  {
+   "t": 1789261709.4,
+   "iso": "2026-09-13T01:08:27Z",
+   "digest": "97ad326c1907b8f30c4f11b086f2a83f",
+   "changed": false,
+   "lag": 14.1,
+   "sec": 1.8,
+   "rows": 6,
+   "cells": 6,
+   "reused": 6,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.8,
+    "строки": 0.0
+   },
+   "clock": "13.09 08:02"
+  },
+  {
+   "t": 1789261753.1,
+   "iso": "2026-09-13T01:08:52Z",
+   "digest": "bfcd8a384b90e190765aa0249e68f5cd",
+   "changed": true,
+   "lag": 32.1,
+   "sec": 20.6,
+   "rows": 8,
+   "cells": 8,
+   "reused": 6,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 18.9
+   },
+   "clock": "13.09 08:02"
+  },
+  {
+   "t": 1789261823.9,
+   "iso": "2026-09-13T01:09:49Z",
+   "digest": "7b04851df9acf0b995017ebc392c8604",
+   "changed": true,
+   "lag": 58.7,
+   "sec": 34.0,
+   "rows": 10,
+   "cells": 10,
+   "reused": 7,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 32.2
+   },
+   "clock": "13.09 08:08"
+  },
+  {
+   "t": 1789261855.6,
+   "iso": "2026-09-13T01:10:48Z",
+   "digest": "7b04851df9acf0b995017ebc392c8604",
+   "changed": false,
+   "lag": 18.4,
+   "sec": 7.4,
+   "rows": 10,
+   "cells": 10,
+   "reused": 8,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 5.6
+   },
+   "clock": "13.09 08:09"
+  },
+  {
+   "t": 1789261893.7,
+   "iso": "2026-09-13T01:11:21Z",
+   "digest": "7b04851df9acf0b995017ebc392c8604",
+   "changed": false,
+   "lag": 24.9,
+   "sec": 12.6,
+   "rows": 10,
+   "cells": 10,
+   "reused": 8,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 10.7
+   },
+   "clock": "13.09 08:10"
+  },
+  {
+   "t": 1789261926.7,
+   "iso": "2026-09-13T01:11:57Z",
+   "digest": "7b04851df9acf0b995017ebc392c8604",
+   "changed": false,
+   "lag": 21.1,
+   "sec": 9.6,
+   "rows": 10,
+   "cells": 10,
+   "reused": 8,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 7.7
+   },
+   "clock": "13.09 08:10"
+  },
+  {
+   "t": 1789261963.1,
+   "iso": "2026-09-13T01:12:33Z",
+   "digest": "7b04851df9acf0b995017ebc392c8604",
+   "changed": false,
+   "lag": 22.7,
+   "sec": 9.4,
+   "rows": 10,
+   "cells": 10,
+   "reused": 8,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 7.5
+   },
+   "clock": "13.09 08:11"
+  },
+  {
+   "t": 1789262018.2,
+   "iso": "2026-09-13T01:13:22Z",
+   "digest": "7b04851df9acf0b995017ebc392c8604",
+   "changed": false,
+   "lag": 36.1,
+   "sec": 15.3,
+   "rows": 10,
+   "cells": 10,
+   "reused": 8,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 13.4
+   },
+   "clock": "13.09 08:12"
+  },
+  {
+   "t": 1789262077.7,
+   "iso": "2026-09-13T01:14:05Z",
+   "digest": "317e377a40722aad5504de537f3274d0",
+   "changed": true,
+   "lag": 46.1,
+   "sec": 32.0,
+   "rows": 12,
+   "cells": 12,
+   "reused": 8,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.8,
+    "строки": 30.0
+   },
+   "clock": "13.09 08:12"
+  },
+  {
+   "t": 1789262122.7,
+   "iso": "2026-09-13T01:15:03Z",
+   "digest": "317e377a40722aad5504de537f3274d0",
+   "changed": false,
+   "lag": 33.3,
+   "sec": 19.2,
+   "rows": 12,
+   "cells": 12,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 17.4
+   },
+   "clock": "13.09 08:13"
+  },
+  {
+   "t": 1789262158.2,
+   "iso": "2026-09-13T01:15:45Z",
+   "digest": "317e377a40722aad5504de537f3274d0",
+   "changed": false,
+   "lag": 24.7,
+   "sec": 13.2,
+   "rows": 12,
+   "cells": 12,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 11.3
+   },
+   "clock": "13.09 08:14"
+  },
+  {
+   "t": 1789262196.4,
+   "iso": "2026-09-13T01:16:20Z",
+   "digest": "317e377a40722aad5504de537f3274d0",
+   "changed": false,
+   "lag": 28.1,
+   "sec": 16.0,
+   "rows": 12,
+   "cells": 12,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 14.2
+   },
+   "clock": "13.09 08:15"
+  },
+  {
+   "t": 1789262224.9,
+   "iso": "2026-09-13T01:16:56Z",
+   "digest": "317e377a40722aad5504de537f3274d0",
+   "changed": false,
+   "lag": 18.2,
+   "sec": 8.1,
+   "rows": 12,
+   "cells": 12,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 6.2
+   },
+   "clock": "13.09 08:15"
+  },
+  {
+   "t": 1789262261.5,
+   "iso": "2026-09-13T01:17:25Z",
+   "digest": "317e377a40722aad5504de537f3274d0",
+   "changed": false,
+   "lag": 26.8,
+   "sec": 15.8,
+   "rows": 12,
+   "cells": 12,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 14.0
+   },
+   "clock": "13.09 08:16"
+  },
+  {
+   "t": 1789262315.8,
+   "iso": "2026-09-13T01:18:02Z",
+   "digest": "032e4338ea57bbce0ff8160643a35278",
+   "changed": true,
+   "lag": 44.1,
+   "sec": 33.7,
+   "rows": 12,
+   "cells": 12,
+   "reused": 7,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 31.9
+   },
+   "clock": "13.09 08:16"
+  },
+  {
+   "t": 1789262364.1,
+   "iso": "2026-09-13T01:18:56Z",
+   "digest": "3ecf2451b27ea8c81307d68287606087",
+   "changed": true,
+   "lag": 37.4,
+   "sec": 27.2,
+   "rows": 13,
+   "cells": 13,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.8,
+    "строки": 25.3
+   },
+   "clock": "13.09 08:17"
+  },
+  {
+   "t": 1789262412.5,
+   "iso": "2026-09-13T01:19:46Z",
+   "digest": "3ecf2451b27ea8c81307d68287606087",
+   "changed": false,
+   "lag": 37.9,
+   "sec": 26.4,
+   "rows": 13,
+   "cells": 13,
+   "reused": 11,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 24.5
+   },
+   "clock": "13.09 08:18"
+  },
+  {
+   "t": 1789262453.1,
+   "iso": "2026-09-13T01:20:37Z",
+   "digest": "3ecf2451b27ea8c81307d68287606087",
+   "changed": false,
+   "lag": 29.9,
+   "sec": 15.4,
+   "rows": 13,
+   "cells": 13,
+   "reused": 11,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 13.5
+   },
+   "clock": "13.09 08:19"
+  },
+  {
+   "t": 1789262492.8,
+   "iso": "2026-09-13T01:21:19Z",
+   "digest": "3ecf2451b27ea8c81307d68287606087",
+   "changed": false,
+   "lag": 28.1,
+   "sec": 13.3,
+   "rows": 13,
+   "cells": 13,
+   "reused": 11,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.6,
+    "строки": 11.8
+   },
+   "clock": "13.09 08:20"
+  },
+  {
+   "t": 1789262538.2,
+   "iso": "2026-09-13T01:22:09Z",
+   "digest": "3ecf2451b27ea8c81307d68287606087",
+   "changed": false,
+   "lag": 31.6,
+   "sec": 9.0,
+   "rows": 13,
+   "cells": 13,
+   "reused": 11,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.5,
+    "строки": 7.8
+   },
+   "clock": "13.09 08:20"
+  },
+  {
+   "t": 1789262571.0,
+   "iso": "2026-09-13T01:22:42Z",
+   "digest": "3ecf2451b27ea8c81307d68287606087",
+   "changed": false,
+   "lag": 21.9,
+   "sec": 9.0,
+   "rows": 13,
+   "cells": 13,
+   "reused": 11,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.0,
+    "строки": 7.0
+   },
+   "clock": "13.09 08:21"
+  },
+  {
+   "t": 1789262616.9,
+   "iso": "2026-09-13T01:23:12Z",
+   "digest": "3ecf2451b27ea8c81307d68287606087",
+   "changed": false,
+   "lag": 35.7,
+   "sec": 24.2,
+   "rows": 13,
+   "cells": 13,
+   "reused": 11,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 22.3
+   },
+   "clock": "13.09 08:22"
+  },
+  {
+   "t": 1789262649.4,
+   "iso": "2026-09-13T01:23:59Z",
+   "digest": "3ecf2451b27ea8c81307d68287606087",
+   "changed": false,
+   "lag": 22.4,
+   "sec": 9.8,
+   "rows": 13,
+   "cells": 13,
+   "reused": 11,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 8.0
+   },
+   "clock": "13.09 08:22"
+  },
+  {
+   "t": 1789262696.0,
+   "iso": "2026-09-13T01:24:30Z",
+   "digest": "3ecf2451b27ea8c81307d68287606087",
+   "changed": false,
+   "lag": 36.8,
+   "sec": 25.4,
+   "rows": 13,
+   "cells": 13,
+   "reused": 11,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 23.6
+   },
+   "clock": "13.09 08:23"
+  },
+  {
+   "t": 1789262742.4,
+   "iso": "2026-09-13T01:25:19Z",
+   "digest": "3ecf2451b27ea8c81307d68287606087",
+   "changed": false,
+   "lag": 35.3,
+   "sec": 22.6,
+   "rows": 13,
+   "cells": 13,
+   "reused": 11,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 20.7
+   },
+   "clock": "13.09 08:24"
+  },
+  {
+   "t": 1789262863.5,
+   "iso": "2026-09-13T01:26:21Z",
+   "digest": "81f11c39dd19fe65359c3df2cab06c9f",
+   "changed": true,
+   "lag": 109.4,
+   "sec": 82.3,
+   "rows": 19,
+   "cells": 19,
+   "reused": 11,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 80.9
+   },
+   "clock": "13.09 08:25"
+  },
+  {
+   "t": 1789262904.4,
+   "iso": "2026-09-13T01:28:05Z",
+   "digest": "b3b5e1a6f5f413858995094f02e6a288",
+   "changed": true,
+   "lag": 30.0,
+   "sec": 18.8,
+   "rows": 19,
+   "cells": 19,
+   "reused": 16,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 17.0
+   },
+   "clock": "13.09 08:27"
+  },
+  {
+   "t": 1789262955.6,
+   "iso": "2026-09-13T01:28:48Z",
+   "digest": "b0e9fd98e16ecc4808605c13fe0ad2bd",
+   "changed": true,
+   "lag": 40.4,
+   "sec": 27.3,
+   "rows": 19,
+   "cells": 19,
+   "reused": 16,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 25.9
+   },
+   "clock": "13.09 08:27"
+  },
+  {
+   "t": 1789262990.8,
+   "iso": "2026-09-13T01:29:39Z",
+   "digest": "84b1b7ae3c5cb401a3f55ed00d58c517",
+   "changed": true,
+   "lag": 23.2,
+   "sec": 11.3,
+   "rows": 19,
+   "cells": 19,
+   "reused": 16,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 9.8
+   },
+   "clock": "13.09 08:28"
+  },
+  {
+   "t": 1789263044.6,
+   "iso": "2026-09-13T01:30:12Z",
+   "digest": "84b1b7ae3c5cb401a3f55ed00d58c517",
+   "changed": false,
+   "lag": 43.2,
+   "sec": 32.2,
+   "rows": 19,
+   "cells": 19,
+   "reused": 16,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.7,
+    "строки": 30.9
+   },
+   "clock": "13.09 08:29"
+  },
+  {
+   "t": 1789263123.8,
+   "iso": "2026-09-13T01:31:21Z",
+   "digest": "a6c843723accdff9adc07f4559b066a4",
+   "changed": true,
+   "lag": 66.0,
+   "sec": 42.5,
+   "rows": 21,
+   "cells": 21,
+   "reused": 16,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.5,
+    "строки": 41.2
+   },
+   "clock": "13.09 08:30"
+  },
+  {
+   "t": 1789263176.9,
+   "iso": "2026-09-13T01:32:26Z",
+   "digest": "e904b3ee3dc8b446221616eb6cd88e80",
+   "changed": true,
+   "lag": 42.1,
+   "sec": 30.2,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.0,
+    "строки": 28.2
+   },
+   "clock": "13.09 08:31"
+  },
+  {
+   "t": 1789263229.0,
+   "iso": "2026-09-13T01:33:18Z",
+   "digest": "a64c0f91434b1b07893ec373ceb473ac",
+   "changed": true,
+   "lag": 41.8,
+   "sec": 30.5,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 29.1
+   },
+   "clock": "13.09 08:32"
+  },
+  {
+   "t": 1789263281.7,
+   "iso": "2026-09-13T01:34:20Z",
+   "digest": "1c2384bd13b042bbf92737a4594827f3",
+   "changed": true,
+   "lag": 41.2,
+   "sec": 21.3,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.2,
+    "сетка и заголовки": 0.5,
+    "строки": 19.4
+   },
+   "clock": "13.09 08:33"
+  },
+  {
+   "t": 1789263326.4,
+   "iso": "2026-09-13T01:35:02Z",
+   "digest": "3e6da6ab7745eba08c512d0460ad56e8",
+   "changed": true,
+   "lag": 34.6,
+   "sec": 23.6,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 21.8
+   },
+   "clock": "13.09 08:33"
+  },
+  {
+   "t": 1789263374.2,
+   "iso": "2026-09-13T01:35:54Z",
+   "digest": "101e7f6b9e226b2af330a92bd5a9add8",
+   "changed": true,
+   "lag": 37.3,
+   "sec": 19.7,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.8,
+    "строки": 17.8
+   },
+   "clock": "13.09 08:34"
+  },
+  {
+   "t": 1789263408.2,
+   "iso": "2026-09-13T01:36:37Z",
+   "digest": "2b697d2360d817095135cb0180915450",
+   "changed": true,
+   "lag": 22.3,
+   "sec": 10.6,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 8.9
+   },
+   "clock": "13.09 08:35"
+  },
+  {
+   "t": 1789263454.2,
+   "iso": "2026-09-13T01:37:17Z",
+   "digest": "51d3f58f1b7aa5f2daa00962be4d19a4",
+   "changed": true,
+   "lag": 30.9,
+   "sec": 17.1,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 15.3
+   },
+   "clock": "13.09 08:36"
+  },
+  {
+   "t": 1789263499.0,
+   "iso": "2026-09-13T01:37:59Z",
+   "digest": "51d3f58f1b7aa5f2daa00962be4d19a4",
+   "changed": false,
+   "lag": 32.2,
+   "sec": 19.8,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 17.9
+   },
+   "clock": "13.09 08:36"
+  },
+  {
+   "t": 1789263542.1,
+   "iso": "2026-09-13T01:38:40Z",
+   "digest": "43fdcfeddd5bdde98363197a417a567e",
+   "changed": true,
+   "lag": 31.0,
+   "sec": 22.1,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 20.7
+   },
+   "clock": "13.09 08:37"
+  },
+  {
+   "t": 1789263592.5,
+   "iso": "2026-09-13T01:39:43Z",
+   "digest": "f1610dc5762585b7fae30f307d90e055",
+   "changed": true,
+   "lag": 38.0,
+   "sec": 9.0,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.6,
+    "строки": 7.8
+   },
+   "clock": "13.09 08:38"
+  },
+  {
+   "t": 1789263645.8,
+   "iso": "2026-09-13T01:40:14Z",
+   "digest": "e0349930b7f6f06872beddc1efff75c3",
+   "changed": true,
+   "lag": 42.2,
+   "sec": 31.4,
+   "rows": 22,
+   "cells": 22,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 29.7
+   },
+   "clock": "13.09 08:39"
+  },
+  {
+   "t": 1789263679.4,
+   "iso": "2026-09-13T01:41:04Z",
+   "digest": "e0349930b7f6f06872beddc1efff75c3",
+   "changed": false,
+   "lag": 23.6,
+   "sec": 14.4,
+   "rows": 22,
+   "cells": 22,
+   "reused": 19,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 12.9
+   },
+   "clock": "13.09 08:40"
+  },
+  {
+   "t": 1789263712.5,
+   "iso": "2026-09-13T01:41:40Z",
+   "digest": "e0349930b7f6f06872beddc1efff75c3",
+   "changed": false,
+   "lag": 22.7,
+   "sec": 11.6,
+   "rows": 22,
+   "cells": 22,
+   "reused": 19,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.5,
+    "сетка и заголовки": 0.6,
+    "строки": 10.4
+   },
+   "clock": "13.09 08:40"
+  },
+  {
+   "t": 1789263760.9,
+   "iso": "2026-09-13T01:42:17Z",
+   "digest": "e0349930b7f6f06872beddc1efff75c3",
+   "changed": false,
+   "lag": 36.4,
+   "sec": 23.4,
+   "rows": 22,
+   "cells": 22,
+   "reused": 19,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 21.6
+   },
+   "clock": "13.09 08:41"
+  },
+  {
+   "t": 1789263825.9,
+   "iso": "2026-09-13T01:43:05Z",
+   "digest": "e0349930b7f6f06872beddc1efff75c3",
+   "changed": false,
+   "lag": 52.4,
+   "sec": 40.5,
+   "rows": 22,
+   "cells": 22,
+   "reused": 19,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 38.6
+   },
+   "clock": "13.09 08:41"
+  },
+  {
+   "t": 1789263877.1,
+   "iso": "2026-09-13T01:44:13Z",
+   "digest": "e0349930b7f6f06872beddc1efff75c3",
+   "changed": false,
+   "lag": 38.6,
+   "sec": 24.1,
+   "rows": 22,
+   "cells": 22,
+   "reused": 19,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 22.5
+   },
+   "clock": "13.09 08:43"
+  },
+  {
+   "t": 1789263928.1,
+   "iso": "2026-09-13T01:45:03Z",
+   "digest": "e0349930b7f6f06872beddc1efff75c3",
+   "changed": false,
+   "lag": 38.1,
+   "sec": 25.0,
+   "rows": 22,
+   "cells": 22,
+   "reused": 19,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 23.4
+   },
+   "clock": "13.09 08:43"
+  },
+  {
+   "t": 1789263981.3,
+   "iso": "2026-09-13T01:45:52Z",
+   "digest": "e0349930b7f6f06872beddc1efff75c3",
+   "changed": false,
+   "lag": 42.1,
+   "sec": 29.1,
+   "rows": 22,
+   "cells": 22,
+   "reused": 19,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 27.2
+   },
+   "clock": "13.09 08:44"
+  },
+  {
+   "t": 1789264007.6,
+   "iso": "2026-09-13T01:46:47Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264031.9,
+   "iso": "2026-09-13T01:47:11Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264056.6,
+   "iso": "2026-09-13T01:47:36Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264094.6,
+   "iso": "2026-09-13T01:48:14Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264121.3,
+   "iso": "2026-09-13T01:48:41Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264144.3,
+   "iso": "2026-09-13T01:49:04Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264168.8,
+   "iso": "2026-09-13T01:49:28Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.0,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264192.2,
+   "iso": "2026-09-13T01:49:52Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.6,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264212.4,
+   "iso": "2026-09-13T01:50:12Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.1,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264235.2,
+   "iso": "2026-09-13T01:50:35Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.2,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264270.4,
+   "iso": "2026-09-13T01:51:10Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264291.0,
+   "iso": "2026-09-13T01:51:30Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 11.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264335.0,
+   "iso": "2026-09-13T01:52:14Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.4,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264355.6,
+   "iso": "2026-09-13T01:52:35Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 10.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264402.5,
+   "iso": "2026-09-13T01:53:22Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 9.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264425.3,
+   "iso": "2026-09-13T01:53:45Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.5,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264453.0,
+   "iso": "2026-09-13T01:54:12Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 12.9,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264480.0,
+   "iso": "2026-09-13T01:54:39Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 14.3,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264511.3,
+   "iso": "2026-09-13T01:55:11Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 9.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264536.9,
+   "iso": "2026-09-13T01:55:36Z",
+   "digest": null,
+   "changed": false,
+   "board": false,
+   "lag": 13.8,
+   "sec": 0.1,
+   "rows": 0,
+   "clock": ""
+  },
+  {
+   "t": 1789264596.9,
+   "iso": "2026-09-13T01:56:00Z",
+   "digest": "6f10e343532f469ecb5d374915189d4d",
+   "changed": true,
+   "lag": 47.0,
+   "sec": 36.4,
+   "rows": 6,
+   "cells": 6,
+   "reused": 1,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 34.6
+   },
+   "clock": "13.09 08:54"
+  },
+  {
+   "t": 1789264650.9,
+   "iso": "2026-09-13T01:57:04Z",
+   "digest": "6a7d9dba9d5fad62871ecea8e1770171",
+   "changed": true,
+   "lag": 39.3,
+   "sec": 26.7,
+   "rows": 10,
+   "cells": 10,
+   "reused": 6,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 24.8
+   },
+   "clock": "13.09 08:55"
+  },
+  {
+   "t": 1789264677.0,
+   "iso": "2026-09-13T01:57:55Z",
+   "digest": "6a7d9dba9d5fad62871ecea8e1770171",
+   "changed": false,
+   "lag": 13.5,
+   "sec": 1.6,
+   "rows": 10,
+   "cells": 10,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 0.0
+   },
+   "clock": "13.09 08:56"
+  },
+  {
+   "t": 1789264700.2,
+   "iso": "2026-09-13T01:58:18Z",
+   "digest": "6a7d9dba9d5fad62871ecea8e1770171",
+   "changed": false,
+   "lag": 12.3,
+   "sec": 1.9,
+   "rows": 10,
+   "cells": 10,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 08:5/"
+  },
+  {
+   "t": 1789264722.5,
+   "iso": "2026-09-13T01:58:40Z",
+   "digest": "6a7d9dba9d5fad62871ecea8e1770171",
+   "changed": false,
+   "lag": 12.1,
+   "sec": 1.9,
+   "rows": 10,
+   "cells": 10,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 08:5/"
+  },
+  {
+   "t": 1789264782.4,
+   "iso": "2026-09-13T01:59:02Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": true,
+   "lag": 49.3,
+   "sec": 40.4,
+   "rows": 14,
+   "cells": 14,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.6,
+    "строки": 39.1
+   },
+   "clock": "13.09 08:58"
+  },
+  {
+   "t": 1789264807.4,
+   "iso": "2026-09-13T02:00:05Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 13.9,
+   "sec": 2.4,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.4,
+    "строки": 0.0
+   },
+   "clock": "13.09 08:59"
+  },
+  {
+   "t": 1789264830.8,
+   "iso": "2026-09-13T02:00:28Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 12.1,
+   "sec": 1.9,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 08:59"
+  },
+  {
+   "t": 1789264874.9,
+   "iso": "2026-09-13T02:01:13Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 12.5,
+   "sec": 1.7,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:00"
+  },
+  {
+   "t": 1789264900.5,
+   "iso": "2026-09-13T02:01:38Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 13.5,
+   "sec": 2.0,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.1,
+    "сетка и заголовки": 0.8,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:00"
+  },
+  {
+   "t": 1789264937.7,
+   "iso": "2026-09-13T02:02:16Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 15.3,
+   "sec": 1.6,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:01"
+  },
+  {
+   "t": 1789264967.7,
+   "iso": "2026-09-13T02:02:45Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 17.4,
+   "sec": 2.0,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:01"
+  },
+  {
+   "t": 1789264995.6,
+   "iso": "2026-09-13T02:03:14Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 13.9,
+   "sec": 1.1,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.0,
+    "шапка": 0.5,
+    "сетка и заголовки": 0.5,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:02"
+  },
+  {
+   "t": 1789265020.7,
+   "iso": "2026-09-13T02:03:39Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 11.7,
+   "sec": 1.4,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:02"
+  },
+  {
+   "t": 1789265052.3,
+   "iso": "2026-09-13T02:04:11Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 10.4,
+   "sec": 1.0,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.0,
+    "шапка": 0.5,
+    "сетка и заголовки": 0.5,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:03"
+  },
+  {
+   "t": 1789265082.8,
+   "iso": "2026-09-13T02:04:40Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 16.7,
+   "sec": 2.0,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:03"
+  },
+  {
+   "t": 1789265115.8,
+   "iso": "2026-09-13T02:05:13Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 15.7,
+   "sec": 2.0,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.0,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:04"
+  },
+  {
+   "t": 1789265140.4,
+   "iso": "2026-09-13T02:05:38Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 13.0,
+   "sec": 1.8,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:04"
+  },
+  {
+   "t": 1789265173.4,
+   "iso": "2026-09-13T02:06:11Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 13.4,
+   "sec": 1.9,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:05"
+  },
+  {
+   "t": 1789265195.5,
+   "iso": "2026-09-13T02:06:33Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 12.5,
+   "sec": 1.8,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:05"
+  },
+  {
+   "t": 1789265238.9,
+   "iso": "2026-09-13T02:07:17Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 17.0,
+   "sec": 1.4,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:06"
+  },
+  {
+   "t": 1789265264.5,
+   "iso": "2026-09-13T02:07:42Z",
+   "digest": "b2bbe39d5df7ec258d4181ff88bcc5f6",
+   "changed": false,
+   "lag": 12.6,
+   "sec": 1.8,
+   "rows": 14,
+   "cells": 14,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:06"
+  },
+  {
+   "t": 1789265353.3,
+   "iso": "2026-09-13T02:08:11Z",
+   "digest": "be138ff97da3edf0eb2b7d0c1b5704a7",
+   "changed": true,
+   "lag": 76.6,
+   "sec": 62.2,
+   "rows": 20,
+   "cells": 20,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.8,
+    "строки": 60.3
+   },
+   "clock": "13.09 09:0?"
+  },
+  {
+   "t": 1789265378.3,
+   "iso": "2026-09-13T02:09:36Z",
+   "digest": "877bf9cc106cd63b6ac640f4b1149f8f",
+   "changed": true,
+   "lag": 12.4,
+   "sec": 1.8,
+   "rows": 22,
+   "cells": 22,
+   "reused": 21,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 0.1
+   },
+   "clock": "13.09 09:08"
+  },
+  {
+   "t": 1789265414.3,
+   "iso": "2026-09-13T02:10:12Z",
+   "digest": "c5a9e706749268d2120bb40538afd041",
+   "changed": true,
+   "lag": 12.7,
+   "sec": 1.9,
+   "rows": 22,
+   "cells": 22,
+   "reused": 22,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:09"
+  },
+  {
+   "t": 1789265436.7,
+   "iso": "2026-09-13T02:10:34Z",
+   "digest": "61c2582c4b3fd838a18a35de04e598fb",
+   "changed": true,
+   "lag": 12.2,
+   "sec": 1.9,
+   "rows": 22,
+   "cells": 22,
+   "reused": 22,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:09"
+  },
+  {
+   "t": 1789265468.5,
+   "iso": "2026-09-13T02:11:07Z",
+   "digest": "92e8487fb067bb24658f9931e5de01eb",
+   "changed": true,
+   "lag": 19.3,
+   "sec": 1.4,
+   "rows": 22,
+   "cells": 22,
+   "reused": 22,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:09"
+  },
+  {
+   "t": 1789265504.2,
+   "iso": "2026-09-13T02:11:35Z",
+   "digest": "b2e24bda21a494680bdf9ae35afbd366",
+   "changed": true,
+   "lag": 22.3,
+   "sec": 9.2,
+   "rows": 25,
+   "cells": 25,
+   "reused": 23,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 7.2
+   },
+   "clock": "13.09 09:10"
+  },
+  {
+   "t": 1789265554.6,
+   "iso": "2026-09-13T02:12:33Z",
+   "digest": "5ed23f3e48229a35aece05c65ad244e8",
+   "changed": true,
+   "lag": 37.4,
+   "sec": 1.5,
+   "rows": 26,
+   "cells": 26,
+   "reused": 25,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.6,
+    "строки": 0.1
+   },
+   "clock": "13.09 09:10"
+  },
+  {
+   "t": 1789265578.2,
+   "iso": "2026-09-13T02:12:56Z",
+   "digest": "60c18c90788150b56ca5d20aa0e317c9",
+   "changed": true,
+   "lag": 10.9,
+   "sec": 1.3,
+   "rows": 26,
+   "cells": 26,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.6,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:11"
+  },
+  {
+   "t": 1789265610.3,
+   "iso": "2026-09-13T02:13:28Z",
+   "digest": "baef7a1fda1b222bbf78d85e958d2d4b",
+   "changed": true,
+   "lag": 19.3,
+   "sec": 2.1,
+   "rows": 26,
+   "cells": 26,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.0,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:12"
+  },
+  {
+   "t": 1789265636.3,
+   "iso": "2026-09-13T02:13:54Z",
+   "digest": "d28fc2c05de85781a965396ece3d517d",
+   "changed": true,
+   "lag": 13.6,
+   "sec": 1.9,
+   "rows": 23,
+   "cells": 23,
+   "reused": 23,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:12"
+  },
+  {
+   "t": 1789265661.4,
+   "iso": "2026-09-13T02:14:19Z",
+   "digest": "2027a3e3fe56efcf526f6473744add2c",
+   "changed": true,
+   "lag": 12.1,
+   "sec": 1.7,
+   "rows": 24,
+   "cells": 24,
+   "reused": 23,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.8,
+    "строки": 0.1
+   },
+   "clock": "13.09 09:13"
+  },
+  {
+   "t": 1789265688.6,
+   "iso": "2026-09-13T02:14:46Z",
+   "digest": "2027a3e3fe56efcf526f6473744add2c",
+   "changed": false,
+   "lag": 14.4,
+   "sec": 1.9,
+   "rows": 24,
+   "cells": 24,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:13"
+  },
+  {
+   "t": 1789265712.5,
+   "iso": "2026-09-13T02:15:10Z",
+   "digest": "dbc85b621f9cfd0e63ce46ca88adf098",
+   "changed": true,
+   "lag": 11.3,
+   "sec": 1.5,
+   "rows": 26,
+   "cells": 26,
+   "reused": 25,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 0.1
+   },
+   "clock": "13.09 09:14"
+  },
+  {
+   "t": 1789265736.8,
+   "iso": "2026-09-13T02:15:35Z",
+   "digest": "deced845cdab21eb11b2738e4fcd917b",
+   "changed": true,
+   "lag": 11.2,
+   "sec": 1.6,
+   "rows": 25,
+   "cells": 25,
+   "reused": 25,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:14"
+  },
+  {
+   "t": 1789265769.7,
+   "iso": "2026-09-13T02:16:07Z",
+   "digest": "de4e058ba4973698f23b728a5aff8bd1",
+   "changed": true,
+   "lag": 15.1,
+   "sec": 1.9,
+   "rows": 28,
+   "cells": 28,
+   "reused": 28,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:15"
+  },
+  {
+   "t": 1789265800.5,
+   "iso": "2026-09-13T02:16:38Z",
+   "digest": "de4e058ba4973698f23b728a5aff8bd1",
+   "changed": false,
+   "lag": 17.1,
+   "sec": 1.9,
+   "rows": 28,
+   "cells": 28,
+   "reused": 28,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:15"
+  },
+  {
+   "t": 1789265823.6,
+   "iso": "2026-09-13T02:17:01Z",
+   "digest": "70386a95dca86d2d83b2be8784ddeecf",
+   "changed": true,
+   "lag": 11.6,
+   "sec": 1.9,
+   "rows": 28,
+   "cells": 28,
+   "reused": 28,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:15"
+  },
+  {
+   "t": 1789265892.0,
+   "iso": "2026-09-13T02:18:09Z",
+   "digest": "2a1c0edfbd73b8d8a62a86b56bb93007",
+   "changed": true,
+   "lag": 20.4,
+   "sec": 2.1,
+   "rows": 29,
+   "cells": 29,
+   "reused": 28,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.1
+   },
+   "clock": "13.09 09:16"
+  },
+  {
+   "t": 1789265946.2,
+   "iso": "2026-09-13T02:18:40Z",
+   "digest": "5efced0b39de0b644c6236af854ece6a",
+   "changed": true,
+   "lag": 40.7,
+   "sec": 25.5,
+   "rows": 32,
+   "cells": 32,
+   "reused": 30,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 23.6
+   },
+   "clock": "13.09 09:17"
+  },
+  {
+   "t": 1789266027.3,
+   "iso": "2026-09-13T02:20:07Z",
+   "digest": "06fe0b865a841323cd1e5133f285d889",
+   "changed": true,
+   "lag": 65.6,
+   "sec": 19.3,
+   "rows": 33,
+   "cells": 33,
+   "reused": 30,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.7,
+    "строки": 17.7
+   },
+   "clock": "13.09 09:18"
+  },
+  {
+   "t": 1789266082.3,
+   "iso": "2026-09-13T02:20:49Z",
+   "digest": "d5335e1eb01a0dc54ca212e1c85de8ba",
+   "changed": true,
+   "lag": 44.2,
+   "sec": 33.3,
+   "rows": 35,
+   "cells": 35,
+   "reused": 31,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 31.4
+   },
+   "clock": "13.09 09:19"
+  },
+  {
+   "t": 1789266123.5,
+   "iso": "2026-09-13T02:21:46Z",
+   "digest": "9c53e5246b13ea59ddfa9971dcb1b1d2",
+   "changed": true,
+   "lag": 30.5,
+   "sec": 17.1,
+   "rows": 35,
+   "cells": 35,
+   "reused": 32,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 15.4
+   },
+   "clock": "13.09 09:20"
+  },
+  {
+   "t": 1789266187.1,
+   "iso": "2026-09-13T02:22:29Z",
+   "digest": "4cf870eb458f766a0eb77ec6d827cb61",
+   "changed": true,
+   "lag": 52.0,
+   "sec": 37.7,
+   "rows": 35,
+   "cells": 35,
+   "reused": 32,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 35.7
+   },
+   "clock": "13.09 09:21"
+  },
+  {
+   "t": 1789266238.7,
+   "iso": "2026-09-13T02:23:42Z",
+   "digest": "feac03d86b87ea7ec8e5ed9a7faf451e",
+   "changed": true,
+   "lag": 39.7,
+   "sec": 16.4,
+   "rows": 35,
+   "cells": 35,
+   "reused": 32,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 14.4
+   },
+   "clock": "13.09 09:22"
+  },
+  {
+   "t": 1789266282.5,
+   "iso": "2026-09-13T02:24:21Z",
+   "digest": "eb61099c9dd1a04a01943be46acde03c",
+   "changed": true,
+   "lag": 31.2,
+   "sec": 20.6,
+   "rows": 35,
+   "cells": 35,
+   "reused": 32,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.7,
+    "строки": 19.2
+   },
+   "clock": "13.09 09:23"
+  },
+  {
+   "t": 1789266333.2,
+   "iso": "2026-09-13T02:25:08Z",
+   "digest": "c8d0d27cab53090f1dd7caeb53a836fc",
+   "changed": true,
+   "lag": 38.4,
+   "sec": 25.1,
+   "rows": 38,
+   "cells": 38,
+   "reused": 33,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.0,
+    "строки": 23.2
+   },
+   "clock": "13.09 09:23"
+  },
+  {
+   "t": 1789266356.9,
+   "iso": "2026-09-13T02:25:54Z",
+   "digest": "d67b8d40b643bd9696dc97547193ff62",
+   "changed": true,
+   "lag": 12.3,
+   "sec": 2.1,
+   "rows": 38,
+   "cells": 38,
+   "reused": 38,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:24"
+  },
+  {
+   "t": 1789266380.0,
+   "iso": "2026-09-13T02:26:18Z",
+   "digest": "d67b8d40b643bd9696dc97547193ff62",
+   "changed": false,
+   "lag": 11.0,
+   "sec": 1.5,
+   "rows": 38,
+   "cells": 38,
+   "reused": 38,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.8,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:25"
+  },
+  {
+   "t": 1789266408.0,
+   "iso": "2026-09-13T02:26:46Z",
+   "digest": "d67b8d40b643bd9696dc97547193ff62",
+   "changed": false,
+   "lag": 14.9,
+   "sec": 1.9,
+   "rows": 38,
+   "cells": 38,
+   "reused": 38,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:25"
+  },
+  {
+   "t": 1789266435.1,
+   "iso": "2026-09-13T02:27:13Z",
+   "digest": "f851347525e36ada9147e063b247a9c7",
+   "changed": true,
+   "lag": 15.2,
+   "sec": 1.3,
+   "rows": 38,
+   "cells": 38,
+   "reused": 38,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.6,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:25"
+  },
+  {
+   "t": 1789266466.1,
+   "iso": "2026-09-13T02:27:44Z",
+   "digest": "f851347525e36ada9147e063b247a9c7",
+   "changed": false,
+   "lag": 19.0,
+   "sec": 1.5,
+   "rows": 38,
+   "cells": 38,
+   "reused": 38,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 0.0
+   },
+   "clock": "13.09 09:26"
+  },
+  {
+   "t": 1789266531.8,
+   "iso": "2026-09-13T02:28:11Z",
+   "digest": "4d4f4e88f704b1a3b539bd3bb1f52ea4",
+   "changed": true,
+   "lag": 52.0,
+   "sec": 40.0,
+   "rows": 41,
+   "cells": 41,
+   "reused": 38,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 38.3
+   },
+   "clock": "13.09 09:26"
+  },
+  {
+   "t": 1789266578.9,
+   "iso": "2026-09-13T02:29:17Z",
+   "digest": "bbcf3bb2f64bb950f3b77fbdb617d541",
+   "changed": true,
+   "lag": 33.3,
+   "sec": 21.6,
+   "rows": 41,
+   "cells": 41,
+   "reused": 39,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 19.8
+   },
+   "clock": "13.09 09:27"
+  },
+  {
+   "t": 1789266663.3,
+   "iso": "2026-09-13T02:30:05Z",
+   "digest": "757cff4b30fb0b6daeb591acf2e71a6e",
+   "changed": true,
+   "lag": 70.4,
+   "sec": 57.5,
+   "rows": 43,
+   "cells": 43,
+   "reused": 39,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.2,
+    "сетка и заголовки": 0.9,
+    "строки": 55.1
+   },
+   "clock": "13.09 09:28"
+  },
+  {
+   "t": 1789266699.2,
+   "iso": "2026-09-13T02:31:28Z",
+   "digest": "db2f38efceb30d8943f2f235fe1dbd97",
+   "changed": true,
+   "lag": 23.0,
+   "sec": 10.7,
+   "rows": 43,
+   "cells": 43,
+   "reused": 41,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.0,
+    "строки": 8.7
+   },
+   "clock": "13.09 09:30"
+  },
+  {
+   "t": 1789266742.9,
+   "iso": "2026-09-13T02:32:02Z",
+   "digest": "7aab07a7676a494c76ba028f041a1678",
+   "changed": true,
+   "lag": 32.0,
+   "sec": 20.8,
+   "rows": 43,
+   "cells": 43,
+   "reused": 41,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 18.9
+   },
+   "clock": "13.09 09:30"
+  },
+  {
+   "t": 1789266775.4,
+   "iso": "2026-09-13T02:32:43Z",
+   "digest": "7aab07a7676a494c76ba028f041a1678",
+   "changed": false,
+   "lag": 21.9,
+   "sec": 11.8,
+   "rows": 43,
+   "cells": 43,
+   "reused": 41,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 9.9
+   },
+   "clock": "13.09 09:31"
+  },
+  {
+   "t": 1789266820.6,
+   "iso": "2026-09-13T02:33:26Z",
+   "digest": "4fd291dad9f4c676086c35a684038aa7",
+   "changed": true,
+   "lag": 32.6,
+   "sec": 14.5,
+   "rows": 43,
+   "cells": 43,
+   "reused": 41,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 12.9
+   },
+   "clock": "13.09 09:31"
+  },
+  {
+   "t": 1789266859.4,
+   "iso": "2026-09-13T02:34:02Z",
+   "digest": "757671e4557cee2498d706130a49fb09",
+   "changed": true,
+   "lag": 27.2,
+   "sec": 16.7,
+   "rows": 43,
+   "cells": 43,
+   "reused": 41,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 15.0
+   },
+   "clock": "13.09 09:32"
+  },
+  {
+   "t": 1789266897.5,
+   "iso": "2026-09-13T02:34:42Z",
+   "digest": "26b81a4acc8a03fe989be29f71b87677",
+   "changed": true,
+   "lag": 27.1,
+   "sec": 15.5,
+   "rows": 44,
+   "cells": 44,
+   "reused": 42,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 13.9
+   },
+   "clock": "13.09 09:33"
+  },
+  {
+   "t": 1789266931.8,
+   "iso": "2026-09-13T02:35:20Z",
+   "digest": "a8ca0f09e13e7328b540d68818fbf9bf",
+   "changed": true,
+   "lag": 20.8,
+   "sec": 11.6,
+   "rows": 44,
+   "cells": 44,
+   "reused": 42,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.0,
+    "шапка": 0.5,
+    "сетка и заголовки": 0.5,
+    "строки": 10.5
+   },
+   "clock": "13.09 09:34"
+  },
+  {
+   "t": 1789266985.5,
+   "iso": "2026-09-13T02:36:06Z",
+   "digest": "40fe44353b961db7b5c2b52932107300",
+   "changed": true,
+   "lag": 39.8,
+   "sec": 18.9,
+   "rows": 45,
+   "cells": 45,
+   "reused": 42,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 17.3
+   },
+   "clock": "13.09 09:34"
+  },
+  {
+   "t": 1789267025.8,
+   "iso": "2026-09-13T02:36:52Z",
+   "digest": "3f3a41c7fc7d327508da40f684eefb98",
+   "changed": true,
+   "lag": 26.7,
+   "sec": 13.7,
+   "rows": 45,
+   "cells": 45,
+   "reused": 43,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.9,
+    "строки": 11.7
+   },
+   "clock": "13.09 09:35"
+  },
+  {
+   "t": 1789267065.4,
+   "iso": "2026-09-13T02:37:34Z",
+   "digest": "3f3a41c7fc7d327508da40f684eefb98",
+   "changed": false,
+   "lag": 23.6,
+   "sec": 10.7,
+   "rows": 45,
+   "cells": 45,
+   "reused": 43,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.8,
+    "строки": 9.0
+   },
+   "clock": "13.09 09:36"
+  },
+  {
+   "t": 1789267107.4,
+   "iso": "2026-09-13T02:38:09Z",
+   "digest": "54175270e29d9988798e05468d9d7d4c",
+   "changed": true,
+   "lag": 29.3,
+   "sec": 17.5,
+   "rows": 45,
+   "cells": 45,
+   "reused": 43,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 1.0,
+    "строки": 15.5
+   },
+   "clock": "13.09 09:36"
+  },
+  {
+   "t": 1789267155.9,
+   "iso": "2026-09-13T02:38:57Z",
+   "digest": "54175270e29d9988798e05468d9d7d4c",
+   "changed": false,
+   "lag": 37.3,
+   "sec": 18.2,
+   "rows": 45,
+   "cells": 45,
+   "reused": 43,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 16.2
+   },
+   "clock": "13.09 09:37"
+  },
+  {
+   "t": 1789267360.2,
+   "iso": "2026-09-13T02:39:38Z",
+   "digest": "7677604063d626ea00d9710de15b18bb",
+   "changed": true,
+   "lag": 192.2,
+   "sec": 181.7,
+   "rows": 26,
+   "cells": 26,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 179.9
+   },
+   "clock": "13.09 09:38"
+  },
+  {
+   "t": 1789267400.6,
+   "iso": "2026-09-13T02:43:06Z",
+   "digest": "375b1c5e2ca1a0e29b9dcae14d7a151b",
+   "changed": true,
+   "lag": 28.8,
+   "sec": 14.6,
+   "rows": 26,
+   "cells": 26,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.6,
+    "строки": 13.2
+   },
+   "clock": "13.09 09:41"
+  },
+  {
+   "t": 1789267438.2,
+   "iso": "2026-09-13T02:43:41Z",
+   "digest": "375b1c5e2ca1a0e29b9dcae14d7a151b",
+   "changed": false,
+   "lag": 27.0,
+   "sec": 16.7,
+   "rows": 26,
+   "cells": 26,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 14.8
+   },
+   "clock": "13.09 09:42"
+  },
+  {
+   "t": 1789267488.1,
+   "iso": "2026-09-13T02:44:31Z",
+   "digest": "1376b67706069aa38d5a774a764f7449",
+   "changed": true,
+   "lag": 36.8,
+   "sec": 17.0,
+   "rows": 26,
+   "cells": 26,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.6,
+    "строки": 15.7
+   },
+   "clock": "13.09 09:43"
+  },
+  {
+   "t": 1789267540.6,
+   "iso": "2026-09-13T02:45:13Z",
+   "digest": "ac4f19f6c6e53cfdb5af1b0928168c6f",
+   "changed": true,
+   "lag": 39.5,
+   "sec": 26.8,
+   "rows": 28,
+   "cells": 28,
+   "reused": 25,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 25.3
+   },
+   "clock": "13.09 09:43"
+  },
+  {
+   "t": 1789267583.3,
+   "iso": "2026-09-13T02:46:05Z",
+   "digest": "e543ef40591441bfc06f504efaba3495",
+   "changed": true,
+   "lag": 29.5,
+   "sec": 17.3,
+   "rows": 28,
+   "cells": 28,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.8,
+    "строки": 15.7
+   },
+   "clock": "13.09 09:44"
+  },
+  {
+   "t": 1789267622.4,
+   "iso": "2026-09-13T02:46:45Z",
+   "digest": "e543ef40591441bfc06f504efaba3495",
+   "changed": false,
+   "lag": 29.1,
+   "sec": 16.9,
+   "rows": 28,
+   "cells": 28,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 15.0
+   },
+   "clock": "13.09 09:45"
+  },
+  {
+   "t": 1789267663.4,
+   "iso": "2026-09-13T02:47:27Z",
+   "digest": "3b6b448a8cff7ef886b1a28649bb3f0d",
+   "changed": true,
+   "lag": 29.0,
+   "sec": 16.0,
+   "rows": 28,
+   "cells": 28,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.3,
+    "сетка и заголовки": 0.9,
+    "строки": 13.7
+   },
+   "clock": "13.09 09:46"
+  },
+  {
+   "t": 1789267700.1,
+   "iso": "2026-09-13T02:48:07Z",
+   "digest": "a7d231a719e3f7b924ea2206d764ef2a",
+   "changed": true,
+   "lag": 25.4,
+   "sec": 12.4,
+   "rows": 28,
+   "cells": 28,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 10.7
+   },
+   "clock": "13.09 09:46"
+  },
+  {
+   "t": 1789267748.4,
+   "iso": "2026-09-13T02:48:44Z",
+   "digest": "a7d231a719e3f7b924ea2206d764ef2a",
+   "changed": false,
+   "lag": 35.3,
+   "sec": 23.6,
+   "rows": 28,
+   "cells": 28,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 21.6
+   },
+   "clock": "13.09 09:47"
+  },
+  {
+   "t": 1789267800.6,
+   "iso": "2026-09-13T02:49:33Z",
+   "digest": "5b9936e13ebf13362bb7bb445d28745a",
+   "changed": true,
+   "lag": 40.4,
+   "sec": 27.6,
+   "rows": 28,
+   "cells": 28,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 25.8
+   },
+   "clock": "13.09 09:48"
+  },
+  {
+   "t": 1789267839.6,
+   "iso": "2026-09-13T02:50:26Z",
+   "digest": "e353734d25086606cad00c590cee5573",
+   "changed": true,
+   "lag": 26.8,
+   "sec": 12.9,
+   "rows": 28,
+   "cells": 28,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 10.9
+   },
+   "clock": "13.09 09:49"
+  },
+  {
+   "t": 1789267892.5,
+   "iso": "2026-09-13T02:51:11Z",
+   "digest": "96e942ba22c9a5a017d9534e96410c6a",
+   "changed": true,
+   "lag": 39.3,
+   "sec": 20.9,
+   "rows": 28,
+   "cells": 28,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.6,
+    "строки": 19.7
+   },
+   "clock": "13.09 09:49"
+  },
+  {
+   "t": 1789267999.5,
+   "iso": "2026-09-13T02:52:05Z",
+   "digest": "daae402473eccf9aa3c1afa229d78576",
+   "changed": true,
+   "lag": 94.9,
+   "sec": 73.7,
+   "rows": 31,
+   "cells": 31,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 71.8
+   },
+   "clock": "13.09 09:50"
+  },
+  {
+   "t": 1789268043.1,
+   "iso": "2026-09-13T02:53:49Z",
+   "digest": "db9747c7133cb6a175282d5b48af049b",
+   "changed": true,
+   "lag": 33.2,
+   "sec": 14.0,
+   "rows": 31,
+   "cells": 31,
+   "reused": 29,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.0,
+    "шапка": 0.5,
+    "сетка и заголовки": 0.5,
+    "строки": 13.0
+   },
+   "clock": "13.09 09:52"
+  },
+  {
+   "t": 1789268085.8,
+   "iso": "2026-09-13T02:54:29Z",
+   "digest": "2146f22b69ae54d83bdfca421ce3d87c",
+   "changed": true,
+   "lag": 29.7,
+   "sec": 16.7,
+   "rows": 31,
+   "cells": 31,
+   "reused": 29,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 15.1
+   },
+   "clock": "13.09 09:53"
+  },
+  {
+   "t": 1789268134.0,
+   "iso": "2026-09-13T02:55:13Z",
+   "digest": "580360d8ff4f3af26c7c43b488f32c8c",
+   "changed": true,
+   "lag": 35.9,
+   "sec": 20.3,
+   "rows": 32,
+   "cells": 32,
+   "reused": 29,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 18.4
+   },
+   "clock": "13.09 09:53"
+  },
+  {
+   "t": 1789268198.3,
+   "iso": "2026-09-13T02:55:59Z",
+   "digest": "29db61d4af632609bc25f1ed5dd2dca3",
+   "changed": true,
+   "lag": 51.2,
+   "sec": 39.2,
+   "rows": 34,
+   "cells": 34,
+   "reused": 30,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 37.4
+   },
+   "clock": "13.09 09:54"
+  },
+  {
+   "t": 1789268247.4,
+   "iso": "2026-09-13T02:57:09Z",
+   "digest": "2322bd2725dc64a31b999905d2548284",
+   "changed": true,
+   "lag": 38.3,
+   "sec": 18.0,
+   "rows": 34,
+   "cells": 34,
+   "reused": 32,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.9,
+    "строки": 16.0
+   },
+   "clock": "13.09 09:55"
+  },
+  {
+   "t": 1789268331.9,
+   "iso": "2026-09-13T02:58:26Z",
+   "digest": "84586f0139347595cfd87b070a0277b4",
+   "changed": true,
+   "lag": 37.1,
+   "sec": 25.0,
+   "rows": 35,
+   "cells": 35,
+   "reused": 32,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 23.1
+   },
+   "clock": "13.09 09:57"
+  },
+  {
+   "t": 1789268383.2,
+   "iso": "2026-09-13T02:59:14Z",
+   "digest": "2822f7fa4a45262a02587c2d4a6861d3",
+   "changed": true,
+   "lag": 39.6,
+   "sec": 29.1,
+   "rows": 35,
+   "cells": 35,
+   "reused": 32,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 27.3
+   },
+   "clock": "13.09 09:57"
+  },
+  {
+   "t": 1789268418.7,
+   "iso": "2026-09-13T03:00:07Z",
+   "digest": "fceddf0737074c848fe889c422d85ab0",
+   "changed": true,
+   "lag": 24.8,
+   "sec": 11.5,
+   "rows": 35,
+   "cells": 35,
+   "reused": 32,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.6,
+    "строки": 10.1
+   },
+   "clock": "13.09 09:58"
+  },
+  {
+   "t": 1789268471.7,
+   "iso": "2026-09-13T03:00:45Z",
+   "digest": "fceddf0737074c848fe889c422d85ab0",
+   "changed": false,
+   "lag": 40.7,
+   "sec": 26.3,
+   "rows": 35,
+   "cells": 35,
+   "reused": 32,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 24.8
+   },
+   "clock": "13.09 09:59"
+  },
+  {
+   "t": 1789268531.3,
+   "iso": "2026-09-13T03:01:34Z",
+   "digest": "3af5d65261c130838c19100cdf9ad994",
+   "changed": true,
+   "lag": 46.5,
+   "sec": 36.6,
+   "rows": 36,
+   "cells": 36,
+   "reused": 32,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 35.0
+   },
+   "clock": "13.09 10:00"
+  },
+  {
+   "t": 1789268674.0,
+   "iso": "2026-09-13T03:02:38Z",
+   "digest": "1df1374109b2aa86e291beeb73a0b598",
+   "changed": true,
+   "lag": 130.4,
+   "sec": 115.6,
+   "rows": 17,
+   "cells": 17,
+   "reused": 5,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 114.1
+   },
+   "clock": "13.09 10:01"
+  },
+  {
+   "t": 1789268723.5,
+   "iso": "2026-09-13T03:04:58Z",
+   "digest": "2694682335355e69ed75c230689989c6",
+   "changed": true,
+   "lag": 37.9,
+   "sec": 25.0,
+   "rows": 18,
+   "cells": 18,
+   "reused": 14,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 23.4
+   },
+   "clock": "13.09 10:03"
+  },
+  {
+   "t": 1789268769.1,
+   "iso": "2026-09-13T03:05:43Z",
+   "digest": "b2d14b851bdd6823575992f3d975c103",
+   "changed": true,
+   "lag": 35.2,
+   "sec": 25.3,
+   "rows": 20,
+   "cells": 20,
+   "reused": 17,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 23.5
+   },
+   "clock": "13.09 10:04"
+  },
+  {
+   "t": 1789268839.8,
+   "iso": "2026-09-13T03:06:35Z",
+   "digest": "30e8fa6b966efcb1bdbcc2f7ff73512a",
+   "changed": true,
+   "lag": 59.2,
+   "sec": 43.9,
+   "rows": 21,
+   "cells": 21,
+   "reused": 17,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.8,
+    "строки": 42.3
+   },
+   "clock": "13.09 10:05"
+  },
+  {
+   "t": 1789268899.0,
+   "iso": "2026-09-13T03:07:42Z",
+   "digest": "03734b88855d00abf181766098d859ef",
+   "changed": true,
+   "lag": 46.9,
+   "sec": 36.6,
+   "rows": 21,
+   "cells": 21,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 35.2
+   },
+   "clock": "13.09 10:06"
+  },
+  {
+   "t": 1789268975.2,
+   "iso": "2026-09-13T03:09:02Z",
+   "digest": "a326cfdc58a8302021ac3216eb719271",
+   "changed": true,
+   "lag": 44.3,
+   "sec": 32.8,
+   "rows": 22,
+   "cells": 22,
+   "reused": 18,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.0,
+    "строки": 30.8
+   },
+   "clock": "13.09 10:0?"
+  },
+  {
+   "t": 1789269094.7,
+   "iso": "2026-09-13T03:10:01Z",
+   "digest": "d710b9d89b9b4a783b1d6f50cfbf0241",
+   "changed": true,
+   "lag": 107.1,
+   "sec": 92.9,
+   "rows": 25,
+   "cells": 25,
+   "reused": 20,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 90.9
+   },
+   "clock": "13.09 10:08"
+  },
+  {
+   "t": 1789269159.9,
+   "iso": "2026-09-13T03:12:09Z",
+   "digest": "6a88bc3b5c40949b72abaccb889659c6",
+   "changed": true,
+   "lag": 52.4,
+   "sec": 30.8,
+   "rows": 25,
+   "cells": 25,
+   "reused": 22,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 28.9
+   },
+   "clock": "13.09 10:10"
+  },
+  {
+   "t": 1789269226.8,
+   "iso": "2026-09-13T03:13:11Z",
+   "digest": "20cc50d7f1c9cf95cac5415026772a2e",
+   "changed": true,
+   "lag": 54.6,
+   "sec": 35.6,
+   "rows": 25,
+   "cells": 25,
+   "reused": 22,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 34.0
+   },
+   "clock": "13.09 10:11"
+  },
+  {
+   "t": 1789269320.8,
+   "iso": "2026-09-13T03:14:10Z",
+   "digest": "d924141a1887be87c238ff3a20155f4e",
+   "changed": true,
+   "lag": 82.4,
+   "sec": 70.0,
+   "rows": 28,
+   "cells": 28,
+   "reused": 22,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.1,
+    "сетка и заголовки": 0.9,
+    "строки": 67.9
+   },
+   "clock": "13.09 10:12"
+  },
+  {
+   "t": 1789269373.9,
+   "iso": "2026-09-13T03:15:44Z",
+   "digest": "69d0c22cb76737ce62d2ff0c9c4ee54f",
+   "changed": true,
+   "lag": 40.6,
+   "sec": 29.1,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 27.6
+   },
+   "clock": "13.09 10:14"
+  },
+  {
+   "t": 1789269457.0,
+   "iso": "2026-09-13T03:16:41Z",
+   "digest": "2d3bc529f5e37e54ade91de3182318b5",
+   "changed": true,
+   "lag": 70.9,
+   "sec": 55.7,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 54.3
+   },
+   "clock": "13.09 10:15"
+  },
+  {
+   "t": 1789269535.6,
+   "iso": "2026-09-13T03:18:00Z",
+   "digest": "fc05a9d7bd645ee455164cc24355f4d9",
+   "changed": true,
+   "lag": 67.4,
+   "sec": 55.2,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 53.3
+   },
+   "clock": "13.09 10:16"
+  },
+  {
+   "t": 1789269614.6,
+   "iso": "2026-09-13T03:19:23Z",
+   "digest": "b48d9fab6e3d89c474393c6b5eeecaa3",
+   "changed": true,
+   "lag": 68.6,
+   "sec": 50.8,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 48.9
+   },
+   "clock": "13.09 10:17"
+  },
+  {
+   "t": 1789269683.8,
+   "iso": "2026-09-13T03:20:36Z",
+   "digest": "adb3effb32e88a5f16bdbd739b8697b9",
+   "changed": true,
+   "lag": 58.0,
+   "sec": 47.1,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 45.3
+   },
+   "clock": "13.09 10:19"
+  },
+  {
+   "t": 1789269753.1,
+   "iso": "2026-09-13T03:21:50Z",
+   "digest": "4699bdcf453c9ad2b8bba11bbb508580",
+   "changed": true,
+   "lag": 57.7,
+   "sec": 42.6,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.0,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.5,
+    "строки": 41.4
+   },
+   "clock": "13.09 10:20"
+  },
+  {
+   "t": 1789269808.9,
+   "iso": "2026-09-13T03:23:00Z",
+   "digest": "560d691fb8b7816d745a9cb1fc450bec",
+   "changed": true,
+   "lag": 43.5,
+   "sec": 28.5,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.8,
+    "сетка и заголовки": 0.9,
+    "строки": 25.6
+   },
+   "clock": "13.09 10:21"
+  },
+  {
+   "t": 1789269869.3,
+   "iso": "2026-09-13T03:23:52Z",
+   "digest": "475e4beca55ab3cc2bf682dee435eb65",
+   "changed": true,
+   "lag": 48.1,
+   "sec": 36.5,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 34.6
+   },
+   "clock": "13.09 10:22"
+  },
+  {
+   "t": 1789269959.8,
+   "iso": "2026-09-13T03:24:52Z",
+   "digest": "fec85c82d81ad9a9c6e0c3bf4fc60e06",
+   "changed": true,
+   "lag": 79.1,
+   "sec": 67.6,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 65.7
+   },
+   "clock": "13.09 10:23"
+  },
+  {
+   "t": 1789270038.4,
+   "iso": "2026-09-13T03:26:21Z",
+   "digest": "2a2f47dee61df3579d20bb35ef5b6f5c",
+   "changed": true,
+   "lag": 67.3,
+   "sec": 56.8,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 54.9
+   },
+   "clock": "13.09 10:25"
+  },
+  {
+   "t": 1789270100.6,
+   "iso": "2026-09-13T03:27:39Z",
+   "digest": "fc34f4b16c63003ce8ca2cadf56e2a01",
+   "changed": true,
+   "lag": 51.8,
+   "sec": 41.0,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.8,
+    "строки": 39.2
+   },
+   "clock": "13.09 10:26"
+  },
+  {
+   "t": 1789270165.6,
+   "iso": "2026-09-13T03:28:44Z",
+   "digest": "d10e80402ed60d4a27efc3860ebf0371",
+   "changed": true,
+   "lag": 52.9,
+   "sec": 40.8,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.8,
+    "строки": 38.9
+   },
+   "clock": "13.09 10:27"
+  },
+  {
+   "t": 1789270230.0,
+   "iso": "2026-09-13T03:29:55Z",
+   "digest": "fd698b92990c1284cc3f7ebbca825f92",
+   "changed": true,
+   "lag": 50.5,
+   "sec": 34.2,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 32.3
+   },
+   "clock": "13.09 10:28"
+  },
+  {
+   "t": 1789270284.9,
+   "iso": "2026-09-13T03:30:53Z",
+   "digest": "55a83ac5a6f38e49ad10029bc23316ae",
+   "changed": true,
+   "lag": 41.9,
+   "sec": 31.2,
+   "rows": 28,
+   "cells": 28,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 29.4
+   },
+   "clock": "13.09 10:29"
+  },
+  {
+   "t": 1789270355.2,
+   "iso": "2026-09-13T03:31:50Z",
+   "digest": "685674e15e1a5f72494dc3573a473f91",
+   "changed": true,
+   "lag": 56.6,
+   "sec": 45.0,
+   "rows": 32,
+   "cells": 32,
+   "reused": 27,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.1,
+    "строки": 43.0
+   },
+   "clock": "13.09 10:30"
+  },
+  {
+   "t": 1789270419.2,
+   "iso": "2026-09-13T03:32:58Z",
+   "digest": "0d4e99203bb9f66007dbb66bba4bf0d5",
+   "changed": true,
+   "lag": 52.0,
+   "sec": 40.7,
+   "rows": 32,
+   "cells": 32,
+   "reused": 28,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.0,
+    "строки": 38.7
+   },
+   "clock": "13.09 10:31"
+  },
+  {
+   "t": 1789270472.3,
+   "iso": "2026-09-13T03:34:00Z",
+   "digest": "685674e15e1a5f72494dc3573a473f91",
+   "changed": true,
+   "lag": 41.2,
+   "sec": 31.4,
+   "rows": 32,
+   "cells": 32,
+   "reused": 28,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 29.5
+   },
+   "clock": "13.09 10:32"
+  },
+  {
+   "t": 1789270545.5,
+   "iso": "2026-09-13T03:34:55Z",
+   "digest": "0d4e99203bb9f66007dbb66bba4bf0d5",
+   "changed": true,
+   "lag": 63.2,
+   "sec": 50.5,
+   "rows": 32,
+   "cells": 32,
+   "reused": 28,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 48.6
+   },
+   "clock": "13.09 10:33"
+  },
+  {
+   "t": 1789270618.2,
+   "iso": "2026-09-13T03:36:07Z",
+   "digest": "ee5d5c280ee10555e9dca1b8e2deb41c",
+   "changed": true,
+   "lag": 61.7,
+   "sec": 50.6,
+   "rows": 32,
+   "cells": 32,
+   "reused": 28,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 48.7
+   },
+   "clock": "13.09 10:34"
+  },
+  {
+   "t": 1789270726.4,
+   "iso": "2026-09-13T03:37:19Z",
+   "digest": "cdd26633cfe3dce8d8b7be167d69797c",
+   "changed": true,
+   "lag": 97.6,
+   "sec": 87.3,
+   "rows": 35,
+   "cells": 35,
+   "reused": 28,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 85.4
+   },
+   "clock": "13.09 10:36"
+  },
+  {
+   "t": 1789270813.6,
+   "iso": "2026-09-13T03:39:12Z",
+   "digest": "0b55eddc5e64442c0fe0f8c64904c897",
+   "changed": true,
+   "lag": 74.8,
+   "sec": 61.5,
+   "rows": 37,
+   "cells": 37,
+   "reused": 31,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 59.5
+   },
+   "clock": "13.09 10:37"
+  },
+  {
+   "t": 1789270884.3,
+   "iso": "2026-09-13T03:40:43Z",
+   "digest": "b70d4c8f52802a9b77ae3969a87dec77",
+   "changed": true,
+   "lag": 56.9,
+   "sec": 41.1,
+   "rows": 37,
+   "cells": 37,
+   "reused": 33,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.0,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.6,
+    "строки": 39.8
+   },
+   "clock": "13.09 10:39"
+  },
+  {
+   "t": 1789270953.9,
+   "iso": "2026-09-13T03:41:48Z",
+   "digest": "9e9bfb397be8944ec86552970abfbd97",
+   "changed": true,
+   "lag": 57.5,
+   "sec": 45.6,
+   "rows": 37,
+   "cells": 37,
+   "reused": 33,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 43.6
+   },
+   "clock": "13.09 10:40"
+  },
+  {
+   "t": 1789271038.1,
+   "iso": "2026-09-13T03:43:00Z",
+   "digest": "73dcde1578551fe9abf3dbd38694ab2e",
+   "changed": true,
+   "lag": 70.8,
+   "sec": 57.3,
+   "rows": 37,
+   "cells": 37,
+   "reused": 33,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 1.0,
+    "строки": 55.3
+   },
+   "clock": "13.09 10:42"
+  },
+  {
+   "t": 1789271111.7,
+   "iso": "2026-09-13T03:44:23Z",
+   "digest": "e25841d0b654af89b12d5feca2edfe98",
+   "changed": true,
+   "lag": 61.9,
+   "sec": 48.7,
+   "rows": 39,
+   "cells": 39,
+   "reused": 34,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.6,
+    "сетка и заголовки": 0.7,
+    "строки": 47.3
+   },
+   "clock": "13.09 10:44"
+  },
+  {
+   "t": 1789271189.1,
+   "iso": "2026-09-13T03:45:37Z",
+   "digest": "4f33081fcf1ee8ede29c2a902f51a481",
+   "changed": true,
+   "lag": 67.2,
+   "sec": 51.9,
+   "rows": 39,
+   "cells": 39,
+   "reused": 35,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 50.0
+   },
+   "clock": "13.09 10:45"
+  },
+  {
+   "t": 1789271284.6,
+   "iso": "2026-09-13T03:46:53Z",
+   "digest": "5eb16a96981a674d6e22bd461ebc80d4",
+   "changed": true,
+   "lag": 82.7,
+   "sec": 71.1,
+   "rows": 41,
+   "cells": 41,
+   "reused": 35,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 69.6
+   },
+   "clock": "13.09 10:46"
+  },
+  {
+   "t": 1789271359.0,
+   "iso": "2026-09-13T03:48:39Z",
+   "digest": "1af846b235a4dcd59be344cb98891435",
+   "changed": true,
+   "lag": 60.8,
+   "sec": 39.9,
+   "rows": 41,
+   "cells": 41,
+   "reused": 37,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.9,
+    "строки": 37.9
+   },
+   "clock": "13.09 10:48"
+  },
+  {
+   "t": 1789271427.4,
+   "iso": "2026-09-13T03:49:41Z",
+   "digest": "f07c1997cd4601e36bf7949064e84217",
+   "changed": true,
+   "lag": 55.9,
+   "sec": 45.6,
+   "rows": 41,
+   "cells": 41,
+   "reused": 37,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 43.7
+   },
+   "clock": "13.09 10:49"
+  },
+  {
+   "t": 1789271568.9,
+   "iso": "2026-09-13T03:50:49Z",
+   "digest": "2ce50e5f8e95b78ff5d6ca71db56b84f",
+   "changed": true,
+   "lag": 129.9,
+   "sec": 119.6,
+   "rows": 24,
+   "cells": 24,
+   "reused": 10,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 117.8
+   },
+   "clock": "13.09 10:50"
+  },
+  {
+   "t": 1789271622.9,
+   "iso": "2026-09-13T03:53:15Z",
+   "digest": "6b1aac1cbd187e30673123a8277dce79",
+   "changed": true,
+   "lag": 41.4,
+   "sec": 27.6,
+   "rows": 27,
+   "cells": 27,
+   "reused": 24,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 25.8
+   },
+   "clock": "13.09 10:52"
+  },
+  {
+   "t": 1789271669.2,
+   "iso": "2026-09-13T03:54:27Z",
+   "digest": "6b1aac1cbd187e30673123a8277dce79",
+   "changed": false,
+   "lag": 35.4,
+   "sec": 2.1,
+   "rows": 27,
+   "cells": 27,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.9,
+    "строки": 0.1
+   },
+   "clock": "13.09 10:53"
+  },
+  {
+   "t": 1789271694.0,
+   "iso": "2026-09-13T03:54:51Z",
+   "digest": "9791a0950a1275cf5bb47d23beeb98a0",
+   "changed": true,
+   "lag": 13.6,
+   "sec": 2.1,
+   "rows": 27,
+   "cells": 27,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.0,
+    "сетка и заголовки": 0.9,
+    "строки": 0.1
+   },
+   "clock": "13.09 10:54"
+  },
+  {
+   "t": 1789271722.9,
+   "iso": "2026-09-13T03:55:20Z",
+   "digest": "daf36d4c611db166cd02ed6db4ee9a64",
+   "changed": true,
+   "lag": 15.3,
+   "sec": 2.5,
+   "rows": 27,
+   "cells": 27,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.4,
+    "сетка и заголовки": 0.9,
+    "строки": 0.1
+   },
+   "clock": "13.09 10:54"
+  },
+  {
+   "t": 1789271749.7,
+   "iso": "2026-09-13T03:55:48Z",
+   "digest": "daf36d4c611db166cd02ed6db4ee9a64",
+   "changed": false,
+   "lag": 13.7,
+   "sec": 1.6,
+   "rows": 27,
+   "cells": 27,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 0.1
+   },
+   "clock": "13.09 10:55"
+  },
+  {
+   "t": 1789271774.1,
+   "iso": "2026-09-13T03:56:12Z",
+   "digest": "8153e13ac80ab20ce692b5bfac87088e",
+   "changed": true,
+   "lag": 12.7,
+   "sec": 2.0,
+   "rows": 27,
+   "cells": 27,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.1
+   },
+   "clock": "13.09 10:55"
+  },
+  {
+   "t": 1789271801.0,
+   "iso": "2026-09-13T03:56:39Z",
+   "digest": "8153e13ac80ab20ce692b5bfac87088e",
+   "changed": false,
+   "lag": 15.9,
+   "sec": 1.7,
+   "rows": 27,
+   "cells": 27,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 0.1
+   },
+   "clock": "13.09 10:56"
+  },
+  {
+   "t": 1789271836.2,
+   "iso": "2026-09-13T03:57:14Z",
+   "digest": "2fb482466f286038d843091fd9e3db16",
+   "changed": true,
+   "lag": 15.0,
+   "sec": 1.8,
+   "rows": 27,
+   "cells": 27,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.8,
+    "строки": 0.1
+   },
+   "clock": "13.09 10:56"
+  },
+  {
+   "t": 1789271862.0,
+   "iso": "2026-09-13T03:57:40Z",
+   "digest": "2fb482466f286038d843091fd9e3db16",
+   "changed": false,
+   "lag": 14.6,
+   "sec": 2.0,
+   "rows": 27,
+   "cells": 27,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.1
+   },
+   "clock": "13.09 10:52"
+  },
+  {
+   "t": 1789271902.5,
+   "iso": "2026-09-13T03:58:13Z",
+   "digest": "baffc9d7725bd797c8c728bc9d4f9de2",
+   "changed": true,
+   "lag": 20.4,
+   "sec": 8.7,
+   "rows": 28,
+   "cells": 28,
+   "reused": 26,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 1.1,
+    "сетка и заголовки": 0.9,
+    "строки": 6.6
+   },
+   "clock": "13.09 10:52"
+  },
+  {
+   "t": 1789271927.0,
+   "iso": "2026-09-13T03:58:45Z",
+   "digest": "baffc9d7725bd797c8c728bc9d4f9de2",
+   "changed": false,
+   "lag": 13.5,
+   "sec": 2.0,
+   "rows": 28,
+   "cells": 28,
+   "reused": 27,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.9,
+    "сетка и заголовки": 0.9,
+    "строки": 0.1
+   },
+   "clock": "13.09 10:58"
+  },
+  {
+   "t": 1789271967.1,
+   "iso": "2026-09-13T03:59:25Z",
+   "digest": "823eb3ee4a9e69cca254a5b006931e8c",
+   "changed": true,
+   "lag": 11.4,
+   "sec": 1.9,
+   "rows": 28,
+   "cells": 28,
+   "reused": 27,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 0.1
+   },
+   "clock": "13.09 10:59"
+  },
+  {
+   "t": 1789272027.0,
+   "iso": "2026-09-13T04:00:25Z",
+   "digest": "c1864f96aafaff6632540233d5eddcd1",
+   "changed": true,
+   "lag": 11.6,
+   "sec": 1.5,
+   "rows": 28,
+   "cells": 28,
+   "reused": 27,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.7,
+    "сетка и заголовки": 0.7,
+    "строки": 0.1
+   },
+   "clock": "13.09 11:00"
+  },
+  {
+   "t": 1789272088.7,
+   "iso": "2026-09-13T04:01:26Z",
+   "digest": "cdac8c38f898f01a22d89fb08b462647",
+   "changed": true,
+   "lag": 12.8,
+   "sec": 1.9,
+   "rows": 28,
+   "cells": 28,
+   "reused": 27,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.9,
+    "строки": 0.1
+   },
+   "clock": "13.09 11:01"
+  },
+  {
+   "t": 1789272165.0,
+   "iso": "2026-09-13T04:02:43Z",
+   "digest": "54c527d69e0f2152bd06fa0d1606e0ff",
+   "changed": true,
+   "lag": 28.9,
+   "sec": 1.6,
+   "rows": 28,
+   "cells": 28,
+   "reused": 27,
+   "panels": 4,
+   "stages": {
+    "разметка": 0.1,
+    "шапка": 0.8,
+    "сетка и заголовки": 0.7,
+    "строки": 0.1
+   },
+   "clock": "13.09 11:02"
+  }
+ ],
+ "summary": {
+  "прогонов": 400,
+  "из них с новым кадром": 133,
+  "интервал между прогонами, с": 53.6,
+  "интервал между сменами кадра, с": 80.2,
+  "задержка снимок-распознавание, с": 36.7,
+  "время распознавания, с": 23.0,
+  "таблиц на табло": 4.0,
+  "строк в кадре": 24.9,
+  "из них из кэша, %": 88.5,
+  "время, новый кадр, с": 29.4,
+  "время, прежний кадр, с": 10.2,
+  "по этапам, с": {
+   "разметка": 0.1,
+   "шапка": 0.8,
+   "сетка и заголовки": 0.8,
+   "строки": 21.2
+  },
+  "обновлено": "2026-09-13T04:02:43Z"
+ }
+}
